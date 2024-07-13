@@ -5,11 +5,8 @@ import static com.leets.commitatobe.global.response.code.status.ErrorStatus._GIT
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leets.commitatobe.domain.login.dto.GitHubDto.UserDto;
-import com.leets.commitatobe.domain.login.dto.JwtDto.JwtResponse;
-import com.leets.commitatobe.global.config.CustomOAuth2UserService;
 import com.leets.commitatobe.global.exception.ApiException;
 import com.leets.commitatobe.global.utils.JwtProvider;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -17,9 +14,7 @@ import java.util.Collections;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;

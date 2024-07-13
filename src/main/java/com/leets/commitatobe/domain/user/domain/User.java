@@ -24,10 +24,14 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private UUID id;
 
-    @Column(nullable = false)
-    private String username;
+    // username과 깃허브 아이디가 동일한 값이라서 삭제하겠습니다!
+//    @Column(nullable = false)
+//    private String username;
 
+    @Column(nullable = false)
     private String githubId;
+
+    private String refreshToken;
     private String profileUrl;
     private Integer exp;
     private Integer commitDays;

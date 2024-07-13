@@ -1,8 +1,8 @@
 package com.leets.commitatobe.global.config;
 
-import com.leets.commitatobe.domain.login.Member;
 import com.leets.commitatobe.domain.login.dto.JwtDto.JwtResponse;
-import com.leets.commitatobe.domain.login.repository.MemberRepository;
+import com.leets.commitatobe.domain.user.domain.User;
+import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
 import com.leets.commitatobe.global.utils.JwtProvider;
 import java.time.Instant;
 import java.util.Collections;
@@ -35,7 +35,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Autowired
     private JwtProvider jwtProvider;
-    private final MemberRepository memberRepository;
+    private final UserRepository userRepository;
 
     public JwtResponse generateJwt (String authCode){
         // 사용자 정보를 가져와 jwt 생성
@@ -81,30 +81,28 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         // 깃허브에서 가져온 사용자 정보를 이용해 jwt 생성
         String githubId = oAuth2User.getAttribute("login");
-        String accessToken = userRequest.getAccessToken().getTokenValue();
-
-        // GitHub에서 받은 사용자 정보를 바탕으로 Member 엔티티를 조회하거나 새로 생성
-        Member member = memberRepository.findByGithubId(githubId)
-            .orElseGet(() -> createNewMember(githubId, accessToken));
 
         // 4. 인증 정보를 기반으로 jwt 생성
-        JwtResponse jwt = jwtProvider.generateTokenDto(member.getGithubId());
+        JwtResponse jwt = jwtProvider.generateTokenDto(githubId);
+
+        // GitHub에서 받은 사용자 정보를 바탕으로 Member 엔티티를 조회하거나 새로 생성
+        User user = userRepository.findByGithubId(githubId)
+            .orElseGet(() -> createNewUser(githubId, jwt.refreshToken()));
 
         // OAuth2User와 JwtDto를 포함하는 DTO 반환
         return jwt;
     }
 
     @Transactional
-    // Member 생성 메서드
-    public Member createNewMember(String githubId, String accessToken) {
-        Member member = Member.builder()
+    // User 생성 메서드
+    public User createNewUser(String githubId, String refreshToken) {
+        User user = User.builder()
             .githubId(githubId)
-            .githubAccessToken(accessToken)
-            .roles("ROLE_USER")
+            .refreshToken(refreshToken)
             .build();
 
-        Member savedMember = memberRepository.save(member);
+        User savedUser = userRepository.save(user);
 
-        return savedMember;
+        return savedUser;
     }
 }
