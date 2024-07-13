@@ -1,6 +1,7 @@
 package com.leets.commitatobe.domain.user.domain;
 
 import com.leets.commitatobe.domain.commit.domain.Commit;
+import com.leets.commitatobe.domain.tier.domain.Tier;
 import com.leets.commitatobe.global.shared.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,7 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user")
     private List<Commit> commitList;
 
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name="tier_id")
     private Tier tier;
 }
