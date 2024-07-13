@@ -37,6 +37,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private JwtProvider jwtProvider;
     private final UserRepository userRepository;
 
+    // Jwt 생성 메인 함수
     public JwtResponse generateJwt (String authCode){
         // 사용자 정보를 가져와 jwt 생성
         // ClientRegistration 객체 생성
@@ -63,7 +64,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return jwt;
     }
 
-    // 깃허브에서 가져온 사용자 정보 받아오기
+    // 깃허브에서 사용자 정보 받아오기
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException{
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
@@ -75,26 +76,22 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     }
 
+    // 사용자 정보를 바탕으로 jwt 생성
     @Transactional
     public JwtResponse loadUserAndJwt(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = loadUser(userRequest);
-
-        // 깃허브에서 가져온 사용자 정보를 이용해 jwt 생성
         String githubId = oAuth2User.getAttribute("login");
-
-        // 4. 인증 정보를 기반으로 jwt 생성
         JwtResponse jwt = jwtProvider.generateTokenDto(githubId);
 
         // GitHub에서 받은 사용자 정보를 바탕으로 Member 엔티티를 조회하거나 새로 생성
         User user = userRepository.findByGithubId(githubId)
             .orElseGet(() -> createNewUser(githubId, jwt.refreshToken()));
 
-        // OAuth2User와 JwtDto를 포함하는 DTO 반환
         return jwt;
     }
 
-    @Transactional
     // User 생성 메서드
+    @Transactional
     public User createNewUser(String githubId, String refreshToken) {
         User user = User.builder()
             .githubId(githubId)

@@ -88,6 +88,7 @@ public class LoginService {
         return accessToken;
     }
 
+    // AUTH 헤더에서 엑세스 토큰을 이용해 유저 아이디를 불러오는 함수
     public UserDto getUserId(HttpServletRequest request) {
         // 헤더에서 액세스 토큰 추출
         String authorizationHeader = request.getHeader("Authorization");
@@ -108,6 +109,7 @@ public class LoginService {
             .build();
     }
 
+    // 로그인시 리다이렉트 처리
     public void redirect(HttpServletResponse response){
         String url = "https://github.com/login/oauth/authorize?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=user";
         try {

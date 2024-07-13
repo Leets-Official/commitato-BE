@@ -25,6 +25,7 @@ public class LoginController {
 
     private final CustomOAuth2UserService customOAuth2UserService;
 
+    // 로그인 로직 처리부분
     @GetMapping("/github")
     public void redirectToGitHub(HttpServletResponse response) {
         loginService.redirect(response);
@@ -43,12 +44,12 @@ public class LoginController {
         return ResponseEntity.ok(jwt);
     }
 
+    // 테스트용 API
     @GetMapping("/test")
     public ResponseEntity<UserDto> test(HttpServletRequest request) {
         UserDto user = loginService.getUserId(request);
 
         return ResponseEntity.ok(user);
     }
-
 
 }
