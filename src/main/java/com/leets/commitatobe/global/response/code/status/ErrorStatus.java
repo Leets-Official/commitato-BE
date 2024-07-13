@@ -18,6 +18,8 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // JWT 관련
     _JWT_NOT_FOUND(HttpStatus.NOT_FOUND, "JWT_001", "Header에 JWT가 존재하지 않습니다."),
+    _GITHUB_TOKEN_GENERATION_ERROR(HttpStatus.NOT_FOUND, "JWT_002", "깃허브에서 엑세스 토큰을 발급하는 과정에서 오류가 발생했습니다."),
+    _GITHUB_JSON_PARSING_ERROR(HttpStatus.NOT_FOUND, "JWT_003", "엑세스 토큰을 JSON에서 가져오는 과정에 오류가 발생했습니다."),
 
     // S3 관련
     _S3_IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "S3_001", "S3에 존재하지 않는 이미지입니다.");
