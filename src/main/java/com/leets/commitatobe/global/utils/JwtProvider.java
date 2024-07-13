@@ -27,7 +27,8 @@ import org.springframework.stereotype.Component;
 public class JwtProvider {
 
     private final Key key;
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //access 30분
+//    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //access 30분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; //access 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; //refresh 7일
 
     // application.yml에서 secret 값 가져와서 key에 저장
@@ -45,6 +46,7 @@ public class JwtProvider {
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
             .setSubject(githubId) // "sub" 클레임에 사용자 ID 저장
+            .claim("auth", "ROLE_USER") // 권한 정보 추가
             .setExpiration(accessTokenExpiresIn)
             .signWith(key, SignatureAlgorithm.HS512)
             .compact();

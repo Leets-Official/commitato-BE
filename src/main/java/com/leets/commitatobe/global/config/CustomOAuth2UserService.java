@@ -1,4 +1,4 @@
-package com.leets.commitatobe.domain.login.service;
+package com.leets.commitatobe.global.config;
 
 import com.leets.commitatobe.domain.login.Member;
 import com.leets.commitatobe.domain.login.dto.JwtDto.JwtResponse;
@@ -63,18 +63,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return jwt;
     }
 
-    @Transactional // 트랜잭션을 추가하여 데이터베이스 작업을 보장
+    // 깃허브에서 가져온 사용자 정보 받아오기
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException{
         OAuth2User oAuth2User = super.loadUser(userRequest);
-
-        // 깃허브에서 가져온 사용자 정보를 이용해 jwt 생성
-
-        // 1. 값 가져오기
-        String githubId = oAuth2User.getAttribute("login");
-
-        // GitHub에서 받은 사용자 정보를 바탕으로 Member 엔티티를 조회하거나 새로 생성
-        memberRepository.findByGithubId(githubId)
-            .orElseGet(() -> createNewMember(githubId));
 
         // OAuth2User를 반환
         return new DefaultOAuth2User(
@@ -90,10 +81,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         // 깃허브에서 가져온 사용자 정보를 이용해 jwt 생성
         String githubId = oAuth2User.getAttribute("login");
+        String accessToken = userRequest.getAccessToken().getTokenValue();
 
         // GitHub에서 받은 사용자 정보를 바탕으로 Member 엔티티를 조회하거나 새로 생성
         Member member = memberRepository.findByGithubId(githubId)
-            .orElseGet(() -> createNewMember(githubId));
+            .orElseGet(() -> createNewMember(githubId, accessToken));
 
         // 4. 인증 정보를 기반으로 jwt 생성
         JwtResponse jwt = jwtProvider.generateTokenDto(member.getGithubId());
@@ -104,9 +96,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Transactional
     // Member 생성 메서드
-    public Member createNewMember(String githubId) {
+    public Member createNewMember(String githubId, String accessToken) {
         Member member = Member.builder()
             .githubId(githubId)
+            .githubAccessToken(accessToken)
             .roles(Collections.singletonList("ROLE_USER"))
             .build();
 

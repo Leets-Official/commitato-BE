@@ -40,4 +40,9 @@ public class GitHubDto {
         String updated_at
     ) {}
 
+    @Builder
+    public record UserDto(
+        String userId
+    ) {}
+
 }

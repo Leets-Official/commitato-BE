@@ -27,8 +27,14 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id; // UUID를 기본 키로 사용
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String githubId; // GitHub ID를 별도 컬럼으로 사용
+
+    @Column(nullable = false)
+    private String githubAccessToken; // 깃허브 액세스 토큰
+
+    @Column
+    private String refreshToken; // 깃허브 리프레시 토큰
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
