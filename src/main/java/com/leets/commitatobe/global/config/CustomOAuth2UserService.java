@@ -1,6 +1,6 @@
 package com.leets.commitatobe.global.config;
 
-import com.leets.commitatobe.domain.login.dto.JwtDto.JwtResponse;
+import com.leets.commitatobe.domain.login.dto.JwtResponse;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
 import com.leets.commitatobe.global.utils.JwtProvider;
@@ -77,21 +77,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     // 사용자 정보를 바탕으로 jwt 생성
-    @Transactional
     public JwtResponse loadUserAndJwt(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = loadUser(userRequest);
         String githubId = oAuth2User.getAttribute("login");
         JwtResponse jwt = jwtProvider.generateTokenDto(githubId);
 
         // GitHub에서 받은 사용자 정보를 바탕으로 Member 엔티티를 조회하거나 새로 생성
-        User user = userRepository.findByGithubId(githubId)
+        userRepository.findByGithubId(githubId)
             .orElseGet(() -> createNewUser(githubId, jwt.refreshToken()));
 
         return jwt;
     }
 
     // User 생성 메서드
-    @Transactional
     public User createNewUser(String githubId, String refreshToken) {
         User user = User.builder()
             .githubId(githubId)

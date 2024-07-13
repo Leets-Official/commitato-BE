@@ -1,6 +1,6 @@
 package com.leets.commitatobe.global.utils;
 
-import com.leets.commitatobe.domain.login.dto.JwtDto.JwtResponse;
+import com.leets.commitatobe.domain.login.dto.JwtResponse;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -55,11 +55,7 @@ public class JwtProvider {
             .signWith(key, SignatureAlgorithm.HS512)
             .compact();
 
-        return JwtResponse.builder()
-            .grantType("bearer")
-            .accessToken(accessToken)
-            .refreshToken(refreshToken)
-            .build();
+        return new JwtResponse("bearer", accessToken, refreshToken);
     }
 
     // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드

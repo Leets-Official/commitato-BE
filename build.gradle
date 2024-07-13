@@ -48,6 +48,9 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2' // JWT 구현 라이브러리
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2' // Jackson과의 JWT 통합
 
+    // swagger
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.2.0'
+
     // Database 연결
     runtimeOnly 'com.mysql:mysql-connector-j' // MySQL 연결을 위한 Connector
     implementation 'com.h2database:h2:2.1.210' // 개발 및 테스트를 위한 H2 인메모리 데이터베이스

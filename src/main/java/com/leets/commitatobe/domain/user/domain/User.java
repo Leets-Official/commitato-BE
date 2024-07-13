@@ -31,9 +31,16 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String githubId;
 
+    @Column
     private String refreshToken;
-    private String profileUrl;
+
+    @Column
+    private String profileImage;
+
+    @Column
     private Integer exp;
+
+    @Column
     private Integer commitDays;
 
     @OneToMany(mappedBy = "user")

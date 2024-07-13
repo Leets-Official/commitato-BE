@@ -4,7 +4,7 @@ import static com.leets.commitatobe.global.response.code.status.ErrorStatus._GIT
 import static com.leets.commitatobe.global.response.code.status.ErrorStatus._GITHUB_TOKEN_GENERATION_ERROR;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.leets.commitatobe.domain.login.dto.GitHubDto.UserDto;
+import com.leets.commitatobe.domain.login.dto.GitHubDto;
 import com.leets.commitatobe.global.exception.ApiException;
 import com.leets.commitatobe.global.utils.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -89,7 +89,7 @@ public class LoginService {
     }
 
     // AUTH 헤더에서 엑세스 토큰을 이용해 유저 아이디를 불러오는 함수
-    public UserDto getUserId(HttpServletRequest request) {
+    public GitHubDto getUserId(HttpServletRequest request) {
         // 헤더에서 액세스 토큰 추출
         String authorizationHeader = request.getHeader("Authorization");
         String accessToken = null;
@@ -104,9 +104,7 @@ public class LoginService {
 
         // 액세스 토큰을 이용하여 사용자 정보 가져오기
         Authentication authentication = jwtProvider.getAuthentication(accessToken);
-        return UserDto.builder()
-            .userId(authentication.getName())
-            .build();
+        return new GitHubDto(authentication.getName());
     }
 
     // 로그인시 리다이렉트 처리
