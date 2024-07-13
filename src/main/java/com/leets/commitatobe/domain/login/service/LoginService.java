@@ -8,8 +8,11 @@ import com.leets.commitatobe.domain.login.dto.GitHubDto.UserDto;
 import com.leets.commitatobe.domain.login.dto.JwtDto.JwtResponse;
 import com.leets.commitatobe.global.config.CustomOAuth2UserService;
 import com.leets.commitatobe.global.exception.ApiException;
+import com.leets.commitatobe.global.utils.JwtProvider;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,12 +40,10 @@ public class LoginService {
     @Value("${spring.security.oauth2.client.registration.github.client-secret}")
     private String clientSecret;
 
-    private final RestTemplate restTemplate;
+    @Value("${spring.security.oauth2.client.registration.github.redirect-uri}")
+    private String redirectUri;
 
-    @Autowired
-    public LoginService(RestTemplateBuilder restTemplateBuilder) {
-        this.restTemplate = restTemplateBuilder.build();
-    }
+    private final JwtProvider jwtProvider;
 
     // 깃허브에서 accessToken가져오는 로직
     public String gitHubLogin(String authCode) {
@@ -52,7 +54,7 @@ public class LoginService {
             "?client_id=" + clientId +
             "&client_secret=" + clientSecret +
             "&code=" + authCode +
-            "&redirect_uri=" + "http://localhost:3000/api/auth/github/callback";
+            "&redirect_uri=" + redirectUri;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -91,33 +93,33 @@ public class LoginService {
         return accessToken;
     }
 
-    // 쿠키 추가
-    public void addAuthCookies(HttpServletResponse response, JwtResponse jwt) {
-        // 엑세스 토큰 쿠키
-        Cookie accessTokenCookie = new Cookie("accessToken", jwt.accessToken());
-        accessTokenCookie.setSecure(true);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(60*60); // 한시간
-        response.addCookie(accessTokenCookie);
+    public UserDto getUserId(HttpServletRequest request) {
+        // 헤더에서 액세스 토큰 추출
+        String authorizationHeader = request.getHeader("Authorization");
+        String accessToken = null;
 
-        // 리프레쉬토큰 쿠키
-        Cookie refreshTokenCookie = new Cookie("refreshToken", jwt.refreshToken());
-        refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 일주일
-        response.addCookie(refreshTokenCookie);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            accessToken = authorizationHeader.substring(7); // "Bearer " 이후의 토큰 값만 추출
+        }
+
+        if (accessToken == null || accessToken.isEmpty()) {
+            throw new IllegalArgumentException("JWT 토큰이 존재하지 않습니다.");
+        }
+
+        // 액세스 토큰을 이용하여 사용자 정보 가져오기
+        Authentication authentication = jwtProvider.getAuthentication(accessToken);
+        return UserDto.builder()
+            .userId(authentication.getName())
+            .build();
     }
 
-    // 엑세스 토큰을 이용해 유저 정보 받아오는 로직
-    public UserDto getUserInfo(String accessToken) {
-        String url = "https://api.github.com/user";
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<UserDto> response = restTemplate.exchange(url, HttpMethod.GET, entity, UserDto.class);
-
-        return response.getBody();
+    public void redirect(HttpServletResponse response){
+        String url = "https://github.com/login/oauth/authorize?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=user";
+        try {
+            response.sendRedirect(url);
+        } catch (IOException e) {
+            log.error("GitHub redirect failed", e);
+        }
     }
 }
 

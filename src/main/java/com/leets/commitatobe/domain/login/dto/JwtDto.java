@@ -2,7 +2,7 @@ package com.leets.commitatobe.domain.login.dto;
 
 import lombok.Builder;
 
-public class JwtDto {
+public record JwtDto() {
     @Builder
     public record JwtResponse(
         String grantType,

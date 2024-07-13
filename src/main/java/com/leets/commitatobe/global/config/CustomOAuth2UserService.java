@@ -100,7 +100,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Member member = Member.builder()
             .githubId(githubId)
             .githubAccessToken(accessToken)
-            .roles(Collections.singletonList("ROLE_USER"))
+            .roles("ROLE_USER")
             .build();
 
         Member savedMember = memberRepository.save(member);

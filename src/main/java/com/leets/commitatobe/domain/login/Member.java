@@ -36,9 +36,6 @@ public class Member {
     @Column
     private String refreshToken; // 깃허브 리프레시 토큰
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<String> roles = new ArrayList<>();
+    @Column(nullable = false)
+    private String roles;
 }
-
-
