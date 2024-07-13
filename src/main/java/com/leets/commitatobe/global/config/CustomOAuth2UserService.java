@@ -84,15 +84,21 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         // GitHub에서 받은 사용자 정보를 바탕으로 Member 엔티티를 조회하거나 새로 생성
         userRepository.findByGithubId(githubId)
-            .orElseGet(() -> createNewUser(githubId, jwt.refreshToken()));
+            .orElseGet(() -> createNewUser(oAuth2User, jwt.refreshToken()));
 
         return jwt;
     }
 
     // User 생성 메서드
-    public User createNewUser(String githubId, String refreshToken) {
+    public User createNewUser(OAuth2User oAuth2User, String refreshToken) {
+        String githubId = oAuth2User.getAttribute("login");
+        String username = oAuth2User.getAttribute("name");
+        String profileImage = oAuth2User.getAttribute("avatar_url");
+
         User user = User.builder()
             .githubId(githubId)
+            .username(username)
+            .profileImage(profileImage)
             .refreshToken(refreshToken)
             .build();
 
