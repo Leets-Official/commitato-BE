@@ -109,6 +109,7 @@ public class LoginService {
 
     // 로그인시 리다이렉트 처리
     public void redirect(HttpServletResponse response){
+        // TODO: user로 scope를 설정하면 읽고 쓰는 권한 모두를 가져오게 됨, 이후 개발하며 개발 범위에 맞춰 수정이 필요함
         String url = "https://github.com/login/oauth/authorize?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=user";
         try {
             response.sendRedirect(url);
