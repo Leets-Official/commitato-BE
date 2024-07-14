@@ -1,15 +1,17 @@
-package com.leets.commitatobe.domain.login.service;
+package com.leets.commitatobe.domain.login.usecase;
 
 import static com.leets.commitatobe.global.response.code.status.ErrorStatus._GITHUB_JSON_PARSING_ERROR;
 import static com.leets.commitatobe.global.response.code.status.ErrorStatus._GITHUB_TOKEN_GENERATION_ERROR;
+import static com.leets.commitatobe.global.response.code.status.ErrorStatus._JWT_NOT_FOUND;
+import static com.leets.commitatobe.global.response.code.status.ErrorStatus._REDIRECT_ERROR;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.leets.commitatobe.domain.login.dto.GitHubDto;
+import com.leets.commitatobe.domain.login.domain.CustomUserDetails;
+import com.leets.commitatobe.domain.login.presentation.dto.GitHubDto;
 import com.leets.commitatobe.global.exception.ApiException;
 import com.leets.commitatobe.global.utils.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +29,7 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class LoginService {
+public class LoginCommandServiceImpl implements LoginCommandService {
 
     @Value("${spring.security.oauth2.client.registration.github.client-id}")
     private String clientId;
@@ -40,7 +42,7 @@ public class LoginService {
 
     private final JwtProvider jwtProvider;
 
-    // 깃허브에서 accessToken가져오는 로직
+    // 예찬님! 이 함수 사용해서 accessToken 가져오심 됩니다~!
     public String gitHubLogin(String authCode) {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -88,33 +90,30 @@ public class LoginService {
         return accessToken;
     }
 
-    // AUTH 헤더에서 엑세스 토큰을 이용해 유저 아이디를 불러오는 함수
-    public GitHubDto getUserId(HttpServletRequest request) {
-        // 헤더에서 액세스 토큰 추출
+
+    public GitHubDto getGitHubUser(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
-        String accessToken = null;
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            accessToken = authorizationHeader.substring(7); // "Bearer " 이후의 토큰 값만 추출
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new ApiException(_JWT_NOT_FOUND);
         }
 
-        if (accessToken == null || accessToken.isEmpty()) {
-            throw new IllegalArgumentException("JWT 토큰이 존재하지 않습니다.");
-        }
-
-        // 액세스 토큰을 이용하여 사용자 정보 가져오기
+        String accessToken = authorizationHeader.substring(7); // "Bearer " 이후의 토큰 값만 추출
         Authentication authentication = jwtProvider.getAuthentication(accessToken);
-        return new GitHubDto(authentication.getName());
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        return userDetails.getGitHubDto();
     }
 
-    // 로그인시 리다이렉트 처리
+
     public void redirect(HttpServletResponse response){
         // TODO: user로 scope를 설정하면 읽고 쓰는 권한 모두를 가져오게 됨, 이후 개발하며 개발 범위에 맞춰 수정이 필요함
         String url = "https://github.com/login/oauth/authorize?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=user";
         try {
             response.sendRedirect(url);
-        } catch (IOException e) {
-            log.error("GitHub redirect failed", e);
+        } catch (Exception e) {
+            throw new ApiException(_REDIRECT_ERROR);
         }
     }
 }

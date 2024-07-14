@@ -1,6 +1,7 @@
 package com.leets.commitatobe.global.config;
 
-import com.leets.commitatobe.domain.login.dto.JwtResponse;
+import com.leets.commitatobe.domain.login.domain.CustomUserDetails;
+import com.leets.commitatobe.domain.login.presentation.dto.JwtResponse;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
 import com.leets.commitatobe.global.utils.JwtProvider;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -80,6 +82,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public JwtResponse loadUserAndJwt(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = loadUser(userRequest);
         String githubId = oAuth2User.getAttribute("login");
+
+        // GitHub에서 받은 사용자 정보를 바탕으로 UserDetails 객체 생성
+        UserDetails userDetails = new CustomUserDetails(
+            githubId, "", true, true, true, true,
+            Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
+        );
+
         JwtResponse jwt = jwtProvider.generateTokenDto(githubId);
 
         // GitHub에서 받은 사용자 정보를 바탕으로 Member 엔티티를 조회하거나 새로 생성

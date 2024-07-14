@@ -38,11 +38,12 @@ public class SecurityConfig {
                         .configurationSource(corsConfigurationSource())
                 )
                 .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
+                .formLogin((formLogin) -> formLogin
+                    .loginPage("/login/github"))
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/", "/v3/api-docs/**", "/swagger-ui/**", "/login/**", "/h2-console/**").permitAll()
-                                .anyRequest().authenticated()
+                            .requestMatchers("/", "/v3/api-docs/**", "/swagger-ui/**", "/login/**", "/h2-console/**", "/error/**").permitAll()
+                            .anyRequest().authenticated()
                 )
                 .headers(headers -> headers
                     .frameOptions(frameOptions -> frameOptions.disable()) // H2 콘솔 프레임 옵션 설정

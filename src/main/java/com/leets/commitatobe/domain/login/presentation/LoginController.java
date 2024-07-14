@@ -1,9 +1,9 @@
-package com.leets.commitatobe.domain.login.controller;
+package com.leets.commitatobe.domain.login.presentation;
 
-import com.leets.commitatobe.domain.login.dto.GitHubDto;
-import com.leets.commitatobe.domain.login.dto.JwtResponse;
+import com.leets.commitatobe.domain.login.presentation.dto.GitHubDto;
+import com.leets.commitatobe.domain.login.presentation.dto.JwtResponse;
+import com.leets.commitatobe.domain.login.usecase.LoginCommandServiceImpl;
 import com.leets.commitatobe.global.config.CustomOAuth2UserService;
-import com.leets.commitatobe.domain.login.service.LoginService;
 import com.leets.commitatobe.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,9 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/login")
+@Slf4j
 public class LoginController {
 
-    private final LoginService loginService;
+    private final LoginCommandServiceImpl loginCommandServiceImpl;
 
     private final CustomOAuth2UserService customOAuth2UserService;
 
@@ -32,7 +34,7 @@ public class LoginController {
     )
     @GetMapping("/github")
     public void redirectToGitHub(HttpServletResponse response) {
-        loginService.redirect(response);
+        loginCommandServiceImpl.redirect(response);
     }
 
     @Operation(
@@ -48,7 +50,7 @@ public class LoginController {
     @GetMapping("/callback")
     public ApiResponse<JwtResponse> githubCallback(@RequestParam("code") String code, HttpServletResponse response) {
         // GitHub에서 받은 인가 코드로 액세스 토큰 요청
-        String accessToken = loginService.gitHubLogin(code);
+        String accessToken = loginCommandServiceImpl.gitHubLogin(code);
         // 액세스 토큰을 이용하여 JWT 생성
         JwtResponse jwt = customOAuth2UserService.generateJwt(accessToken);
         response.setHeader("Authentication", "Bearer " + jwt.accessToken());
@@ -59,8 +61,8 @@ public class LoginController {
     // 테스트용 API
     @GetMapping("/test")
     public ApiResponse<GitHubDto> test(HttpServletRequest request) {
-        GitHubDto user = loginService.getUserId(request);
-
+        log.debug("Test endpoint accessed");
+        GitHubDto user = loginCommandServiceImpl.getGitHubUser(request);
         return ApiResponse.onSuccess(user);
     }
 

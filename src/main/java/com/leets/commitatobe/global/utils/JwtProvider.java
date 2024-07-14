@@ -1,6 +1,6 @@
 package com.leets.commitatobe.global.utils;
 
-import com.leets.commitatobe.domain.login.dto.JwtResponse;
+import com.leets.commitatobe.domain.login.presentation.dto.JwtResponse;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,9 +18,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import com.leets.commitatobe.domain.login.domain.CustomUserDetails;
 
 @Slf4j
 @Component
@@ -74,8 +73,11 @@ public class JwtProvider {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        // UserDetails 객체를 만들어서 Authentication return
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        // CustomUserDetails 객체를 만들어서 Authentication return
+        CustomUserDetails principal = new CustomUserDetails(
+            claims.getSubject(), claims.getSubject(), true, true, true, true, authorities
+        );
+
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
