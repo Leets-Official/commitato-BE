@@ -8,6 +8,7 @@ import com.leets.commitatobe.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +54,17 @@ public class LoginController {
         String accessToken = loginCommandServiceImpl.gitHubLogin(code);
         // 액세스 토큰을 이용하여 JWT 생성
         JwtResponse jwt = customOAuth2UserService.generateJwt(accessToken);
+
+        // 액세스 토큰을 헤더에 설정
         response.setHeader("Authentication", "Bearer " + jwt.accessToken());
+
+        // 리프레시 토큰을 httpOnly 쿠키에 설정
+        Cookie refreshTokenCookie = new Cookie("refreshToken", jwt.refreshToken());
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true); // HTTPS를 사용할 경우
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7일 동안 유효
+        response.addCookie(refreshTokenCookie);
 
         return ApiResponse.onSuccess(jwt);
     }
