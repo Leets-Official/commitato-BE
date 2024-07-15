@@ -1,8 +1,5 @@
 package com.leets.commitatobe.domain.login.usecase;
 
-import com.leets.commitatobe.domain.login.presentation.dto.GitHubDto;
-import com.leets.commitatobe.domain.login.presentation.dto.JwtResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public interface LoginCommandService {
