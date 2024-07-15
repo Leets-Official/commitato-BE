@@ -1,0 +1,15 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    destination: /home/ubuntu/enhance
+permissions:
+  - object: /home/ubuntu/enhance/
+    owner: ubuntu
+    group: ubuntu
+hooks:
+  AfterInstall:
+    - location: scripts/after-deploy.sh
+      timeout: 60
+      runas: ubuntu
