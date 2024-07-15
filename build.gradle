@@ -42,6 +42,14 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    // JWT (JSON Web Token)
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2' // JWT 생성 및 파싱
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2' // JWT 구현 라이브러리
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2' // Jackson과의 JWT 통합
+
+    // Database 연결
+    implementation 'com.h2database:h2:2.1.210' // 개발 및 테스트를 위한 H2 인메모리 데이터베이스
 }
 
 tasks.named('test') {

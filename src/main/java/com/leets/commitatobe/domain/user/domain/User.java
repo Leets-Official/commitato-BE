@@ -1,5 +1,6 @@
 package com.leets.commitatobe.domain.user.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.leets.commitatobe.domain.commit.domain.Commit;
 import com.leets.commitatobe.domain.tier.domain.Tier;
 import com.leets.commitatobe.global.shared.entity.BaseTimeEntity;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.UUID;
 
-@Entity(name = "user")
+@Entity(name = "users")
 @Getter
 @Builder
 @NoArgsConstructor
@@ -27,12 +28,23 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String username;
 
+    @Column(nullable = false)
     private String githubId;
-    private String profileUrl;
+
+    @Column
+    private String refreshToken;
+
+    @Column
+    private String profileImage;
+
+    @Column
     private Integer exp;
+
+    @Column
     private Integer commitDays;
 
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     private List<Commit> commitList;
 
     @ManyToOne
