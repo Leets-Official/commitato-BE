@@ -1,0 +1,19 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import: aws-parameterstore:/Dev/DBServer/MySQL/
+  datasource:
+    url: ${DB_PATH}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
+    properties:
+      hibernate:
+        format_sql: true
