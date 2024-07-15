@@ -61,7 +61,6 @@ public class LoginController {
     // 테스트용 API
     @GetMapping("/test")
     public ApiResponse<GitHubDto> test(HttpServletRequest request) {
-        log.debug("Test endpoint accessed");
         GitHubDto user = loginCommandServiceImpl.getGitHubUser(request);
         return ApiResponse.onSuccess(user);
     }

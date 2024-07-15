@@ -25,10 +25,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new CustomUserDetails(
             user.getUsername(),
             user.getGithubId(),
-            true,
-            true,
-            true,
-            true,
             Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
         );
     }

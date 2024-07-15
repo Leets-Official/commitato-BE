@@ -75,7 +75,7 @@ public class JwtProvider {
 
         // CustomUserDetails 객체를 만들어서 Authentication return
         CustomUserDetails principal = new CustomUserDetails(
-            claims.getSubject(), claims.getSubject(), true, true, true, true, authorities
+            claims.getSubject(), claims.getSubject(), authorities
         );
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);

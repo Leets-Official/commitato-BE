@@ -83,12 +83,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = loadUser(userRequest);
         String githubId = oAuth2User.getAttribute("login");
 
-        // GitHub에서 받은 사용자 정보를 바탕으로 UserDetails 객체 생성
-        UserDetails userDetails = new CustomUserDetails(
-            githubId, "", true, true, true, true,
-            Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
-        );
-
         JwtResponse jwt = jwtProvider.generateTokenDto(githubId);
 
         // GitHub에서 받은 사용자 정보를 바탕으로 Member 엔티티를 조회하거나 새로 생성
