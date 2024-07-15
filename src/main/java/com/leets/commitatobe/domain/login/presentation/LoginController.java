@@ -2,7 +2,8 @@ package com.leets.commitatobe.domain.login.presentation;
 
 import com.leets.commitatobe.domain.login.presentation.dto.GitHubDto;
 import com.leets.commitatobe.domain.login.presentation.dto.JwtResponse;
-import com.leets.commitatobe.domain.login.usecase.LoginCommandServiceImpl;
+import com.leets.commitatobe.domain.login.usecase.LoginCommandService;
+import com.leets.commitatobe.domain.login.usecase.LoginQueryService;
 import com.leets.commitatobe.global.config.CustomOAuth2UserService;
 import com.leets.commitatobe.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class LoginController {
 
-    private final LoginCommandServiceImpl loginCommandServiceImpl;
+    private final LoginCommandService loginCommandService;
+    private final LoginQueryService loginQueryService;
 
     private final CustomOAuth2UserService customOAuth2UserService;
 
@@ -35,7 +37,7 @@ public class LoginController {
     )
     @GetMapping("/github")
     public void redirectToGitHub(HttpServletResponse response) {
-        loginCommandServiceImpl.redirect(response);
+        loginCommandService.redirect(response);
     }
 
     @Operation(
@@ -51,7 +53,7 @@ public class LoginController {
     @GetMapping("/callback")
     public ApiResponse<JwtResponse> githubCallback(@RequestParam("code") String code, HttpServletResponse response) {
         // GitHub에서 받은 인가 코드로 액세스 토큰 요청
-        String accessToken = loginCommandServiceImpl.gitHubLogin(code);
+        String accessToken = loginCommandService.gitHubLogin(code);
         // 액세스 토큰을 이용하여 JWT 생성
         JwtResponse jwt = customOAuth2UserService.generateJwt(accessToken);
 
@@ -59,12 +61,8 @@ public class LoginController {
         response.setHeader("Authentication", "Bearer " + jwt.accessToken());
 
         // 리프레시 토큰을 httpOnly 쿠키에 설정
-        Cookie refreshTokenCookie = new Cookie("refreshToken", jwt.refreshToken());
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true); // HTTPS를 사용할 경우
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7일 동안 유효
-        response.addCookie(refreshTokenCookie);
+        loginCommandService.setRefreshTokenCookie(response, jwt.refreshToken());
+
 
         return ApiResponse.onSuccess(jwt);
     }
@@ -72,7 +70,7 @@ public class LoginController {
     // 테스트용 API
     @GetMapping("/test")
     public ApiResponse<GitHubDto> test(HttpServletRequest request) {
-        GitHubDto user = loginCommandServiceImpl.getGitHubUser(request);
+        GitHubDto user = loginQueryService.getGitHubUser(request);
         return ApiResponse.onSuccess(user);
     }
 
