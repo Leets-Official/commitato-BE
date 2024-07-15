@@ -1,9 +1,7 @@
 package com.leets.commitatobe.domain.login.domain;
 
 import java.util.Collection;
-import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.leets.commitatobe.domain.login.presentation.dto.GitHubDto;
 

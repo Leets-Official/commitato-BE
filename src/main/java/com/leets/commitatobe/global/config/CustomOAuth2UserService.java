@@ -1,6 +1,5 @@
 package com.leets.commitatobe.global.config;
 
-import com.leets.commitatobe.domain.login.domain.CustomUserDetails;
 import com.leets.commitatobe.domain.login.presentation.dto.JwtResponse;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
@@ -12,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
