@@ -25,7 +25,10 @@ public enum ErrorStatus implements BaseErrorCode {
     _REDIRECT_ERROR(HttpStatus.NOT_FOUND, "REDIRECT_001", "리다이렉트 과정에서 오류가 발생했습니다."),
 
     // S3 관련
-    _S3_IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "S3_001", "S3에 존재하지 않는 이미지입니다.");
+    _S3_IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "S3_001", "S3에 존재하지 않는 이미지입니다."),
+
+    // 커밋 관련
+    _Commit_NOT_FOUND(HttpStatus.NOT_FOUND, "Commit_001", "커밋이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
