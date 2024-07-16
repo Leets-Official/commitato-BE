@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.global.shared.entity.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,4 +35,23 @@ public class Commit extends BaseTimeEntity {
     @JoinColumn(name="user_id")
     @JsonBackReference
     private User user;
+
+    public static Commit create(Date commitDate, Integer cnt, User user) {
+        return Commit.builder()
+                .commitDate(commitDate)
+                .cnt(cnt)
+                .user(user)
+                .build();
+    }
+
+    @Builder
+    public Commit(Date commitDate, Integer cnt, User user) {
+        this.commitDate = commitDate;
+        this.cnt = cnt;
+        this.user = user;
+    }
+
+    public void updateCnt(Integer cnt) {
+        this.cnt = this.cnt + cnt;
+    }
 }
