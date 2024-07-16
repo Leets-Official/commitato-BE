@@ -12,10 +12,6 @@ jobs:
     permissions:
       contents: read
 
-    env:
-      S3_BUCKET_DIR_NAME: production
-      DEPLOYMENT_GROUP_NAME: production
-
     steps:
       - name: 브랜치 체크아웃
         uses: actions/checkout@v4
@@ -50,12 +46,12 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: S3로 업로드
-        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://${{ secrets.S3_BUCKET_NAME }}/${{ env.S3_BUCKET_DIR_NAME }}/$GITHUB_SHA.zip
+        run: aws s3 cp --region ${{ secrets.AWS_REGION }} ./$GITHUB_SHA.zip s3://${{ secrets.S3_BUCKET_NAME }}/${{ secrets.S3_BUCKET_DIR_NAME }}/$GITHUB_SHA.zip
 
       - name: CodeDeploy를 사용하여 EC2에 배포
         run: |
           aws deploy create-deployment \
             --application-name springboot-developer \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
-            --deployment-group-name ${{ env.DEPLOYMENT_GROUP_NAME }} \
-            --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},bundleType=zip,key=${{ env.S3_BUCKET_DIR_NAME }}/$GITHUB_SHA.zip
+            --deployment-group-name ${{ secrets.DEPLOYMENT_GROUP_NAME }} \
+            --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},bundleType=zip,key=${{ secrets.S3_BUCKET_DIR_NAME }}/$GITHUB_SHA.zip
