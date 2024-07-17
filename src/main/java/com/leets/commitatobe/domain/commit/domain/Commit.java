@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity(name = "commit")
@@ -26,17 +25,14 @@ public class Commit extends BaseTimeEntity {
     private Integer cnt;
 
     @Column
-    private Date commitDate;
-
-    @Column
-    private LocalDateTime date;
+    private LocalDateTime commitDate;
 
     @ManyToOne
     @JoinColumn(name="user_id")
     @JsonBackReference
     private User user;
 
-    public static Commit create(Date commitDate, Integer cnt, User user) {
+    public static Commit create(LocalDateTime commitDate, Integer cnt, User user) {
         return Commit.builder()
                 .commitDate(commitDate)
                 .cnt(cnt)
@@ -45,7 +41,7 @@ public class Commit extends BaseTimeEntity {
     }
 
     @Builder
-    public Commit(Date commitDate, Integer cnt, User user) {
+    public Commit(LocalDateTime commitDate, Integer cnt, User user) {
         this.commitDate = commitDate;
         this.cnt = cnt;
         this.user = user;

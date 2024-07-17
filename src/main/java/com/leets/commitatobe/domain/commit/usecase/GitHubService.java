@@ -8,10 +8,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -26,10 +27,10 @@ import java.util.stream.Collectors;
 public class GitHubService {
     private final String GITHUB_API_URL = "https://api.github.com";
     private String AUTH_TOKEN;
-    private Map<Date, Integer> commitsByDate = new HashMap<>();
+    private final Map<LocalDateTime, Integer> commitsByDate = new HashMap<>();
 
     // GitHub repository 이름 저장
-    public List<String> fetchRepos(String gitHubUsername) throws Exception {
+    public List<String> fetchRepos(String gitHubUsername) throws IOException {
         URL url = new URL(GITHUB_API_URL + "/user/repos?type=all&sort=pushed&per_page=100");
         HttpURLConnection connection = getConnection(url);
         JsonArray repos = fetchJsonArray(connection);
@@ -50,8 +51,7 @@ public class GitHubService {
                         .filter(fullName -> {
                             try {
                                 return isContributor(fullName, gitHubUsername);
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                            } catch (IOException e) {
                                 return false;
                             }
                         })
@@ -60,7 +60,7 @@ public class GitHubService {
     }
 
     // 자신이 해당 repository의 기여자 인지 확인
-    private boolean isContributor(String fullName, String gitHubUsername) throws Exception {
+    private boolean isContributor(String fullName, String gitHubUsername) throws IOException {
         if (fullName.contains(gitHubUsername)) {
             return true;
         }
@@ -86,9 +86,9 @@ public class GitHubService {
     }
 
     // commit을 일별로 정리
-    public void countCommits(String fullName, String gitHubUsername, LocalDateTime date) throws Exception {
+    public void countCommits(String fullName, String gitHubUsername, LocalDateTime date) throws IOException {
         int page = 1;
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         while (true) {
             URL url = new URL(GITHUB_API_URL + "/repos/" + fullName + "/commits?page=" + page + "&per_page=100");
@@ -108,8 +108,8 @@ public class GitHubService {
                     continue;
                 }
 
+                LocalDateTime commitDate = LocalDate.parse(commitDateTime.substring(0, 10), formatter).atStartOfDay();
 
-                Date commitDate = formatter.parse(commitDateTime.substring(0, 10));
                 synchronized (commitsByDate) {
                     commitsByDate.put(commitDate, commitsByDate.getOrDefault(commitDate, 0) + 1);
                 }
@@ -120,7 +120,7 @@ public class GitHubService {
     }
 
     // http 연결
-    private HttpURLConnection getConnection(URL url) throws Exception {
+    private HttpURLConnection getConnection(URL url) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Authorization", "token " + AUTH_TOKEN);
@@ -129,7 +129,7 @@ public class GitHubService {
     }
 
     // 응답을 jsonObject로 반환
-    private JsonObject fetchJsonObject(HttpURLConnection connection) throws Exception {
+    private JsonObject fetchJsonObject(HttpURLConnection connection) throws IOException {
         int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
@@ -142,7 +142,7 @@ public class GitHubService {
     }
 
     // 응답을 JsonArray로 반환
-    private JsonArray fetchJsonArray(HttpURLConnection connection) throws Exception {
+    private JsonArray fetchJsonArray(HttpURLConnection connection) throws IOException {
         int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {

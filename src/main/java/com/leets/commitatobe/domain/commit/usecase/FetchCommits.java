@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -38,7 +39,7 @@ public class FetchCommits {
         try {
             dateTime = commitRepository.findAllByUser(user).stream()
                     .max(Comparator.comparing(Commit::getUpdatedAt))
-                    .orElseThrow(() ->  new ApiException(ErrorStatus._Commit_NOT_FOUND))
+                    .orElseThrow(() -> new ApiException(ErrorStatus._COMMIT_NOT_FOUND))
                     .getUpdatedAt();
         } catch (ApiException e) {
             dateTime = LocalDateTime.now();
@@ -58,8 +59,8 @@ public class FetchCommits {
                 CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(() -> {
                     try {
                         gitHubService.countCommits(fullName, gitHubId, finalDateTime);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } catch (IOException e) {
+                        throw new ApiException(ErrorStatus._GIT_URL_INCORRECT);
                     }
                 }, executor);
                 futures.add(voidCompletableFuture);
@@ -73,7 +74,7 @@ public class FetchCommits {
             saveCommits(user);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return SuccessStatus._OK.getMessage();
@@ -81,7 +82,7 @@ public class FetchCommits {
 
     private void saveCommits(User user) {
         // 날짜별 커밋 수 DB에 저장
-        for (Map.Entry<Date, Integer> entry : gitHubService.getCommitsByDate().entrySet()) {
+        for (Map.Entry<LocalDateTime, Integer> entry : gitHubService.getCommitsByDate().entrySet()) {
             Commit commit = commitRepository.findByCommitDateAndUser(entry.getKey(), user)
                     .orElse(Commit.create(entry.getKey(), 0, user));
             commit.updateCnt(entry.getValue());
