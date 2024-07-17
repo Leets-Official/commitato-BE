@@ -51,10 +51,6 @@ dependencies {
     // Database 연결
     implementation 'com.h2database:h2:2.1.210' // 개발 및 테스트를 위한 H2 인메모리 데이터베이스
 
-    // AWS
-    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.1.0")
-    implementation 'io.awspring.cloud:spring-cloud-aws-starter-parameter-store'
-
     // GSON
     implementation "com.google.code.gson:gson:2.8.9"
 }

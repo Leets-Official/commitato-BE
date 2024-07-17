@@ -2,11 +2,10 @@ spring:
   config:
     activate:
       on-profile: dev
-    import: aws-parameterstore:/Dev/
   datasource:
-    url: ${DBServer/MySQL/DB_PATH}
-    username: ${DBServer/MySQL/DB_USER}
-    password: ${DBServer/MySQL/DB_PASSWORD}
+    url: ${DB_PATH}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
@@ -27,5 +26,5 @@ spring:
             scope: read:user
             redirect-uri: "http://localhost:8080/login/callback"
 
-  jwt:
-    secret: ${JWT/JWT_SECRET}
+jwt:
+  secret: ${JWT_SECRET}
