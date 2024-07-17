@@ -2,11 +2,11 @@ spring:
   config:
     activate:
       on-profile: dev
-    import: aws-parameterstore:/Dev/DBServer/MySQL/
+    import: aws-parameterstore:/Dev/
   datasource:
-    url: ${DB_PATH}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: ${DBServer/MySQL/DB_PATH}
+    username: ${DBServer/MySQL/DB_USER}
+    password: ${DBServer/MySQL/DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
@@ -17,3 +17,15 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            scope: read:user
+            redirect-uri: "http://localhost:8080/login/callback"
+
+  jwt:
+    secret: ${JWT/JWT_SECRET}
