@@ -54,6 +54,9 @@ dependencies {
     // AWS
     implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.1.0")
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-parameter-store'
+
+    // GSON
+    implementation "com.google.code.gson:gson:2.8.9"
 }
 
 tasks.named('test') {
