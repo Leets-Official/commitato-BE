@@ -20,7 +20,6 @@ public enum ErrorStatus implements BaseErrorCode {
     _JWT_NOT_FOUND(HttpStatus.NOT_FOUND, "JWT_001", "Header에 JWT가 존재하지 않습니다."),
     _GITHUB_TOKEN_GENERATION_ERROR(HttpStatus.NOT_FOUND, "JWT_002", "깃허브에서 엑세스 토큰을 발급하는 과정에서 오류가 발생했습니다."),
     _GITHUB_JSON_PARSING_ERROR(HttpStatus.NOT_FOUND, "JWT_003", "엑세스 토큰을 JSON에서 가져오는 과정에 오류가 발생했습니다."),
-    _REFRESH_TOKEN_EXPIRED(HttpStatus.NOT_FOUND, "JWT_004", "리프레시 토큰이 만료되어 재로그인이 필요합니다."),
 
     // 리다이렉션
     _REDIRECT_ERROR(HttpStatus.NOT_FOUND, "REDIRECT_001", "리다이렉트 과정에서 오류가 발생했습니다."),
