@@ -2,6 +2,7 @@ package com.leets.commitatobe.domain.commit.usecase;
 
 import com.leets.commitatobe.domain.commit.domain.Commit;
 import com.leets.commitatobe.domain.commit.domain.repository.CommitRepository;
+import com.leets.commitatobe.domain.commit.presentation.dto.response.CommitResponse;
 import com.leets.commitatobe.domain.login.usecase.LoginCommandServiceImpl;
 import com.leets.commitatobe.domain.login.usecase.LoginQueryService;
 import com.leets.commitatobe.domain.user.domain.User;
@@ -30,7 +31,7 @@ public class FetchCommits {
     private final LoginCommandServiceImpl loginCommandService;
     private final LoginQueryService loginQueryService;
 
-    public String execute(HttpServletRequest request) {
+    public CommitResponse execute(HttpServletRequest request) {
         String gitHubId = loginQueryService.getGitHubId(request);
         User user = userRepository.findByGithubId(gitHubId)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 깃허브 닉네임과 일치하는 유저를 찾을 수 없음: " + gitHubId));
@@ -77,7 +78,7 @@ public class FetchCommits {
             throw new RuntimeException(e);
         }
 
-        return SuccessStatus._OK.getMessage();
+        return new CommitResponse(SuccessStatus._OK.getMessage());
     }
 
     private void saveCommits(User user) {
