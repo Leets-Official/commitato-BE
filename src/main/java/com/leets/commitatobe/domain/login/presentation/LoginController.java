@@ -66,7 +66,8 @@ public class LoginController {
         return ApiResponse.onSuccess(jwt);
     }
 
-    // 테스트용 API
+
+    // 테스트용 APIzz
     @GetMapping("/test")
     public ApiResponse<GitHubDto> test(HttpServletRequest request) {
         GitHubDto user = loginQueryService.getGitHubUser(request);
