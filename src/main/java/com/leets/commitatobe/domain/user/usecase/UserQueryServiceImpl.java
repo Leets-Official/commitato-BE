@@ -1,5 +1,6 @@
 package com.leets.commitatobe.domain.user.usecase;
 
+import com.leets.commitatobe.domain.commit.usecase.ExpService;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserRankResponse;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class UserQueryServiceImpl implements UserQueryService {
     private final UserRepository userRepository;
+    private final ExpService expService;
     @Override
     public List<UserResponse> searchUsersByUsername(String username) throws ApiException {// 유저 이름으로 유저 정보 검색
         List<User> users=userRepository.findByUsernameContainingIgnoreCase(username);// 유저 이름으로 데이터베이스에서 검색
@@ -30,19 +32,27 @@ public class UserQueryServiceImpl implements UserQueryService {
         }
 
         return users.stream()
-                .map(user->new UserResponse(
-                        user.getUsername(),
-                        user.getExp(),
-                        user.getTier().getTierName()
-                ))
+                .map(
+                        user->{
+                            expService.calculateAndSaveExp(user);
+                            return new UserResponse(
+                                    user.getUsername(),
+                                    user.getExp(),
+                                    user.getTier().getTierName()
+                            );
+                        }
+                )
                 .collect(Collectors.toList());//검색 결과를 UserResponse 객체로 변환하여 리스트 변환
     }
     @Override
     public Page<UserRankResponse> getUsersByExp(Pageable pageable){//경험치 순으로 페이징된 유저 정보 조회
-        return userRepository.findAllByOrderByExpDesc(pageable)//UserRankResponse 객체로 바꿔 페이지 객체에 넣어 보관
-                .map(user -> new UserRankResponse(
-                        user.getUsername(),
-                        user.getExp()
-                ));
+        Page<User> userPage= userRepository.findAllByOrderByExpDesc(pageable);
+
+        return userPage.map(user->{// 각 사용자의 경험치 최신화 및 UserRankResponse 변환
+            expService.calculateAndSaveExp(user);// 경험치 계산 및 저장
+            return new UserRankResponse(
+                    user.getUsername(),
+                    user.getExp());
+        });
     }
 }
