@@ -5,16 +5,14 @@ import com.leets.commitatobe.domain.commit.domain.Commit;
 import com.leets.commitatobe.domain.tier.domain.Tier;
 import com.leets.commitatobe.global.shared.entity.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "users")
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,4 +51,6 @@ public class User extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name="tier_id")
     private Tier tier;
+
+
 }
