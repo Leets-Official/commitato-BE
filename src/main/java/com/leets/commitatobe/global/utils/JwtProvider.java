@@ -36,26 +36,33 @@ public class JwtProvider {
 
     // AccessToken, RefreshToken을 생성하는 메서드
     public JwtResponse generateTokenDto(String githubId) {
-
-        long now = (new Date()).getTime();
-
-        // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
-        String accessToken = Jwts.builder()
-            .setSubject(githubId) // "sub" 클레임에 사용자 ID 저장
-            .claim("auth", "ROLE_USER") // 권한 정보 추가
-            .setExpiration(accessTokenExpiresIn)
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact();
-
-        // Refresh Token 생성
-        String refreshToken = Jwts.builder()
-            .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact();
-
+        String accessToken = generateAccessToken(githubId);
+        String refreshToken = generateRefreshToken(githubId);
         return new JwtResponse("bearer", accessToken, refreshToken);
     }
+
+    // Access Token 생성
+    public String generateAccessToken(String githubId){
+        long now = (new Date()).getTime();
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+        return Jwts.builder()
+                .setSubject(githubId) // "sub" 클레임에 사용자 ID 저장
+                .claim("auth", "ROLE_USER") // 권한 정보 추가
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+    // Refresh Token 생성
+    public String generateRefreshToken(String githubId){
+        long now = (new Date()).getTime();
+        return Jwts.builder()
+                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+
 
     // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
     public Authentication getAuthentication(String accessToken) {
