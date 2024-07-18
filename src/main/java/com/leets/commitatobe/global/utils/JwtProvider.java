@@ -26,7 +26,9 @@ import com.leets.commitatobe.domain.login.domain.CustomUserDetails;
 public class JwtProvider {
 
     private final Key key;
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //access 30분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 1; //access 30분
+
+    //private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //access 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; //refresh 7일
 
     public JwtProvider(@Value("${jwt.secret}") String secretKey) {

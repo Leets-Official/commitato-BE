@@ -9,14 +9,12 @@ import com.leets.commitatobe.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "OAuth2 컨트롤러", description = "OAuth2 로그인 및 콜백을 처리합니다.")
 @RestController
@@ -66,7 +64,8 @@ public class LoginController {
         return ApiResponse.onSuccess(jwt);
     }
 
-    // 테스트용 API
+
+    // 테스트용 APIzz
     @GetMapping("/test")
     public ApiResponse<GitHubDto> test(HttpServletRequest request) {
         GitHubDto user = loginQueryService.getGitHubUser(request);
