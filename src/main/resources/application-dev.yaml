@@ -24,7 +24,7 @@ spring:
             client-id: ${CLIENT_ID}
             client-secret: ${CLIENT_SECRET}
             scope: read:user
-            redirect-uri: "http://localhost:8080/login/callback"
+            redirect-uri: ${REDIRECT_URL}
 
 jwt:
   secret: ${JWT_SECRET}
