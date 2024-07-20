@@ -12,4 +12,7 @@ public interface LoginCommandService {
     // 응답에 쿠키 설정 함수
     void setRefreshTokenCookie(HttpServletResponse response, String refreshToken);
 
+    String encrypt(String token);
+
+    String decrypt(String token);
 }

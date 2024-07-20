@@ -52,9 +52,9 @@ public class LoginController {
     @GetMapping("/callback")
     public ApiResponse<JwtResponse> githubCallback(@RequestParam("code") String code, HttpServletResponse response) {
         // GitHub에서 받은 인가 코드로 액세스 토큰 요청
-        String accessToken = loginCommandService.gitHubLogin(code);
+        String gitHubAccessToken = loginCommandService.gitHubLogin(code);
         // 액세스 토큰을 이용하여 JWT 생성
-        JwtResponse jwt = customOAuth2UserService.generateJwt(accessToken);
+        JwtResponse jwt = customOAuth2UserService.generateJwt(gitHubAccessToken);
 
         // 액세스 토큰을 헤더에 설정
         response.setHeader("Authentication", "Bearer " + jwt.accessToken());
