@@ -48,11 +48,11 @@ public class UserQueryServiceImpl implements UserQueryService {
         return users.stream()
                 .map(
                         user->{
-                            expService.calculateAndSaveExp(user.getGithubId());
+                            expService.calculateAndSaveExp(user.getGithubId());//경험치 계산 및 티어 업데이트
                             return new UserResponse(
                                     user.getUsername(),
                                     user.getExp()!=null?user.getExp():0,
-                                    user.getTier() != null ? user.getTier().getTierName() : "StupidPotato"
+                                    user.getTier() != null ? user.getTier().getTierName() : "Unranked"
                             );
                         }
                 )
