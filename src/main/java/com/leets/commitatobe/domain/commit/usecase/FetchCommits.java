@@ -75,7 +75,7 @@ public class FetchCommits {
 
             saveCommits(user);
 
-            expService.calculateAndSaveExp(user);//커밋 가져온 후 경험치 계산 및 저장
+            expService.calculateAndSaveExp(gitHubId);//커밋 가져온 후 경험치 계산 및 저장
 
         } catch (Exception e) {
             throw new RuntimeException(e);

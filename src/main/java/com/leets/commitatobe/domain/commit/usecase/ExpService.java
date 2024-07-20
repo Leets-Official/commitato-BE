@@ -6,6 +6,7 @@ import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,7 +20,9 @@ public class ExpService {
     private final CommitRepository commitRepository;
     private final UserRepository userRepository;
 
-    public void calculateAndSaveExp(User user){
+    public void calculateAndSaveExp(String githubId){
+        User user=userRepository.findByGithubId(githubId)
+                .orElseThrow(()->new UsernameNotFoundException("해당하는 깃허브 닉네임과 일치하는 유저를 찾을 수 없음: " +githubId));
         List<Commit> commits=commitRepository.findAllByUser(user);//사용자의 모든 커밋을 불러온다.
         commits.sort(Comparator.comparing(Commit::getCommitDate));//오름차순으로 정렬
 

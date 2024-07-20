@@ -25,8 +25,10 @@ public class UserQueryServiceImpl implements UserQueryService {
     private final ExpService expService;
     @Override
     @Transactional
-    public List<UserResponse> searchUsersByUsername(String username) throws ApiException {// 유저 이름으로 유저 정보 검색
-        List<User> users=userRepository.findByUsernameContainingIgnoreCase(username);// 유저 이름으로 데이터베이스에서 검색
+    public List<UserResponse> searchUsersByGithubId(String githubId) {// 유저 이름으로 유저 정보 검색
+        List<User> users=userRepository.findByGithubId(githubId)
+                .stream()
+                .toList();// 유저 이름으로 데이터베이스에서 검색
 
         if(users.isEmpty()){//검색 결과가 없다면
             throw new ApiException(ErrorStatus._USER_NOT_FOUND);//예외처리
@@ -35,7 +37,7 @@ public class UserQueryServiceImpl implements UserQueryService {
         return users.stream()
                 .map(
                         user->{
-                            expService.calculateAndSaveExp(user);
+                            expService.calculateAndSaveExp(user.getGithubId());
                             return new UserResponse(
                                     user.getUsername(),
                                     user.getExp()!=null?user.getExp():0,
@@ -50,7 +52,7 @@ public class UserQueryServiceImpl implements UserQueryService {
         Page<User> userPage= userRepository.findAllByOrderByExpDesc(pageable);
 
         return userPage.map(user->{// 각 사용자의 경험치 최신화 및 UserRankResponse 변환
-            expService.calculateAndSaveExp(user);// 경험치 계산 및 저장
+            expService.calculateAndSaveExp(user.getGithubId());// 경험치 계산 및 저장
             return new UserRankResponse(
                     user.getUsername(),
                     user.getExp());
