@@ -1,6 +1,5 @@
 package com.leets.commitatobe.global.config;
 
-import com.leets.commitatobe.domain.login.presentation.LoginController;
 import com.leets.commitatobe.domain.login.presentation.dto.JwtResponse;
 import com.leets.commitatobe.domain.login.usecase.LoginCommandService;
 import com.leets.commitatobe.domain.user.domain.User;
@@ -9,7 +8,6 @@ import com.leets.commitatobe.global.utils.JwtProvider;
 import java.time.Instant;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
