@@ -43,8 +43,7 @@ public class FetchCommits {
                     .orElseThrow(() -> new ApiException(ErrorStatus._COMMIT_NOT_FOUND))
                     .getUpdatedAt();
         } catch (ApiException e) {
-            dateTime = LocalDateTime.now();
-//            dateTime = LocalDateTime.of(2024, 07, 01, 0, 0, 0); // test 용
+            dateTime = user.getCreatedAt().toLocalDate().atStartOfDay();
         }
 
         try {
