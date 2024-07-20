@@ -35,6 +35,7 @@ public class UserQueryServiceImpl implements UserQueryService {
     private final LoginCommandService loginCommandService;
 
     @Override
+    @Transactional
     public List<UserResponse> searchUsersByUsername(String username) throws ApiException {// 유저 이름으로 유저 정보 검색
         List<User> users=userRepository.findByUsernameContainingIgnoreCase(username);// 유저 이름으로 데이터베이스에서 검색
 
@@ -48,8 +49,8 @@ public class UserQueryServiceImpl implements UserQueryService {
                             expService.calculateAndSaveExp(user);
                             return new UserResponse(
                                     user.getUsername(),
-                                    user.getExp(),
-                                    user.getTier().getTierName()
+                                    user.getExp()!=null?user.getExp():0,
+                                    user.getTier() != null ? user.getTier().getTierName() : "StupidPotato"
                             );
                         }
                 )

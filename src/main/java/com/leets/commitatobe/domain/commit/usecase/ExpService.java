@@ -25,7 +25,7 @@ public class ExpService {
 
         int consecutiveDays=0;//연속 커밋 일수
         LocalDateTime lastCommitDate=null;//마지막 커밋 날짜
-        int totalExp=user.getExp();//사용자의 현재 경험치
+        int totalExp=user.getExp()!=null?user.getExp():0;//사용자의 현재 경험치, user.getExp()가 null인 경우 0으로 초기화
 
         for(Commit commit:commits){//각 커밋을 반복해서 계산
             if(commit.isCalculated()) continue;//이미 계산된 커밋

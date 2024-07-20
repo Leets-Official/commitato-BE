@@ -38,7 +38,7 @@ public class User extends BaseTimeEntity {
     @Column
     private String profileImage;
 
-    @Column
+    @Column(columnDefinition = "int default 0")
     private Integer exp;
 
     @Column
