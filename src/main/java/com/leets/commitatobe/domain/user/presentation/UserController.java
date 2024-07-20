@@ -24,11 +24,11 @@ public class UserController {
     private final UserQueryService userQueryService;
     @Operation(
             summary = "유저 정보 검색",
-            description = "유저 이름으로 검색합니다."
+            description = "깃허브 아이디로 검색합니다."
     )
     @GetMapping("/search")
-    public ApiResponse<List<UserResponse>> searchUsers(@RequestParam("username") String username){//유저 이름으로 검색하는 앤드포인트
-        List<UserResponse> users=userQueryService.searchUsersByUsername(username);//유저 검색 서비스 호출
+    public ApiResponse<List<UserResponse>> searchUsers(@RequestParam("githubId") String githubId){//유저 이름으로 검색하는 앤드포인트
+        List<UserResponse> users=userQueryService.searchUsersByGithubId(githubId);//유저 검색 서비스 호출
         return ApiResponse.onSuccess(users);//검색 결과 반환
     }
     @GetMapping("/exp")//경험치 순으로 유저 정보 조회 엔드포인트
