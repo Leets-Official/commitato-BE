@@ -2,6 +2,8 @@ package com.leets.commitatobe.domain.commit.usecase;
 
 import com.leets.commitatobe.domain.commit.domain.Commit;
 import com.leets.commitatobe.domain.commit.domain.repository.CommitRepository;
+import com.leets.commitatobe.domain.tier.domain.Tier;
+import com.leets.commitatobe.domain.tier.domain.repository.TierRepository;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -19,6 +21,7 @@ import java.util.List;
 public class ExpService {
     private final CommitRepository commitRepository;
     private final UserRepository userRepository;
+    private final TierRepository tierRepository;
 
     public void calculateAndSaveExp(String githubId){
         User user=userRepository.findByGithubId(githubId)
@@ -49,7 +52,28 @@ public class ExpService {
             lastCommitDate=commitDate;//마지막 커밋날짜를 현재 커밋날짜로 업데이트
         }
         user.setExp(totalExp);//사용자 경험치 업데이트
+        Tier tier=determineTier(user.getExp());//경험치에 따른 티어 결정
+        user.setTier(tier);
+
         commitRepository.saveAll(commits);//변경된 커밋 정보 데이터베이스에 저장
         userRepository.save(user);//변경된 사용자 정보 데이터베이스에 저장
+    }
+    private Tier determineTier(Integer exp){
+        if(exp>=0&&exp<=1000){
+            return tierRepository.findByTierName("StupidPotato")
+                    .orElseGet(()->createTier("StupidPotato"));//이 티어가 없으면 만든다.
+        }
+        else if(exp>=1001&&exp<=15000){
+            return tierRepository.findByTierName("NormalPotato")
+                    .orElseGet(()->createTier("NormalPotato"));
+        }
+        else{
+            return tierRepository.findByTierName("DevelopPotato")
+                    .orElseGet(()->createTier("DevelopPotato"));
+        }
+    }
+
+    private Tier createTier(String tierName){
+        return tierRepository.save(Tier.builder().tierName(tierName).build());
     }
 }
