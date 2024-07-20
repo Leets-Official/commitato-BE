@@ -3,9 +3,9 @@ os: linux
 
 files:
   - source: /
-    destination: /home/ubuntu/enhance
+    destination: /home/ubuntu/commitato
 permissions:
-  - object: /home/ubuntu/enhance/
+  - object: /home/ubuntu/commitato/
     owner: ubuntu
     group: ubuntu
 hooks:
