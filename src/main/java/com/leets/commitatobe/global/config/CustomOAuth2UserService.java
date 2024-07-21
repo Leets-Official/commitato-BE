@@ -100,7 +100,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             .githubId(githubId)
             .username(username)
             .profileImage(profileImage)
-            .refreshToken(refreshToken)
             .build();
 
         User savedUser = userRepository.save(user);
