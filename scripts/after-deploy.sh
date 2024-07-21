@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-REPOSITORY=/home/ubuntu/commitato-BE
+REPOSITORY=/home/ubuntu/commitato
 cd $REPOSITORY
 
 APP_NAME=commitato-BE
