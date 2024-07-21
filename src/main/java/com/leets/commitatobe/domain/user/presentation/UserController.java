@@ -28,13 +28,11 @@ public class UserController {
     )
     @GetMapping("/search")
     public ApiResponse<List<UserResponse>> searchUsers(@RequestParam("githubId") String githubId){//유저 이름으로 검색하는 앤드포인트
-        List<UserResponse> users=userQueryService.searchUsersByGithubId(githubId);//유저 검색 서비스 호출
-        return ApiResponse.onSuccess(users);//검색 결과 반환
+        return ApiResponse.onSuccess(userQueryService.searchUsersByGithubId(githubId));
     }
-    @GetMapping("/exp")//경험치 순으로 유저 정보 조회 엔드포인트
+    @GetMapping("/ranking")//경험치 순으로 유저 정보 조회 엔드포인트
     public ApiResponse<Page<UserRankResponse>> getUsersByExp(@PageableDefault(size = 50,sort = "exp",direction = Sort.Direction.DESC)
                                                              Pageable pageable){//페이지네이션 설정(페이지:50, exp 내림차순)
-        Page<UserRankResponse> users=userQueryService.getUsersByExp(pageable);
-        return ApiResponse.onSuccess(users);
+        return ApiResponse.onSuccess(userQueryService.getUsersByExp(pageable));
     }
 }
