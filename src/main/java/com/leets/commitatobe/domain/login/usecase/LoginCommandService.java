@@ -15,4 +15,5 @@ public interface LoginCommandService {
     String encrypt(String token);
 
     String decrypt(String token);
+
 }

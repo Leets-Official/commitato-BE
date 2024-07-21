@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -28,6 +29,9 @@ public class GitHubService {
     private final String GITHUB_API_URL = "https://api.github.com";
     private String AUTH_TOKEN;
     private final Map<LocalDateTime, Integer> commitsByDate = new HashMap<>();
+    @Value("${domain-uri}")
+    private String DOMAIN_URI;
+    private String loginURL = DOMAIN_URI + "/login/github";
 
     // GitHub repository 이름 저장
     public List<String> fetchRepos(String gitHubUsername) throws IOException {
@@ -125,6 +129,17 @@ public class GitHubService {
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Authorization", "token " + AUTH_TOKEN);
         connection.setRequestProperty("Accept", "application/vnd.github.v3+json");
+
+        // AUTH_TOKEN 유효한지 확인
+        int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            // AUTH_TOKEN이 유효하지 않으면 리다이렉트
+            URL loginUrl = new URL(loginURL);
+            connection = (HttpURLConnection) loginUrl.openConnection();
+            connection.setInstanceFollowRedirects(true);
+            connection.connect();
+        }
+
         return connection;
     }
 
