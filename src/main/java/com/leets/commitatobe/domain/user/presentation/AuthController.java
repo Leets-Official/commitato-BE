@@ -1,15 +1,20 @@
 package com.leets.commitatobe.domain.user.presentation;
 
+import com.leets.commitatobe.domain.login.presentation.dto.JwtResponse;
+import com.leets.commitatobe.domain.user.usecase.AuthService;
 import com.leets.commitatobe.global.response.ApiResponse;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping("/auth")
 public class AuthController {
+
+    private final AuthService authService;
 
     //로그아웃
     @PostMapping("/logout")
@@ -22,4 +27,16 @@ public class AuthController {
 
         return ApiResponse.onSuccess(null);
     }
+
+    //액세스 토큰 리프레시
+    @PostMapping("/refresh")
+    public ApiResponse<JwtResponse> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
+        //리프레시 토큰을 통한 액세스 토큰 갱신
+        JwtResponse jwt = authService.regenerateAccessToken(request);
+        // 액세스 토큰을 헤더에 설정
+        response.setHeader("Authentication", "Bearer " + jwt.accessToken());
+
+        return ApiResponse.onSuccess(jwt);
+    }
+
 }
