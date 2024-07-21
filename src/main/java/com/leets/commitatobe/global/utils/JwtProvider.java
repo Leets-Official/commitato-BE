@@ -43,6 +43,12 @@ public class JwtProvider {
         return new JwtResponse("bearer", accessToken, refreshToken);
     }
 
+    // AccessToken 재생성하는 메서드
+    public JwtResponse regenerateTokenDto(String githubId, String refreshToken) {
+        String accessToken = generateAccessToken(githubId);
+        return new JwtResponse("bearer", accessToken, refreshToken);
+    }
+
     // Access Token 생성
     public String generateAccessToken(String githubId){
         long now = (new Date()).getTime();
@@ -59,12 +65,11 @@ public class JwtProvider {
     public String generateRefreshToken(String githubId){
         long now = (new Date()).getTime();
         return Jwts.builder()
+                .setSubject(githubId) // "sub" 클레임에 사용자 ID 저장
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
-
-
 
     // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
     public Authentication getAuthentication(String accessToken) {
@@ -122,6 +127,16 @@ public class JwtProvider {
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
+    }
+
+    public String getGithubIdFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        String githubId = claims.getSubject();
+        return githubId;
     }
 
 }

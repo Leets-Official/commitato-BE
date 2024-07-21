@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class LoginQueryServiceImpl implements LoginQueryService{
 
-    private final JwtProvider jwtProvider;
-
     @Override
     public GitHubDto getGitHubUser(HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
