@@ -52,6 +52,7 @@ public class Commit extends BaseTimeEntity {
 
     public void updateCnt(Integer cnt) {
         this.cnt = this.cnt + cnt;
+        this.isCalculated=false;
     }
     public void setCalculated(boolean calculated){isCalculated=calculated;}//isCalculated 필드 설정
 }
