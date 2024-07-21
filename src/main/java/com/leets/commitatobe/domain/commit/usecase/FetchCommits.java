@@ -7,6 +7,7 @@ import com.leets.commitatobe.domain.login.usecase.LoginCommandServiceImpl;
 import com.leets.commitatobe.domain.login.usecase.LoginQueryService;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
+import com.leets.commitatobe.domain.user.usecase.UserQueryService;
 import com.leets.commitatobe.global.exception.ApiException;
 import com.leets.commitatobe.global.response.code.status.ErrorStatus;
 import com.leets.commitatobe.global.response.code.status.SuccessStatus;
@@ -30,6 +31,7 @@ public class FetchCommits {
     private final GitHubService gitHubService; // GitHub API 통신
     private final LoginCommandServiceImpl loginCommandService;
     private final LoginQueryService loginQueryService;
+    private final UserQueryService userQueryService;
 
     public CommitResponse execute(HttpServletRequest request) {
         String gitHubId = loginQueryService.getGitHubId(request);
@@ -47,8 +49,12 @@ public class FetchCommits {
         }
 
         try {
-            // Github API Access Token 저장
-            gitHubService.updateToken(loginCommandService.gitHubLogin(gitHubId));
+            // 기존: Github API Access Token 저장
+//            gitHubService.updateToken(loginCommandService.gitHubLogin(gitHubId));
+
+            //변경: DB에서 엑세스 토큰 불러오도록 방식 변경
+            String gitHubaccessToken = userQueryService.getUserGitHubAccessToken(gitHubId);
+            gitHubService.updateToken(gitHubaccessToken);
 
             List<String> repos = gitHubService.fetchRepos(gitHubId);
             ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
