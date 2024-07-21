@@ -30,9 +30,9 @@ public class AuthController {
 
     //액세스 토큰 리프레시
     @PostMapping("/refresh")
-    public ApiResponse<JwtResponse> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
+    public ApiResponse<Object> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
         //리프레시 토큰을 통한 액세스 토큰 갱신
-        JwtResponse jwt = authService.regenerateAccessToken(request);
+        JwtResponse jwt = authService.regenerateAccessToken(request, response);
         // 액세스 토큰을 헤더에 설정
         response.setHeader("Authentication", "Bearer " + jwt.accessToken());
 
