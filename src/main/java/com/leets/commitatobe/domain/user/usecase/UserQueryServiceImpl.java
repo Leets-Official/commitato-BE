@@ -45,7 +45,8 @@ public class UserQueryServiceImpl implements UserQueryService {
             return new UserRankResponse(
                     user.getUsername(),
                     user.getExp(),
-                    user.getConsecutiveCommitDays());
+                    user.getConsecutiveCommitDays(),
+                    user.getTier()!=null?user.getTier().getTierName():"Unranked");
         });
     }
 }
