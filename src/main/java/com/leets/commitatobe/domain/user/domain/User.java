@@ -44,6 +44,9 @@ public class User extends BaseTimeEntity {
     @Column
     private Integer commitDays;
 
+    @Column
+    private Integer consecutiveCommitDays;
+
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private List<Commit> commitList;
