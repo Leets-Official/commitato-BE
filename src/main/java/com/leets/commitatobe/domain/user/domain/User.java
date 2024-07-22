@@ -25,14 +25,11 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String username;
 
     @Column(nullable = false)
     private String githubId;
-
-    @Column
-    private String refreshToken;
 
     @Column
     private String profileImage;

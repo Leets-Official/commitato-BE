@@ -42,7 +42,8 @@ public class SecurityConfig {
                     .loginPage("/login/github"))
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                            .requestMatchers("/", "/v3/api-docs/**", "/swagger-ui/**", "/login/**", "/h2-console/**", "/error/**").permitAll()
+                            .requestMatchers("/", "/v3/api-docs/**", "/swagger-ui/**",
+                                    "/login/**", "/auth/**", "/h2-console/**", "/error/**").permitAll()
                             .anyRequest().authenticated()
                 )
                 .headers(headers -> headers

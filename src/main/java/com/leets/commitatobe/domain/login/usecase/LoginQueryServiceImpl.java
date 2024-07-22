@@ -5,11 +5,13 @@ import static com.leets.commitatobe.global.response.code.status.ErrorStatus._JWT
 import com.leets.commitatobe.domain.login.domain.CustomUserDetails;
 import com.leets.commitatobe.domain.login.presentation.dto.GitHubDto;
 import com.leets.commitatobe.global.exception.ApiException;
+import com.leets.commitatobe.global.response.code.status.ErrorStatus;
 import com.leets.commitatobe.global.utils.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,34 +19,23 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class LoginQueryServiceImpl implements LoginQueryService{
 
-    private final JwtProvider jwtProvider;
-
     @Override
     public GitHubDto getGitHubUser(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
-
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new ApiException(_JWT_NOT_FOUND);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new ApiException(ErrorStatus._JWT_NOT_FOUND);
         }
 
-        String accessToken = authorizationHeader.substring(7); // "Bearer " 이후의 토큰 값만 추출
-        Authentication authentication = jwtProvider.getAuthentication(accessToken);
-
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
         return userDetails.getGitHubDto();
     }
 
     @Override
     public String getGitHubId(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
-
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new ApiException(_JWT_NOT_FOUND);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new ApiException(ErrorStatus._JWT_NOT_FOUND);
         }
-
-        String accessToken = authorizationHeader.substring(7); // "Bearer " 이후의 토큰 값만 추출
-        Authentication authentication = jwtProvider.getAuthentication(accessToken);
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
