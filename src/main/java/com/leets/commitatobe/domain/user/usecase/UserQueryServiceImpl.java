@@ -37,26 +37,14 @@ public class UserQueryServiceImpl implements UserQueryService {
     @Override
     @Transactional
     public List<UserResponse> searchUsersByGithubId(String githubId) {// 유저 이름으로 유저 정보 검색
-        List<User> users=userRepository.findByGithubId(githubId)
-                .stream()
-                .toList();// 유저 이름으로 데이터베이스에서 검색
-
-        if(users.isEmpty()){//검색 결과가 없다면
-            throw new ApiException(ErrorStatus._USER_NOT_FOUND);//예외처리
-        }
-
-        return users.stream()
-                .map(
-                        user->{
-                            expService.calculateAndSaveExp(user.getGithubId());//경험치 계산 및 티어 업데이트
-                            return new UserResponse(
-                                    user.getUsername(),
-                                    user.getExp()!=null?user.getExp():0,
-                                    user.getTier() != null ? user.getTier().getTierName() : "Unranked"
-                            );
-                        }
-                )
-                .collect(Collectors.toList());//검색 결과를 UserResponse 객체로 변환하여 리스트 변환
+        User user=userRepository.findByGithubId(githubId)
+                .orElseThrow(()->new ApiException(ErrorStatus._USER_NOT_FOUND));
+        expService.calculateAndSaveExp(user.getGithubId());
+        return List.of(new UserResponse(
+                user.getUsername(),
+                user.getExp()!=null?user.getExp():0,
+                user.getTier()!=null?user.getTier().getTierName():"Unranked"
+        ));
     }
 
     @Override
