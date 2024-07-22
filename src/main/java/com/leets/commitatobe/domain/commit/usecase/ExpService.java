@@ -31,6 +31,8 @@ public class ExpService {
         int consecutiveDays=0;//연속 커밋 일수
         LocalDateTime lastCommitDate=null;//마지막 커밋 날짜
         int totalExp=user.getExp()!=null?user.getExp():0;//사용자의 현재 경험치, user.getExp()가 null인 경우 0으로 초기화
+        int dailyBonusExp=100;//데일리 보너스 경험치
+        int bonusExpIncrease=10;//보너스 경험치 증가량
 
         for(Commit commit:commits){//각 커밋을 반복해서 계산
             if(commit.isCalculated()) continue;//이미 계산된 커밋
@@ -43,9 +45,9 @@ public class ExpService {
             else{
                 consecutiveDays=0;//연속 커밋 일수 초기화
             }
-
-            int bonusExp=consecutiveDays*5;//보너스 경험치 계산
-            totalExp+=1+bonusExp;//총 경험치 업데이트
+            int commitExp=commit.getCnt()*5;
+            int bonusExp=dailyBonusExp+consecutiveDays*bonusExpIncrease;//보너스 경험치 계산
+            totalExp+=commitExp+bonusExp;//총 경험치 업데이트
 
             commit.isCommitCalculated(true);//커밋 계산 여부를 true로 해서 다음 게산에서 제외
             lastCommitDate=commitDate;//마지막 커밋날짜를 현재 커밋날짜로 업데이트
