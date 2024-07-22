@@ -27,7 +27,7 @@ public class UserController {
             description = "깃허브 아이디로 검색합니다."
     )
     @GetMapping("/search")
-    public ApiResponse<List<UserResponse>> searchUsers(@RequestParam("githubId") String githubId){//유저 이름으로 검색하는 앤드포인트
+    public ApiResponse<UserResponse> searchUsers(@RequestParam("githubId")String githubId){
         return ApiResponse.onSuccess(userQueryService.searchUsersByGithubId(githubId));
     }
     @GetMapping("/ranking")//경험치 순으로 유저 정보 조회 엔드포인트
