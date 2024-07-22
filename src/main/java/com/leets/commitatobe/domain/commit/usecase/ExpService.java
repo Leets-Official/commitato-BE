@@ -55,6 +55,7 @@ public class ExpService {
         user.setExp(totalExp);//사용자 경험치 업데이트
         Tier tier=determineTier(user.getExp());//경험치에 따른 티어 결정
         user.setTier(tier);
+        user.setConsecutiveCommitDays(consecutiveDays);
 
         commitRepository.saveAll(commits);//변경된 커밋 정보 데이터베이스에 저장
         userRepository.save(user);//변경된 사용자 정보 데이터베이스에 저장

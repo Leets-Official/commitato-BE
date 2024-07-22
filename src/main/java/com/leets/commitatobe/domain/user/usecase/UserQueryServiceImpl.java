@@ -32,7 +32,8 @@ public class UserQueryServiceImpl implements UserQueryService {
         return List.of(new UserResponse(
                 user.getUsername(),
                 user.getExp()!=null?user.getExp():0,
-                user.getTier()!=null?user.getTier().getTierName():"Unranked"
+                user.getTier()!=null?user.getTier().getTierName():"Unranked",
+                user.getConsecutiveCommitDays()
         ));
     }
     @Override
@@ -43,7 +44,8 @@ public class UserQueryServiceImpl implements UserQueryService {
             expService.calculateAndSaveExp(user.getGithubId());// 경험치 계산 및 저장
             return new UserRankResponse(
                     user.getUsername(),
-                    user.getExp());
+                    user.getExp(),
+                    user.getConsecutiveCommitDays());
         });
     }
 }

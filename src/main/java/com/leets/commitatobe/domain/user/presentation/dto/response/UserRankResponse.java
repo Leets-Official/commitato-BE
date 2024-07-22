@@ -4,6 +4,7 @@ import java.util.UUID;
 
 public record UserRankResponse(
         String username,
-        Integer exp
+        Integer exp,
+        Integer consecutiveCommitDays
 ) {
 }
