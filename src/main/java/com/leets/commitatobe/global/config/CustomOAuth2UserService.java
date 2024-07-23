@@ -100,7 +100,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String username = oAuth2User.getAttribute("name");
         String profileImage = oAuth2User.getAttribute("avatar_url");
 
-        String encryptedRefreshToken = loginCommandService.encrypt(refreshToken);
         String encryptedGitHubAccessToken = loginCommandService.encrypt(gitHubAccessToken);
 
         User user = User.builder()

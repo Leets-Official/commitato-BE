@@ -2,7 +2,6 @@ package com.leets.commitatobe.domain.user.usecase;
 
 import static com.leets.commitatobe.global.response.code.status.ErrorStatus._USER_NOT_FOUND;
 
-import com.leets.commitatobe.domain.login.domain.CustomUserDetails;
 import com.leets.commitatobe.domain.login.usecase.LoginCommandService;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;

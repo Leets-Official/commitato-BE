@@ -28,6 +28,9 @@ public class User extends BaseTimeEntity {
     @Column
     private String gitHubAccessToken;
 
+    @Column
+    private String refreshToken;
+
     @Column(nullable = true)
     private String username;
 
