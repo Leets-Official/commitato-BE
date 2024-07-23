@@ -1,28 +1,23 @@
 package com.leets.commitatobe.domain.user.usecase;
 
 import com.leets.commitatobe.domain.commit.usecase.ExpService;
-import com.leets.commitatobe.domain.user.domain.User;
-import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
-import com.leets.commitatobe.domain.user.presentation.dto.response.UserRankResponse;
-import com.leets.commitatobe.domain.user.presentation.dto.response.UserResponse;
-import com.leets.commitatobe.global.exception.ApiException;
-import com.leets.commitatobe.global.response.code.status.ErrorStatus;
-import static com.leets.commitatobe.global.response.code.status.ErrorStatus._USER_NOT_FOUND;
-
 import com.leets.commitatobe.domain.login.usecase.LoginCommandService;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
+import com.leets.commitatobe.domain.user.presentation.dto.response.UserRankResponse;
+import com.leets.commitatobe.domain.user.presentation.dto.response.UserSearchResponse;
 import com.leets.commitatobe.global.exception.ApiException;
+import com.leets.commitatobe.global.response.code.status.ErrorStatus;
 import com.leets.commitatobe.global.utils.JwtProvider;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+
+import static com.leets.commitatobe.global.response.code.status.ErrorStatus._USER_NOT_FOUND;
 
 
 @Service
@@ -36,11 +31,11 @@ public class UserQueryServiceImpl implements UserQueryService {
 
     @Override
     @Transactional
-    public UserResponse searchUsersByGithubId(String githubId) {// 유저 이름으로 유저 정보 검색
+    public UserSearchResponse searchUsersByGithubId(String githubId) {// 유저 이름으로 유저 정보 검색
         User user=userRepository.findByGithubId(githubId)
                 .orElseThrow(()->new ApiException(ErrorStatus._USER_NOT_FOUND));
         expService.calculateAndSaveExp(user.getGithubId());
-        return new UserResponse(
+        return new UserSearchResponse(
                 user.getUsername(),
                 user.getExp(),
                 user.getTier()!=null?user.getTier().getTierName():"Unranked",
