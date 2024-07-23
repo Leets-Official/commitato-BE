@@ -38,19 +38,4 @@ public class UserQueryServiceImpl implements UserQueryService {
 
         return decodedGitHubAccessToken;
     }
-
-    @Override
-    public String getUserRefreshToken(String githubId) {
-        Optional<User> user = userRepository.findByGithubId(githubId);
-
-        if(user == null){
-            throw new ApiException(_USER_NOT_FOUND);
-        }
-
-        String refreshToken = user.get().getRefreshToken();
-
-        String decodedRefreshToken = loginCommandService.decrypt(refreshToken);
-
-        return decodedRefreshToken;
-    }
 }
