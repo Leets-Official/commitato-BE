@@ -32,7 +32,16 @@ public enum ErrorStatus implements BaseErrorCode {
     _COMMIT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMIT_001", "커밋이 없습니다."),
 
     // GitHub API 관련
-    _GIT_URL_INCORRECT(HttpStatus.BAD_REQUEST, "GIT_001", "잘못된 URL로 요청하고 있습니다.");
+    _GIT_URL_INCORRECT(HttpStatus.BAD_REQUEST, "GIT_001", "잘못된 URL로 요청하고 있습니다."),
+
+    // 인코딩 오류
+    _ENCRYPT_ERROR(HttpStatus.BAD_REQUEST, "ENCRYPT_001", "토큰 인코딩 과정에서 오류가 발생했습니다."),
+
+    // 디코딩 오류
+    _DECRYPT_ERROR(HttpStatus.BAD_REQUEST, "DECRYPT_001", "토큰 디코딩 과정에서 오류가 발생했습니다."),
+
+    // 유저 관련
+    _USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER_001", "DB에서 유저를 불러오는 과정에서 오류가 발생했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

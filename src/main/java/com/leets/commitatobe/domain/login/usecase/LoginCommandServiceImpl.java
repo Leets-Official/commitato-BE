@@ -1,17 +1,23 @@
 package com.leets.commitatobe.domain.login.usecase;
 
+import static ch.qos.logback.core.encoder.ByteArrayUtil.hexStringToByteArray;
+import static com.leets.commitatobe.global.response.code.status.ErrorStatus._DECRYPT_ERROR;
+import static com.leets.commitatobe.global.response.code.status.ErrorStatus._ENCRYPT_ERROR;
 import static com.leets.commitatobe.global.response.code.status.ErrorStatus._GITHUB_JSON_PARSING_ERROR;
 import static com.leets.commitatobe.global.response.code.status.ErrorStatus._GITHUB_TOKEN_GENERATION_ERROR;
 import static com.leets.commitatobe.global.response.code.status.ErrorStatus._REDIRECT_ERROR;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
 import com.leets.commitatobe.global.exception.ApiException;
-import com.leets.commitatobe.global.utils.JwtProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,11 +43,16 @@ public class LoginCommandServiceImpl implements LoginCommandService {
     @Value("${spring.security.oauth2.client.registration.github.redirect-uri}")
     private String redirectUri;
 
-    private final JwtProvider jwtProvider;
+    // 깃허브 엑세스 토큰 및 리프레쉬 토큰 암호화를 위한 변수
+    @Value("${jwt.aes-secret}")
+    private String aesSecret;
 
-    private final UserRepository userRepository;
+    @Value("${jwt.iv-secret}")
+    private String ivSecret;
 
-    // 예찬님! 이 함수 사용해서 accessToken 가져오심 됩니다~!
+    // 암호화 알고리즘
+    private String alg = "AES/CBC/PKCS5Padding";
+
     public String gitHubLogin(String authCode) {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -110,6 +121,42 @@ public class LoginCommandServiceImpl implements LoginCommandService {
         response.addCookie(refreshTokenCookie);
     }
 
+    @Override
+    public String encrypt(String token) {
+        byte[] encrypted = null;
+        try{
+            Cipher cipher = Cipher.getInstance(alg);
+            SecretKeySpec keySpec = new SecretKeySpec(hexStringToByteArray(aesSecret), "AES");
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(hexStringToByteArray(ivSecret));
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivParameterSpec);
+
+            encrypted = cipher.doFinal(token.getBytes(StandardCharsets.UTF_8));
+        } catch (Exception e){
+            throw new ApiException(_ENCRYPT_ERROR);
+        }
+
+
+        return Base64.getEncoder().encodeToString(encrypted);
+    }
+
+    @Override
+    public String decrypt(String token) {
+        byte[] decrypted = null;
+
+        try{
+            Cipher cipher = Cipher.getInstance(alg);
+            SecretKeySpec keySpec = new SecretKeySpec(hexStringToByteArray(aesSecret), "AES");
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(hexStringToByteArray(ivSecret));
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivParameterSpec);
+
+            byte[] decodedBytes = Base64.getDecoder().decode(token);
+            decrypted = cipher.doFinal(decodedBytes);
+        } catch (Exception e){
+            throw new ApiException(_DECRYPT_ERROR);
+        }
+
+        return new String(decrypted, StandardCharsets.UTF_8);
+    }
 }
 
 

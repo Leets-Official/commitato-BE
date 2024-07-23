@@ -4,6 +4,7 @@ import com.leets.commitatobe.domain.login.presentation.dto.GitHubDto;
 import com.leets.commitatobe.domain.login.presentation.dto.JwtResponse;
 import com.leets.commitatobe.domain.login.usecase.LoginCommandService;
 import com.leets.commitatobe.domain.login.usecase.LoginQueryService;
+import com.leets.commitatobe.domain.user.usecase.UserQueryService;
 import com.leets.commitatobe.global.config.CustomOAuth2UserService;
 import com.leets.commitatobe.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +26,7 @@ public class LoginController {
 
     private final LoginCommandService loginCommandService;
     private final LoginQueryService loginQueryService;
+    private final UserQueryService userQueryService;
 
     private final CustomOAuth2UserService customOAuth2UserService;
 
@@ -50,9 +52,9 @@ public class LoginController {
     @GetMapping("/callback")
     public ApiResponse<JwtResponse> githubCallback(@RequestParam("code") String code, HttpServletResponse response) {
         // GitHub에서 받은 인가 코드로 액세스 토큰 요청
-        String accessToken = loginCommandService.gitHubLogin(code);
+        String gitHubAccessToken = loginCommandService.gitHubLogin(code);
         // 액세스 토큰을 이용하여 JWT 생성
-        JwtResponse jwt = customOAuth2UserService.generateJwt(accessToken);
+        JwtResponse jwt = customOAuth2UserService.generateJwt(gitHubAccessToken);
 
         // 액세스 토큰을 헤더에 설정
         response.setHeader("Authentication", "Bearer " + jwt.accessToken());
@@ -68,6 +70,8 @@ public class LoginController {
     @GetMapping("/test")
     public ApiResponse<GitHubDto> test(HttpServletRequest request) {
         GitHubDto user = loginQueryService.getGitHubUser(request);
+        String gitHubAccessToken = userQueryService.getUserGitHubAccessToken(user.userId());
+        log.info("깃허브 엑세스 토큰: {}", gitHubAccessToken);
         return ApiResponse.onSuccess(user);
     }
 
