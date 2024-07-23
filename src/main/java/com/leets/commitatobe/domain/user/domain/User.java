@@ -12,7 +12,6 @@ import java.util.UUID;
 
 @Entity(name = "users")
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -55,5 +54,16 @@ public class User extends BaseTimeEntity {
     @JoinColumn(name="tier_id")
     private Tier tier;
 
+    public void updateExp(Integer exp){
+        this.exp=exp;
+    }
+
+    public void updateTier(Tier tier){
+        this.tier=tier;
+    }
+
+    public void updateConsecutiveCommitDays(Integer consecutiveCommitDays){
+        this.consecutiveCommitDays=consecutiveCommitDays;
+    }
 
 }
