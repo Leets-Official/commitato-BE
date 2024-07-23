@@ -4,6 +4,8 @@ public record UserSearchResponse(
         String username,
         Integer exp,
         String tierName,
+        String characterUrl,
+        String badgeUrl,
         Integer consecutiveCommitDays
 ) {
 }
