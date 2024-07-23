@@ -2,6 +2,7 @@ package com.leets.commitatobe.domain.user.usecase;
 
 import com.leets.commitatobe.domain.commit.usecase.ExpService;
 import com.leets.commitatobe.domain.login.usecase.LoginCommandService;
+import com.leets.commitatobe.domain.tier.domain.Tier;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserRankResponse;
@@ -35,10 +36,13 @@ public class UserQueryServiceImpl implements UserQueryService {
         User user=userRepository.findByGithubId(githubId)
                 .orElseThrow(()->new ApiException(ErrorStatus._USER_NOT_FOUND));
         expService.calculateAndSaveExp(user.getGithubId());
+        Tier tier=user.getTier();
         return new UserSearchResponse(
                 user.getUsername(),
                 user.getExp(),
-                user.getTier()!=null?user.getTier().getTierName():"Unranked",
+                tier!=null?tier.getTierName():"Unranked",
+                tier!=null?tier.getCharacterUrl():null,
+                tier!=null?tier.getBadgeUrl():null,
                 user.getConsecutiveCommitDays()
         );
     }
@@ -49,11 +53,12 @@ public class UserQueryServiceImpl implements UserQueryService {
 
         return userPage.map(user->{// 각 사용자의 경험치 최신화 및 UserRankResponse 변환
             expService.calculateAndSaveExp(user.getGithubId());// 경험치 계산 및 저장
+            Tier tier=user.getTier();
             return new UserRankResponse(
                     user.getUsername(),
                     user.getExp(),
                     user.getConsecutiveCommitDays(),
-                    user.getTier()!=null?user.getTier().getTierName():"Unranked");
+                    tier!=null?tier.getTierName():"Unranked");
         });
     }
 

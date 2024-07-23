@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -60,21 +61,10 @@ public class ExpService {
         userRepository.save(user);//변경된 사용자 정보 데이터베이스에 저장
     }
     private Tier determineTier(Integer exp){
-        if(exp>=0&&exp<=1000){
-            return tierRepository.findByTierName("StupidPotato")
-                    .orElseGet(()->createTier("StupidPotato"));//이 티어가 없으면 만든다.
-        }
-        else if(exp>=1001&&exp<=15000){
-            return tierRepository.findByTierName("NormalPotato")
-                    .orElseGet(()->createTier("NormalPotato"));
-        }
-        else{
-            return tierRepository.findByTierName("DevelopPotato")
-                    .orElseGet(()->createTier("DevelopPotato"));
-        }
-    }
-
-    private Tier createTier(String tierName){
-        return tierRepository.save(Tier.builder().tierName(tierName).build());
+        return tierRepository.findAll()
+                .stream()
+                .filter(tier->tier.getRequiredExp()<=exp)
+                .max(Comparator.comparing(Tier::getRequiredExp))
+                .orElseThrow(()->new RuntimeException("해당 경험치의 티어가 없음"+exp));
     }
 }
