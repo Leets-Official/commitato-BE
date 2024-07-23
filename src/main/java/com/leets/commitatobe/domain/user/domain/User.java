@@ -37,7 +37,7 @@ public class User extends BaseTimeEntity {
     @Column
     private String profileImage;
 
-    @Column(columnDefinition = "int default 0")
+    @Column
     private Integer exp;
 
     @Column
@@ -54,6 +54,9 @@ public class User extends BaseTimeEntity {
     @JoinColumn(name="tier_id")
     private Tier tier;
 
+    @Column(nullable = false)
+    private int yourField;
+
     public void updateExp(Integer exp){
         this.exp=exp;
     }
@@ -64,6 +67,10 @@ public class User extends BaseTimeEntity {
 
     public void updateConsecutiveCommitDays(Integer consecutiveCommitDays){
         this.consecutiveCommitDays=consecutiveCommitDays;
+    }
+
+    public User(){
+        this.yourField=0;
     }
 
 }
