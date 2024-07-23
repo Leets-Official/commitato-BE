@@ -1,6 +1,7 @@
 package com.leets.commitatobe.domain.user.presentation;
+
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserRankResponse;
-import com.leets.commitatobe.domain.user.presentation.dto.response.UserResponse;
+import com.leets.commitatobe.domain.user.presentation.dto.response.UserSearchResponse;
 import com.leets.commitatobe.domain.user.usecase.UserQueryService;
 import com.leets.commitatobe.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class UserController {
             description = "깃허브 아이디로 검색합니다."
     )
     @GetMapping("/search")
-    public ApiResponse<UserResponse> searchUsers(@RequestParam("githubId")String githubId){
+    public ApiResponse<UserSearchResponse> searchUsers(@RequestParam("githubId")String githubId){
         return ApiResponse.onSuccess(userQueryService.searchUsersByGithubId(githubId));
     }
     @GetMapping("/ranking")//경험치 순으로 유저 정보 조회 엔드포인트
