@@ -67,7 +67,7 @@ public class UserQueryServiceImpl implements UserQueryService {
         Optional<User> user = userRepository.findByGithubId(githubId);
 
         if(user == null){
-            throw new ApiException(_USER_NOT_FOUND);
+            throw new ApiException(ErrorStatus._USER_NOT_FOUND);
         }
         String gitHubAccessToken = user.get().getGitHubAccessToken();
 

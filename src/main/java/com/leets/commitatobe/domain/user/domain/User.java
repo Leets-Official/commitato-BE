@@ -25,9 +25,6 @@ public class User extends BaseTimeEntity {
     @Column
     private String gitHubAccessToken;
 
-    @Column
-    private String refreshToken;
-
     @Column(nullable = true)
     private String username;
 
@@ -37,7 +34,7 @@ public class User extends BaseTimeEntity {
     @Column
     private String profileImage;
 
-    @Column
+    @Column(columnDefinition = "int default 0")
     private Integer exp;
 
     @Column
@@ -54,9 +51,6 @@ public class User extends BaseTimeEntity {
     @JoinColumn(name="tier_id")
     private Tier tier;
 
-    @Column(nullable = false)
-    private int yourField;
-
     public void updateExp(Integer exp){
         this.exp=exp;
     }
@@ -69,8 +63,8 @@ public class User extends BaseTimeEntity {
         this.consecutiveCommitDays=consecutiveCommitDays;
     }
 
-    public User(){
-        this.yourField=0;
-    }
+    /*public User(){
+        this.exp=0;
+    }*/
 
 }
