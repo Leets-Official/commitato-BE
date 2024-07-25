@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -33,6 +34,10 @@ public class ExpService {
         int totalExp=user.getExp()!=null?user.getExp():0;//사용자의 현재 경험치, user.getExp()가 null인 경우 0으로 초기화
         int dailyBonusExp=100;//데일리 보너스 경험치
         int bonusExpIncrease=10;//보너스 경험치 증가량
+        int totalCommitCount=0;//총 커밋 횟수
+        int todayCommitCount=0;//오늘 커밋 횟수
+
+        LocalDate today=LocalDate.now();//오늘 날짜
 
         for(Commit commit:commits){//각 커밋을 반복해서 계산
             if(commit.isCalculated()) continue;//이미 계산된 커밋
@@ -45,9 +50,14 @@ public class ExpService {
             else{
                 consecutiveDays=0;//연속 커밋 일수 초기화
             }
-            int commitExp=commit.getCnt()*5;
+            int commitExp=commit.getCnt()*5;//하루 커밋 경험치
             int bonusExp=dailyBonusExp+consecutiveDays*bonusExpIncrease;//보너스 경험치 계산
             totalExp+=commitExp+bonusExp;//총 경험치 업데이트
+            totalCommitCount+=commit.getCnt();//총 커밋 횟수
+
+            if(commitDate.toLocalDate().isEqual(today)){
+                todayCommitCount=commit.getCnt();//오늘날짜의 커밋 개수 카운트
+            }
 
             commit.isCommitCalculated(true);//커밋 계산 여부를 true로 해서 다음 게산에서 제외
             lastCommitDate=commitDate;//마지막 커밋날짜를 현재 커밋날짜로 업데이트
@@ -56,6 +66,8 @@ public class ExpService {
         Tier tier=determineTier(user.getExp());//경험치에 따른 티어 결정
         user.updateTier(tier);
         user.updateConsecutiveCommitDays(consecutiveDays);
+        user.updateTotalCommitCount(totalCommitCount);
+        user.updateTodayCommitCount(todayCommitCount);
 
         commitRepository.saveAll(commits);//변경된 커밋 정보 데이터베이스에 저장
         userRepository.save(user);//변경된 사용자 정보 데이터베이스에 저장

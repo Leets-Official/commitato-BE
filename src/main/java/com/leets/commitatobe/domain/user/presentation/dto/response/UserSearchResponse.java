@@ -6,6 +6,8 @@ public record UserSearchResponse(
         String tierName,
         String characterUrl,
         String badgeUrl,
-        Integer consecutiveCommitDays
+        Integer consecutiveCommitDays,
+        Integer totalCommitCount,
+        Integer todayCommitCount
 ) {
 }

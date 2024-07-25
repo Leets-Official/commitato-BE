@@ -43,7 +43,9 @@ public class UserQueryServiceImpl implements UserQueryService {
                 tier!=null?tier.getTierName():"Unranked",
                 tier!=null?tier.getCharacterUrl():null,
                 tier!=null?tier.getBadgeUrl():null,
-                user.getConsecutiveCommitDays()
+                user.getConsecutiveCommitDays(),
+                user.getTotalCommitCount(),
+                user.getTodayCommitCount()
         );
     }
 

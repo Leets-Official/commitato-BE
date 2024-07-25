@@ -42,6 +42,12 @@ public class User extends BaseTimeEntity {
     @Column
     private Integer consecutiveCommitDays;
 
+    @Column
+    private Integer totalCommitCount;
+
+    @Column
+    private Integer todayCommitCount;
+
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private List<Commit> commitList;
@@ -60,6 +66,14 @@ public class User extends BaseTimeEntity {
 
     public void updateConsecutiveCommitDays(Integer consecutiveCommitDays){
         this.consecutiveCommitDays=consecutiveCommitDays;
+    }
+
+    public void updateTotalCommitCount(Integer totalCommitCount){
+        this.totalCommitCount=totalCommitCount;
+    }
+
+    public void updateTodayCommitCount(Integer todayCommitCount){
+        this.todayCommitCount=todayCommitCount;
     }
 
     public User(){
