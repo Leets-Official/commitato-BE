@@ -31,7 +31,7 @@ public class UserQueryServiceImpl implements UserQueryService {
     public UserSearchResponse searchUsersByGithubId(String githubId) {// 유저 이름으로 유저 정보 검색
         User user = userRepository.findByGithubId(githubId)
                 .orElseThrow(() -> new ApiException(ErrorStatus._USER_NOT_FOUND));
-        expService.calculateAndSaveExp(user.getGithubId());
+
         Tier tier = user.getTier();
 
         if(tier == null) {
