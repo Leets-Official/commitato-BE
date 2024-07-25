@@ -13,4 +13,6 @@ public interface CommitRepository extends JpaRepository<Commit, UUID> {
     List<Commit> findAllByUser(User user);
 
     Optional<Commit> findByCommitDateAndUser(LocalDateTime commitDate, User user);
+
+    List<Commit> findAllByUserOrderByCommitDateAsc(User user);
 }

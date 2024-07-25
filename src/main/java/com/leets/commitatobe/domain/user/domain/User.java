@@ -5,10 +5,7 @@ import com.leets.commitatobe.domain.commit.domain.Commit;
 import com.leets.commitatobe.domain.tier.domain.Tier;
 import com.leets.commitatobe.global.shared.entity.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,7 +13,6 @@ import java.util.UUID;
 @Entity(name = "users")
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class User extends BaseTimeEntity {
 
@@ -28,9 +24,6 @@ public class User extends BaseTimeEntity {
     @Column
     private String gitHubAccessToken;
 
-    @Column
-    private String refreshToken;
-
     @Column(nullable = true)
     private String username;
 
@@ -40,11 +33,20 @@ public class User extends BaseTimeEntity {
     @Column
     private String profileImage;
 
-    @Column
+    @Column(nullable = false)
     private Integer exp;
 
     @Column
     private Integer commitDays;
+
+    @Column
+    private Integer consecutiveCommitDays;
+
+    @Column
+    private Integer totalCommitCount;
+
+    @Column
+    private Integer todayCommitCount;
 
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
@@ -53,4 +55,29 @@ public class User extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name="tier_id")
     private Tier tier;
+
+    public void updateExp(Integer exp){
+        this.exp=exp;
+    }
+
+    public void updateTier(Tier tier){
+        this.tier=tier;
+    }
+
+    public void updateConsecutiveCommitDays(Integer consecutiveCommitDays){
+        this.consecutiveCommitDays=consecutiveCommitDays;
+    }
+
+    public void updateTotalCommitCount(Integer totalCommitCount){
+        this.totalCommitCount=totalCommitCount;
+    }
+
+    public void updateTodayCommitCount(Integer todayCommitCount){
+        this.todayCommitCount=todayCommitCount;
+    }
+
+    public User(){
+        this.exp=0;
+    }
+
 }
