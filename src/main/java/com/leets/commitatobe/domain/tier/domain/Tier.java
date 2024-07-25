@@ -15,7 +15,6 @@ import java.util.UUID;
 @Getter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class Tier extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.UUID)
@@ -25,9 +24,20 @@ public class Tier extends BaseTimeEntity {
     private String tierName;
     private String characterUrl;
     private String badgeUrl;
+
+    @Column(nullable = false)
     private Integer requiredExp;
 
     @OneToMany(mappedBy = "tier")
     private List<User> userList;
+
+    public Tier(UUID id,String tierName, String characterUrl, String badgeUrl, Integer requiredExp, List<User>userList){
+        this.id=id;
+        this.tierName=tierName;
+        this.characterUrl=characterUrl;
+        this.badgeUrl=badgeUrl;
+        this.requiredExp=requiredExp;
+        this.userList=userList;
+    }
 
 }

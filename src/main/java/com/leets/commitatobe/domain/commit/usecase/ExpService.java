@@ -63,7 +63,7 @@ public class ExpService {
     private Tier determineTier(Integer exp){
         return tierRepository.findAll()
                 .stream()
-                .filter(tier->tier.getRequiredExp()<=exp)
+                .filter(tier->tier.getRequiredExp()!=null&&tier.getRequiredExp()<=exp)
                 .max(Comparator.comparing(Tier::getRequiredExp))
                 .orElseThrow(()->new RuntimeException("해당 경험치의 티어가 없음"+exp));
     }

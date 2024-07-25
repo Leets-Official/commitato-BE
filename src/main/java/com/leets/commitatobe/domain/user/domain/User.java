@@ -13,7 +13,6 @@ import java.util.UUID;
 @Entity(name = "users")
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class User extends BaseTimeEntity {
 
@@ -34,7 +33,7 @@ public class User extends BaseTimeEntity {
     @Column
     private String profileImage;
 
-    @Column(columnDefinition = "int default 0")
+    @Column(nullable = false)
     private Integer exp;
 
     @Column
@@ -63,8 +62,8 @@ public class User extends BaseTimeEntity {
         this.consecutiveCommitDays=consecutiveCommitDays;
     }
 
-    /*public User(){
+    public User(){
         this.exp=0;
-    }*/
+    }
 
 }
