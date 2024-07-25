@@ -42,7 +42,6 @@ public class UserQueryServiceImpl implements UserQueryService {
                 user.getExp(),
                 tier!=null?tier.getTierName():"Unranked",
                 tier!=null?tier.getCharacterUrl():null,
-                tier!=null?tier.getBadgeUrl():null,
                 user.getConsecutiveCommitDays(),
                 user.getTotalCommitCount(),
                 user.getTodayCommitCount()
@@ -70,9 +69,7 @@ public class UserQueryServiceImpl implements UserQueryService {
 
         String gitHubAccessToken = user.getGitHubAccessToken();
 
-        String decodedGitHubAccessToken = loginCommandService.decrypt(gitHubAccessToken);
-
-        return decodedGitHubAccessToken;
+        return loginCommandService.decrypt(gitHubAccessToken);
     }
 
 

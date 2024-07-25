@@ -5,7 +5,6 @@ public record UserSearchResponse(
         Integer exp,
         String tierName,
         String characterUrl,
-        String badgeUrl,
         Integer consecutiveCommitDays,
         Integer totalCommitCount,
         Integer todayCommitCount
