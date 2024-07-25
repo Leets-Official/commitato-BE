@@ -87,6 +87,4 @@ public class User extends BaseTimeEntity {
     public void updateRanking(Integer ranking) {
         this.ranking = ranking;
     }
-
-    public void updateRank(Integer ranking) { this.ranking = ranking; }
 }
