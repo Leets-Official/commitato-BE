@@ -22,7 +22,6 @@ import static com.leets.commitatobe.global.response.code.status.ErrorStatus._USE
 @Transactional(readOnly = true)
 public class UserQueryServiceImpl implements UserQueryService {
     private final UserRepository userRepository;
-    private final ExpService expService;
     private final LoginCommandService loginCommandService;
 
     @Override
@@ -53,15 +52,18 @@ public class UserQueryServiceImpl implements UserQueryService {
         Page<User> userPage = userRepository.findAllByOrderByExpDesc(pageable);
 
         return userPage.map(user -> {// 각 사용자의 경험치 최신화 및 UserRankResponse 변환
-            expService.calculateAndSaveExp(user.getGithubId());// 경험치 계산 및 저장
 
             Tier tier = user.getTier();
+
+            if(tier == null) {
+                throw new ApiException(ErrorStatus._TIER_NOT_FOUND);
+            }
 
             return new UserRankResponse(
                     user.getUsername(),
                     user.getExp(),
                     user.getConsecutiveCommitDays(),
-                    tier != null ? tier.getTierName() : "not Defined",
+                    tier.getTierName(),
                     user.getRanking());//랭킹 추가
         });
     }
