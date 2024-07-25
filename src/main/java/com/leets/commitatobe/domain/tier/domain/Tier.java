@@ -35,4 +35,13 @@ public class Tier extends BaseTimeEntity {
         this.requiredExp=requiredExp;
         this.userList=userList;
     }
+
+    public static Tier createTier(String tierName, String characterUrl, Integer requiredExp, List<User> userList){
+        return Tier.builder()
+                .tierName(tierName)
+                .characterUrl(characterUrl)
+                .requiredExp(requiredExp)
+                .userList(userList)
+                .build();
+    }
 }
