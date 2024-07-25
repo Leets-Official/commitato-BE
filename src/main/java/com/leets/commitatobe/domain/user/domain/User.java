@@ -38,17 +38,14 @@ public class User extends BaseTimeEntity {
     @Builder.Default
     private Integer exp = 0;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private Integer consecutiveCommitDays = 0;
+    @Column
+    private Integer consecutiveCommitDays;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private Integer totalCommitCount = 0;
+    @Column
+    private Integer totalCommitCount;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private Integer todayCommitCount = 0;
+    @Column
+    private Integer todayCommitCount;
 
     @Column
     private Integer ranking;// 랭킹 추가
