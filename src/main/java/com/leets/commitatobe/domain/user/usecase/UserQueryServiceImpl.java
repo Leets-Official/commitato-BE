@@ -66,12 +66,9 @@ public class UserQueryServiceImpl implements UserQueryService {
 
     @Override
     public String getUserGitHubAccessToken(String githubId) {
-        Optional<User> user = userRepository.findByGithubId(githubId);
+        User user=userRepository.findByGithubId(githubId).orElseThrow(()->new ApiException(_USER_NOT_FOUND));
 
-        if(user == null){
-            throw new ApiException(ErrorStatus._USER_NOT_FOUND);
-        }
-        String gitHubAccessToken = user.get().getGitHubAccessToken();
+        String gitHubAccessToken = user.getGitHubAccessToken();
 
         String decodedGitHubAccessToken = loginCommandService.decrypt(gitHubAccessToken);
 
