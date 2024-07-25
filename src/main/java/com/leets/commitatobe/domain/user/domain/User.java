@@ -14,6 +14,7 @@ import java.util.UUID;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class User extends BaseTimeEntity {
 
     @Id
@@ -35,9 +36,6 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Integer exp;
-
-    @Column
-    private Integer commitDays;
 
     @Column
     private Integer consecutiveCommitDays;
@@ -75,9 +73,4 @@ public class User extends BaseTimeEntity {
     public void updateTodayCommitCount(Integer todayCommitCount){
         this.todayCommitCount=todayCommitCount;
     }
-
-    public User(){
-        this.exp=0;
-    }
-
 }
