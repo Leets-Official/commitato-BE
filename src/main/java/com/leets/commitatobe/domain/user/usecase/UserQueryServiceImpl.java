@@ -7,11 +7,9 @@ import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserRankResponse;
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserSearchResponse;
 import com.leets.commitatobe.global.exception.ApiException;
-import com.leets.commitatobe.global.response.CustomPageResponse;
 import com.leets.commitatobe.global.response.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +22,7 @@ import static com.leets.commitatobe.global.response.code.status.ErrorStatus._USE
 @Transactional(readOnly = true)
 public class UserQueryServiceImpl implements UserQueryService {
     private final UserRepository userRepository;
+    private final ExpService expService;
     private final LoginCommandService loginCommandService;
 
     @Override
@@ -31,8 +30,12 @@ public class UserQueryServiceImpl implements UserQueryService {
     public UserSearchResponse searchUsersByGithubId(String githubId) {// 유저 이름으로 유저 정보 검색
         User user = userRepository.findByGithubId(githubId)
                 .orElseThrow(() -> new ApiException(ErrorStatus._USER_NOT_FOUND));
-
+        expService.calculateAndSaveExp(user.getGithubId());
         Tier tier = user.getTier();
+
+        if(tier == null) {
+            throw new ApiException(ErrorStatus._TIER_NOT_FOUND);
+        }
 
         return new UserSearchResponse(
                 user.getUsername(),
@@ -41,32 +44,26 @@ public class UserQueryServiceImpl implements UserQueryService {
                 tier.getCharacterUrl(),
                 user.getConsecutiveCommitDays(),
                 user.getTotalCommitCount(),
-                user.getTodayCommitCount(),
-                user.getRanking()
+                user.getTodayCommitCount()
         );
     }
 
     @Override
-    public CustomPageResponse<UserRankResponse> getUsersOrderByExp(int page, int size) {//경험치 순으로 페이징된 유저 정보 조회
-        Pageable pageable = PageRequest.of(page, size);
-        Page<User> userRankingPage = userRepository.findAllByOrderByExpDesc(pageable);
+    public Page<UserRankResponse> getUsersByExp(Pageable pageable) {//경험치 순으로 페이징된 유저 정보 조회
+        Page<User> userPage = userRepository.findAllByOrderByExpDesc(pageable);
 
-        if (userRankingPage.isEmpty()) {
-            return CustomPageResponse.from(Page.empty(pageable));  // 빈 페이지 반환
-        }
+        return userPage.map(user -> {// 각 사용자의 경험치 최신화 및 UserRankResponse 변환
+            expService.calculateAndSaveExp(user.getGithubId());// 경험치 계산 및 저장
 
-        Page<UserRankResponse> userRankResponses = userRankingPage.map(user -> { // 각 사용자의 경험치 최신화 및 UserRankResponse 변환
             Tier tier = user.getTier();
 
             return new UserRankResponse(
                     user.getUsername(),
                     user.getExp(),
                     user.getConsecutiveCommitDays(),
-                    tier.getTierName(),
+                    tier != null ? tier.getTierName() : "not Defined",
                     user.getRanking());//랭킹 추가
         });
-
-        return CustomPageResponse.from(userRankResponses);
     }
 
     @Override
@@ -77,4 +74,6 @@ public class UserQueryServiceImpl implements UserQueryService {
 
         return loginCommandService.decrypt(gitHubAccessToken);
     }
+
+
 }
