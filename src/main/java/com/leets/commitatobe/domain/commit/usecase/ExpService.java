@@ -59,7 +59,7 @@ public class ExpService {
                 todayCommitCount=commit.getCnt();//오늘날짜의 커밋 개수 카운트
             }
 
-            commit.isCommitCalculated(true);//커밋 계산 여부를 true로 해서 다음 게산에서 제외
+            commit.updateStatusToCalculated(true);//커밋 계산 여부를 true로 해서 다음 게산에서 제외
             lastCommitDate=commitDate;//마지막 커밋날짜를 현재 커밋날짜로 업데이트
         }
         user.updateExp(totalExp);//사용자 경험치 업데이트
