@@ -28,9 +28,9 @@ public class CommitController {
 
     @Operation(
             summary = "커밋 기록 불러오기 (테스트)",
-            description = "commit/fetch가 정상적으로 실행이 될 동안 사용할 임시 API")
+            description = "테스트를 위해, 7월 1일부터 커밋 기록을 가져와 DB에 저장합니다.")
     @PostMapping("test/fetch")
-    public ApiResponse<CommitResponse> fetchCommits(HttpServletRequest request, @RequestHeader String accessToken) {
-        return ApiResponse.onSuccess(fetchCommitsTest.execute(request, accessToken));
+    public ApiResponse<CommitResponse> fetchCommitsTest(HttpServletRequest request) {
+        return ApiResponse.onSuccess(fetchCommitsTest.execute(request));
     }
 }
