@@ -76,4 +76,3 @@ public class UserQueryServiceImpl implements UserQueryService {
         return loginCommandService.decrypt(gitHubAccessToken);
     }
 }
-
