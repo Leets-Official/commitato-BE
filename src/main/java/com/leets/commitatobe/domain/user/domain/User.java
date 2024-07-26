@@ -25,7 +25,7 @@ public class User extends BaseTimeEntity {
     @Column
     private String gitHubAccessToken;
 
-    @Column(nullable = true)
+    @Column
     private String username;
 
     @Column(nullable = false)
@@ -38,40 +38,43 @@ public class User extends BaseTimeEntity {
     @Builder.Default
     private Integer exp = 0;
 
-    @Column
-    private Integer consecutiveCommitDays;
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer consecutiveCommitDays = 0;
 
-    @Column
-    private Integer totalCommitCount;
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer totalCommitCount = 0;
 
-    @Column
-    private Integer todayCommitCount;
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer todayCommitCount = 0;
 
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private List<Commit> commitList;
 
     @ManyToOne
-    @JoinColumn(name="tier_id")
+    @JoinColumn(name = "tier_id")
     private Tier tier;
 
-    public void updateExp(Integer exp){
-        this.exp=exp;
+    public void updateExp(Integer exp) {
+        this.exp = exp;
     }
 
-    public void updateTier(Tier tier){
-        this.tier=tier;
+    public void updateTier(Tier tier) {
+        this.tier = tier;
     }
 
-    public void updateConsecutiveCommitDays(Integer consecutiveCommitDays){
-        this.consecutiveCommitDays=consecutiveCommitDays;
+    public void updateConsecutiveCommitDays(Integer consecutiveCommitDays) {
+        this.consecutiveCommitDays = consecutiveCommitDays;
     }
 
-    public void updateTotalCommitCount(Integer totalCommitCount){
-        this.totalCommitCount=totalCommitCount;
+    public void updateTotalCommitCount(Integer totalCommitCount) {
+        this.totalCommitCount = totalCommitCount;
     }
 
-    public void updateTodayCommitCount(Integer todayCommitCount){
-        this.todayCommitCount=todayCommitCount;
+    public void updateTodayCommitCount(Integer todayCommitCount) {
+        this.todayCommitCount = todayCommitCount;
     }
 }
