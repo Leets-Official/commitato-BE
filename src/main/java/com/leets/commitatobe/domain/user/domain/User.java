@@ -14,6 +14,7 @@ import java.util.UUID;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class User extends BaseTimeEntity {
 
     @Id
@@ -34,7 +35,8 @@ public class User extends BaseTimeEntity {
     private String profileImage;
 
     @Column(nullable = false)
-    private Integer exp;
+    @Builder.Default
+    private Integer exp = 0;
 
     @Column
     private Integer commitDays;
@@ -75,9 +77,4 @@ public class User extends BaseTimeEntity {
     public void updateTodayCommitCount(Integer todayCommitCount){
         this.todayCommitCount=todayCommitCount;
     }
-
-    public User(){
-        this.exp=0;
-    }
-
 }
