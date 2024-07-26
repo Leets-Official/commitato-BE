@@ -33,8 +33,7 @@ public class UserController {
             description = "경험치 순으로 유저 정보를 조회합니다."
     )
     @GetMapping("/ranking")
-    public ApiResponse<CustomPageResponse<UserRankResponse>> getUsersByExp(@RequestParam(name = "page") int page,
-                                                                           @RequestParam(name = "size") int size) {
+    public ApiResponse<CustomPageResponse<UserRankResponse>> getUsersByExp(@RequestParam(name = "page") int page, @RequestParam(name = "size") int size) {
         return ApiResponse.onSuccess(userQueryService.getUsersOrderByExp(page, size));
     }
 }
