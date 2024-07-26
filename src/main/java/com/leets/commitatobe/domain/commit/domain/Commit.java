@@ -28,7 +28,7 @@ public class Commit extends BaseTimeEntity {
     private LocalDateTime commitDate;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
 
@@ -52,7 +52,14 @@ public class Commit extends BaseTimeEntity {
 
     public void updateCnt(Integer cnt) {
         this.cnt = this.cnt + cnt;
-        this.isCalculated=false;
+        this.isCalculated = false;
     }
-    public void updateStatusToCalculated(boolean calculated){isCalculated=calculated;}//isCalculated 필드 설정
+
+    public void updateStatusToCalculated(boolean calculated) {
+        isCalculated = calculated;
+    }
+
+    public int getExp() {
+        return cnt * 5;
+    }
 }

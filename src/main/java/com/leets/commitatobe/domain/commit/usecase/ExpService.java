@@ -26,18 +26,21 @@ public class ExpService {
     private final UserRepository userRepository;
     private final TierRepository tierRepository;
 
+    int DAILY_BONUS_EXP = 100;
+    int BONUS_EXP_INCREASE = 10;
+
     public void calculateAndSaveExp(String githubId) {
         User user = userRepository.findByGithubId(githubId)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 깃허브 닉네임과 일치하는 유저를 찾을 수 없음: " + githubId));
-        List<Commit> commits = commitRepository.findAllByUserOrderByCommitDateAsc(user);//사용자의 모든 커밋을 날짜 오름차순으로 불러온다.
+        List<Commit> commits = commitRepository.findAllByUserOrderByCommitDateAsc(user); //사용자의 모든 커밋을 날짜 오름차순으로 불러온다.
 
-        int consecutiveDays = 0;//연속 커밋 일수
-        LocalDateTime lastCommitDate = null;//마지막 커밋 날짜
-        int totalExp = user.getExp() != null ? user.getExp() : 0;//사용자의 현재 경험치, user.getExp()가 null인 경우 0으로 초기화
-        int dailyBonusExp = 100;//데일리 보너스 경험치
-        int bonusExpIncrease = 10;//보너스 경험치 증가량
-        int totalCommitCount = 0;//총 커밋 횟수
-        int todayCommitCount = 0;//오늘 커밋 횟수
+        int consecutiveDays = user.getConsecutiveCommitDays(); //연속 커밋 일수
+        LocalDateTime lastCommitDate = null; //마지막 커밋 날짜
+        int totalExp = user.getExp(); //사용자의 현재 경험치
+        int dailyBonusExp = DAILY_BONUS_EXP; //데일리 보너스 경험치
+        int bonusExpIncrease = BONUS_EXP_INCREASE; //보너스 경험치 증가량
+        int totalCommitCount = user.getTotalCommitCount(); //총 커밋 횟수
+        int todayCommitCount = user.getTodayCommitCount(); //오늘 커밋 횟수
 
         for (Commit commit : commits) {//각 커밋을 반복해서 계산
             if (commit.isCalculated()) continue;//이미 계산된 커밋
@@ -52,9 +55,8 @@ public class ExpService {
                 }
             }
 
-            int commitExp = commit.getCnt() * 5;//하루 커밋 경험치
             int bonusExp = dailyBonusExp + consecutiveDays * bonusExpIncrease;//보너스 경험치 계산
-            totalExp += commitExp + bonusExp;//총 경험치 업데이트
+            totalExp += commit.getExp() + bonusExp;//총 경험치 업데이트
             totalCommitCount += commit.getCnt();//총 커밋 횟수
 
             if (commitDate.toLocalDate().isEqual(LocalDate.now())) {
