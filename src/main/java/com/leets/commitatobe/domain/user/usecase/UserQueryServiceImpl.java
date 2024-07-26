@@ -8,8 +8,10 @@ import com.leets.commitatobe.domain.user.presentation.dto.response.UserRankRespo
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserSearchResponse;
 import com.leets.commitatobe.global.exception.ApiException;
 import com.leets.commitatobe.global.response.code.status.ErrorStatus;
+import com.leets.commitatobe.global.shared.CustomPage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,14 +50,18 @@ public class UserQueryServiceImpl implements UserQueryService {
     }
 
     @Override
-    public Page<UserRankResponse> getUsersByExp(Pageable pageable) {//경험치 순으로 페이징된 유저 정보 조회
-        Page<User> userPage = userRepository.findAllByOrderByExpDesc(pageable);
+    public CustomPage<UserRankResponse> getUsersOrderByExp(int page) {//경험치 순으로 페이징된 유저 정보 조회
+        Pageable pageable = PageRequest.of(page, 50);
+        Page<User> userRankingPage = userRepository.findAllByOrderByExpDesc(pageable);
 
-        return userPage.map(user -> {// 각 사용자의 경험치 최신화 및 UserRankResponse 변환
+        if (userRankingPage.isEmpty()) {
+            return new CustomPage<>(Page.empty(pageable));  // 빈 페이지 반환
+        }
 
+        Page<UserRankResponse> userRankResponses = userRankingPage.map(user -> { // 각 사용자의 경험치 최신화 및 UserRankResponse 변환
             Tier tier = user.getTier();
 
-            if(tier == null) {
+            if (tier == null) {
                 throw new ApiException(ErrorStatus._TIER_NOT_FOUND);
             }
 
@@ -66,6 +72,8 @@ public class UserQueryServiceImpl implements UserQueryService {
                     tier.getTierName(),
                     user.getRanking());//랭킹 추가
         });
+
+        return new CustomPage<>(userRankResponses);
     }
 
     @Override
@@ -76,6 +84,4 @@ public class UserQueryServiceImpl implements UserQueryService {
 
         return loginCommandService.decrypt(gitHubAccessToken);
     }
-
-
 }
