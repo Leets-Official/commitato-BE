@@ -50,8 +50,8 @@ public class UserQueryServiceImpl implements UserQueryService {
     }
 
     @Override
-    public CustomPage<UserRankResponse> getUsersOrderByExp(int page) {//경험치 순으로 페이징된 유저 정보 조회
-        Pageable pageable = PageRequest.of(page, 50);
+    public CustomPage<UserRankResponse> getUsersOrderByExp(int page, int size) {//경험치 순으로 페이징된 유저 정보 조회
+        Pageable pageable = PageRequest.of(page, size);
         Page<User> userRankingPage = userRepository.findAllByOrderByExpDesc(pageable);
 
         if (userRankingPage.isEmpty()) {
