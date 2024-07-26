@@ -35,7 +35,8 @@ public class User extends BaseTimeEntity {
     private String profileImage;
 
     @Column(nullable = false)
-    private Integer exp;
+    @Builder.Default
+    private Integer exp = 0;
 
     @Column
     private Integer consecutiveCommitDays;
