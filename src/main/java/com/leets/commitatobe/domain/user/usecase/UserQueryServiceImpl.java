@@ -34,10 +34,6 @@ public class UserQueryServiceImpl implements UserQueryService {
 
         Tier tier = user.getTier();
 
-        if(tier == null) {
-            throw new ApiException(ErrorStatus._TIER_NOT_FOUND);
-        }
-
         return new UserSearchResponse(
                 user.getUsername(),
                 user.getExp(),
@@ -61,10 +57,6 @@ public class UserQueryServiceImpl implements UserQueryService {
 
         Page<UserRankResponse> userRankResponses = userRankingPage.map(user -> { // 각 사용자의 경험치 최신화 및 UserRankResponse 변환
             Tier tier = user.getTier();
-
-            if (tier == null) {
-                throw new ApiException(ErrorStatus._TIER_NOT_FOUND);
-            }
 
             return new UserRankResponse(
                     user.getUsername(),
