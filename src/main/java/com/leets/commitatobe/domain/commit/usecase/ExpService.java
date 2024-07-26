@@ -6,6 +6,8 @@ import com.leets.commitatobe.domain.tier.domain.Tier;
 import com.leets.commitatobe.domain.tier.domain.repository.TierRepository;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
+import com.leets.commitatobe.global.exception.ApiException;
+import com.leets.commitatobe.global.response.code.status.ErrorStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -77,8 +79,8 @@ public class ExpService {
     private Tier determineTier(Integer exp) {
         return tierRepository.findAll()
                 .stream()
-                .filter(tier -> tier.getRequiredExp() != null && tier.getRequiredExp() <= exp)
+                .filter(tier -> tier.isValid(exp))
                 .max(Comparator.comparing(Tier::getRequiredExp))
-                .orElseThrow(() -> new RuntimeException("해당 경험치의 티어가 없음: " + exp));
+                .orElseThrow(() -> new ApiException(ErrorStatus._TIER_NOT_FOUND));
     }
 }

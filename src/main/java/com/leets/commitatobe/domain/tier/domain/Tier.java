@@ -15,7 +15,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Tier extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "tier_id")
     private UUID id;
 
@@ -29,19 +30,23 @@ public class Tier extends BaseTimeEntity {
     private List<User> userList;
 
     @Builder
-    public Tier(String tierName, String characterUrl, Integer requiredExp, List<User>userList){
-        this.tierName=tierName;
-        this.characterUrl=characterUrl;
-        this.requiredExp=requiredExp;
-        this.userList=userList;
+    public Tier(String tierName, String characterUrl, Integer requiredExp, List<User> userList) {
+        this.tierName = tierName;
+        this.characterUrl = characterUrl;
+        this.requiredExp = requiredExp;
+        this.userList = userList;
     }
 
-    public static Tier createTier(String tierName, String characterUrl, Integer requiredExp, List<User> userList){
+    public static Tier createTier(String tierName, String characterUrl, Integer requiredExp, List<User> userList) {
         return Tier.builder()
                 .tierName(tierName)
                 .characterUrl(characterUrl)
                 .requiredExp(requiredExp)
                 .userList(userList)
                 .build();
+    }
+
+    public boolean isValid(Integer exp) {
+        return this.getRequiredExp() != null && this.getRequiredExp() <= exp;
     }
 }

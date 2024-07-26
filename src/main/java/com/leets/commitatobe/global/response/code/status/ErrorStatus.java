@@ -44,7 +44,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _USER_NOT_FOUND(HttpStatus.NOT_FOUND,"USER_001","해당 유저가 존재하지 않습니다"),
 
     // 티어 관련
-    _TIER_NOT_FOUND(HttpStatus.NOT_FOUND, "TIER_001", "해당하는 티어를 찾을 수 없습니다.");
+    _TIER_NOT_FOUND(HttpStatus.NOT_FOUND, "TIER_001", "해당 경험치에 맞는 티어를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
