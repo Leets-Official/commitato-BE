@@ -2,7 +2,6 @@ package com.leets.commitatobe.domain.user.domain.repository;
 
 import com.leets.commitatobe.domain.user.domain.User;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
