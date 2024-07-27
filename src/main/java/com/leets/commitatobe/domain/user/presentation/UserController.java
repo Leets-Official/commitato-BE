@@ -4,7 +4,7 @@ import com.leets.commitatobe.domain.user.presentation.dto.response.UserRankRespo
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserSearchResponse;
 import com.leets.commitatobe.domain.user.usecase.UserQueryService;
 import com.leets.commitatobe.global.response.ApiResponse;
-import com.leets.commitatobe.global.shared.CustomPage;
+import com.leets.commitatobe.global.response.CustomPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +33,8 @@ public class UserController {
             description = "경험치 순으로 유저 정보를 조회합니다."
     )
     @GetMapping("/ranking")
-    public ApiResponse<CustomPage<UserRankResponse>> getUsersByExp(@RequestParam(name = "page") int page) {
-        return ApiResponse.onSuccess(userQueryService.getUsersOrderByExp(page));
+    public ApiResponse<CustomPageResponse<UserRankResponse>> getUsersByExp(@RequestParam(name = "page") int page,
+                                                                           @RequestParam(name = "size") int size) {
+        return ApiResponse.onSuccess(userQueryService.getUsersOrderByExp(page, size));
     }
 }
