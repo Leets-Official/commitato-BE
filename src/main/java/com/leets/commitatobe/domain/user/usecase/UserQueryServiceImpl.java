@@ -79,7 +79,8 @@ public class UserQueryServiceImpl implements UserQueryService {
 
     @Override
     public UserInfoResponse findUserInfo(String githubId) {
-        return null;
+        User user=userRepository.findByGithubId(githubId).orElseThrow(()->new ApiException(_USER_NOT_FOUND));
+        return UserInfoResponse.of(user);
     }
 
 

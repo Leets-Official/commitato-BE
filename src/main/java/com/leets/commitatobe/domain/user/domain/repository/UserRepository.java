@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 
-public interface UserRepository extends JpaRepository<User, UUID>, UserQueryRepository{
+public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByGithubId(String githubId);
 
     //경험치순으로 유저를 페이징하여 조회하는 메서드
