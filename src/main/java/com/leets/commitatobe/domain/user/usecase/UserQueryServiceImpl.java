@@ -7,8 +7,8 @@ import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserRankResponse;
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserSearchResponse;
 import com.leets.commitatobe.global.exception.ApiException;
+import com.leets.commitatobe.global.response.CustomPageResponse;
 import com.leets.commitatobe.global.response.code.status.ErrorStatus;
-import com.leets.commitatobe.global.shared.CustomPage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +31,7 @@ public class UserQueryServiceImpl implements UserQueryService {
     public UserSearchResponse searchUsersByGithubId(String githubId) {// 유저 이름으로 유저 정보 검색
         User user = userRepository.findByGithubId(githubId)
                 .orElseThrow(() -> new ApiException(ErrorStatus._USER_NOT_FOUND));
-        expService.calculateAndSaveExp(user.getGithubId());
+
         Tier tier = user.getTier();
 
         return new UserSearchResponse(
@@ -46,12 +46,12 @@ public class UserQueryServiceImpl implements UserQueryService {
     }
 
     @Override
-    public CustomPage<UserRankResponse> getUsersOrderByExp(int page) {//경험치 순으로 페이징된 유저 정보 조회
-        Pageable pageable = PageRequest.of(page, 50);
+    public CustomPageResponse<UserRankResponse> getUsersOrderByExp(int page, int size) {//경험치 순으로 페이징된 유저 정보 조회
+        Pageable pageable = PageRequest.of(page, size);
         Page<User> userRankingPage = userRepository.findAllByOrderByExpDesc(pageable);
 
         if (userRankingPage.isEmpty()) {
-            return new CustomPage<>(Page.empty(pageable));  // 빈 페이지 반환
+            return CustomPageResponse.from(Page.empty(pageable));  // 빈 페이지 반환
         }
 
         Page<UserRankResponse> userRankResponses = userRankingPage.map(user -> { // 각 사용자의 경험치 최신화 및 UserRankResponse 변환
@@ -65,7 +65,7 @@ public class UserQueryServiceImpl implements UserQueryService {
                     user.getRanking());//랭킹 추가
         });
 
-        return new CustomPage<>(userRankResponses);
+        return CustomPageResponse.from(userRankResponses);
     }
 
     @Override
