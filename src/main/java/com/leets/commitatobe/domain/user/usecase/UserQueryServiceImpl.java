@@ -5,6 +5,7 @@ import com.leets.commitatobe.domain.login.usecase.LoginCommandService;
 import com.leets.commitatobe.domain.tier.domain.Tier;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
+import com.leets.commitatobe.domain.user.presentation.dto.response.UserInfoResponse;
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserRankResponse;
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserSearchResponse;
 import com.leets.commitatobe.global.exception.ApiException;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.leets.commitatobe.global.response.code.status.ErrorStatus._USER_NOT_FOUND;
@@ -75,6 +77,10 @@ public class UserQueryServiceImpl implements UserQueryService {
         return decodedGitHubAccessToken;
     }
 
+    @Override
+    public UserInfoResponse findUserInfo(String githubId) {
+        return null;
+    }
 
 
 }

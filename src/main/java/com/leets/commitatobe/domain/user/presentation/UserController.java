@@ -1,5 +1,6 @@
 package com.leets.commitatobe.domain.user.presentation;
 
+import com.leets.commitatobe.domain.user.presentation.dto.response.UserInfoResponse;
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserRankResponse;
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserSearchResponse;
 import com.leets.commitatobe.domain.user.usecase.UserQueryService;
@@ -10,10 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -33,5 +31,10 @@ public class UserController {
     public ApiResponse<Page<UserRankResponse>> getUsersByExp(@PageableDefault(size = 50,sort = "exp",direction = Sort.Direction.DESC)
                                                              Pageable pageable){//페이지네이션 설정(페이지:50, exp 내림차순)
         return ApiResponse.onSuccess(userQueryService.getUsersByExp(pageable));
+    }
+
+    @GetMapping("/{githubId}")
+    public ApiResponse<UserInfoResponse> getUserInfo(@PathVariable String githubId){
+        return ApiResponse.onSuccess(userQueryService.findUserInfo(githubId));
     }
 }
