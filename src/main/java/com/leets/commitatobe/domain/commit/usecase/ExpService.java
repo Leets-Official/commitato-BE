@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -37,8 +36,6 @@ public class ExpService {
         int consecutiveDays = user.getConsecutiveCommitDays(); //연속 커밋 일수
         LocalDateTime lastCommitDate = null; //마지막 커밋 날짜
         int totalExp = user.getExp(); //사용자의 현재 경험치
-        int dailyBonusExp = DAILY_BONUS_EXP; //데일리 보너스 경험치
-        int bonusExpIncrease = BONUS_EXP_INCREASE; //보너스 경험치 증가량
         int totalCommitCount = user.getTotalCommitCount(); //총 커밋 횟수
         int todayCommitCount = user.getTodayCommitCount(); //오늘 커밋 횟수
 
@@ -55,15 +52,14 @@ public class ExpService {
                 }
             }
 
-            int bonusExp = dailyBonusExp + consecutiveDays * bonusExpIncrease;//보너스 경험치 계산
-            totalExp += commit.getExp() + bonusExp;//총 경험치 업데이트
+            totalExp += commit.calculateExp(DAILY_BONUS_EXP, consecutiveDays, BONUS_EXP_INCREASE);//총 경험치 업데이트
             totalCommitCount += commit.getCnt();//총 커밋 횟수
 
-            if (commitDate.toLocalDate().isEqual(LocalDate.now())) {
+            if (commit.commitDateIsToday()) {
                 todayCommitCount = commit.getCnt();//오늘날짜의 커밋 개수 카운트
             }
 
-            commit.updateStatusToCalculated(true);//커밋 계산 여부를 true로 해서 다음 게산에서 제외
+            commit.markAsCalculated();//커밋 계산 여부를 true로 해서 다음 게산에서 제외
             lastCommitDate = commitDate;//마지막 커밋날짜를 현재 커밋날짜로 업데이트
         }
 
