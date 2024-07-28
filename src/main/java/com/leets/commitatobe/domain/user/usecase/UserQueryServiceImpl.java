@@ -42,7 +42,7 @@ public class UserQueryServiceImpl implements UserQueryService {
                 user.getConsecutiveCommitDays(),
                 user.getTotalCommitCount(),
                 user.getTodayCommitCount(),
-                user.getRanking()
+                user.getRank()
         );
     }
 
@@ -63,7 +63,7 @@ public class UserQueryServiceImpl implements UserQueryService {
                     user.getExp(),
                     user.getConsecutiveCommitDays(),
                     tier.getTierName(),
-                    user.getRanking());//랭킹 추가
+                    user.getRank());//랭킹 추가
         });
 
         return CustomPageResponse.from(userRankResponses);
