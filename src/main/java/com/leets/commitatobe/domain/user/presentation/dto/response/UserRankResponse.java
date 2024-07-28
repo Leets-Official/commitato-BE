@@ -6,6 +6,7 @@ public record UserRankResponse(
         String username,
         Integer exp,
         Integer consecutiveCommitDays,
-        String tierName
+        String tierName,
+        Integer rank//랭킹 추가
 ) {
 }
