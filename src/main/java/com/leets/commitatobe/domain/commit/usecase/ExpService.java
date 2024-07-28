@@ -63,6 +63,10 @@ public class ExpService {
             lastCommitDate = commitDate;//마지막 커밋날짜를 현재 커밋날짜로 업데이트
         }
 
+        if (lastCommitDate != null && lastCommitDate.isBefore(LocalDateTime.now().minusDays(1))) {
+            consecutiveDays = 0;//마지막 커밋날짜가 어제보다 이전이면 연속 커밋 일수 초기화
+        }
+
         user.updateExp(totalExp);//사용자 경험치 업데이트
         Tier tier = determineTier(user.getExp());//경험치에 따른 티어 결정
         user.updateTier(tier);
