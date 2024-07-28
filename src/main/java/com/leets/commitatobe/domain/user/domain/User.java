@@ -50,6 +50,9 @@ public class User extends BaseTimeEntity {
     @Builder.Default
     private Integer todayCommitCount = 0;
 
+    @Column
+    private Integer rank;// 랭킹 추가
+
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private List<Commit> commitList;
@@ -77,4 +80,6 @@ public class User extends BaseTimeEntity {
     public void updateTodayCommitCount(Integer todayCommitCount) {
         this.todayCommitCount = todayCommitCount;
     }
+
+    public void updateRank(Integer rank) { this.rank = rank; }
 }

@@ -61,8 +61,8 @@ public class UserQueryServiceImpl implements UserQueryService {
                     user.getUsername(),
                     user.getExp(),
                     user.getConsecutiveCommitDays(),
-                    tier.getTierName()
-            );
+                    tier.getTierName(),
+                    user.getRank());//랭킹 추가
         });
 
         return CustomPageResponse.from(userRankResponses);
