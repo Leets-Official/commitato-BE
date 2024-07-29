@@ -54,7 +54,7 @@ public class User extends BaseTimeEntity {
     private Integer ranking;// 랭킹 추가
 
     @Column
-    private Integer rank;// 랭킹 추가
+    private Integer ranking;// 랭킹 추가
 
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
@@ -88,5 +88,5 @@ public class User extends BaseTimeEntity {
         this.ranking = ranking;
     }
 
-    public void updateRank(Integer rank) { this.rank = rank; }
+    public void updateRank(Integer ranking) { this.ranking = ranking; }
 }
