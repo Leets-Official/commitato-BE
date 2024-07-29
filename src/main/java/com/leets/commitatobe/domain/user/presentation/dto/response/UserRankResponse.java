@@ -7,6 +7,6 @@ public record UserRankResponse(
         Integer exp,
         Integer consecutiveCommitDays,
         String tierName,
-        Integer rank//랭킹 추가
+        Integer ranking//랭킹 추가
 ) {
 }

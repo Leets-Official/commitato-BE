@@ -61,7 +61,7 @@ public class UserQueryServiceImpl implements UserQueryService {
                     user.getExp(),
                     user.getConsecutiveCommitDays(),
                     tier!=null?tier.getTierName():"Unranked",
-                    user.getRank());//랭킹 추가
+                    user.getRanking());//랭킹 추가
         });
     }
 
