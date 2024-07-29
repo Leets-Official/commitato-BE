@@ -10,6 +10,7 @@ import java.util.List;
 
 @Builder(access = AccessLevel.PRIVATE)
 public record UserInfoResponse(
+        Boolean isMyAccount,
         String githubId,
         String tierName,
         String characterUrl,
@@ -19,8 +20,9 @@ public record UserInfoResponse(
         List<Commit> commitList,
         LocalDateTime updatedAt
 ) {
-    public static UserInfoResponse of(User user){
+    public static UserInfoResponse of(boolean isMyAccount, User user){
         return UserInfoResponse.builder()
+                .isMyAccount(isMyAccount)
                 .githubId(user.getGithubId())
                 .tierName(user.getTier().getTierName())
                 .characterUrl(user.getTier().getCharacterUrl())

@@ -17,9 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-
 import static com.leets.commitatobe.global.response.code.status.ErrorStatus._USER_NOT_FOUND;
 
 
@@ -79,9 +76,9 @@ public class UserQueryServiceImpl implements UserQueryService {
     }
 
     @Override
-    public UserInfoResponse findUserInfo(String githubId) {
+    public UserInfoResponse findUserInfo(String githubId, String myGitHubId) {
         User user=userRepository.findByGithubId(githubId).orElseThrow(()->new ApiException(_USER_NOT_FOUND));
-        return UserInfoResponse.of(user);
+        return UserInfoResponse.of(githubId.equals(myGitHubId), user);
     }
 
 

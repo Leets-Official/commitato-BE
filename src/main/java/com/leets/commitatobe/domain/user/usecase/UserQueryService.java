@@ -12,5 +12,5 @@ public interface UserQueryService {
     Page<UserRankResponse> getUsersByExp(Pageable pageable);//경험치 순으로 페이징된 유저 정보를 조회
     String getUserGitHubAccessToken(String githubId);
 
-    UserInfoResponse findUserInfo(String githubId);
+    UserInfoResponse findUserInfo(String githubId, String myGitHubId);
 }
