@@ -7,6 +7,7 @@ public record UserSearchResponse(
         String characterUrl,
         Integer consecutiveCommitDays,
         Integer totalCommitCount,
-        Integer todayCommitCount
+        Integer todayCommitCount,
+        Integer ranking
 ) {
 }

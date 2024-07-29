@@ -41,7 +41,8 @@ public class UserQueryServiceImpl implements UserQueryService {
                 tier.getCharacterUrl(),
                 user.getConsecutiveCommitDays(),
                 user.getTotalCommitCount(),
-                user.getTodayCommitCount()
+                user.getTodayCommitCount(),
+                user.getRanking()
         );
     }
 
