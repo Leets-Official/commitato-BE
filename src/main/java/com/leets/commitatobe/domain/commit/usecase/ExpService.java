@@ -71,13 +71,14 @@ public class ExpService {
         user.updateTodayCommitCount(todayCommitCount);
 
         List<User> allUsers = userRepository.findAllByOrderByExpDesc(Pageable.unpaged()).getContent();
-        int ranking = 1;
+        int ranking = 0;
         int previousExp = -1;
         for (User userToUpdate : allUsers){
             if (userToUpdate.getExp()!=previousExp) {
+                ranking += 1;
                 previousExp=userToUpdate.getExp();//만약 경험치 같으면 동일한 랭킹부여.
             }
-            userToUpdate.updateRank(ranking++);//랭킹 업데이트
+            userToUpdate.updateRank(ranking);//랭킹 업데이트
             userRepository.save(userToUpdate);//데이터베이스에 저장
         }
 
