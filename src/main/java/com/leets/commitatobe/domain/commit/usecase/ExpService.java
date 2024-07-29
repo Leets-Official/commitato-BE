@@ -83,7 +83,7 @@ public class ExpService {
                 ranking += 1;
                 previousExp=userToUpdate.getExp();//만약 경험치 같으면 동일한 랭킹부여.
             }
-            userToUpdate.updateRank(ranking);//랭킹 업데이트
+            userToUpdate.updateRanking(ranking);//랭킹 업데이트
             userRepository.save(userToUpdate);//데이터베이스에 저장
         }
 
