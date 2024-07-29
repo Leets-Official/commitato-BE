@@ -8,6 +8,7 @@ import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -68,6 +69,18 @@ public class ExpService {
         user.updateConsecutiveCommitDays(consecutiveDays);
         user.updateTotalCommitCount(totalCommitCount);
         user.updateTodayCommitCount(todayCommitCount);
+
+        List<User> allUsers = userRepository.findAllByOrderByExpDesc(Pageable.unpaged()).getContent();
+        int ranking = 0;
+        int previousExp = -1;
+        for (User userToUpdate : allUsers){
+            if (userToUpdate.getExp()!=previousExp) {
+                ranking += 1;
+                previousExp=userToUpdate.getExp();//만약 경험치 같으면 동일한 랭킹부여.
+            }
+            userToUpdate.updateRank(ranking);//랭킹 업데이트
+            userRepository.save(userToUpdate);//데이터베이스에 저장
+        }
 
         commitRepository.saveAll(commits);//변경된 커밋 정보 데이터베이스에 저장
         userRepository.save(user);//변경된 사용자 정보 데이터베이스에 저장
