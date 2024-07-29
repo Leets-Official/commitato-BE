@@ -54,8 +54,7 @@ public class FetchCommits {
 //            gitHubService.updateToken(loginCommandService.gitHubLogin(gitHubId));
 
             //변경: DB에서 엑세스 토큰 불러오도록 방식 변경
-            String gitHubaccessToken = userQueryService.getUserGitHubAccessToken(gitHubId);
-            gitHubService.updateToken(gitHubaccessToken);
+            gitHubService.updateToken(userQueryService.getUserGitHubAccessToken(gitHubId));
 
             List<String> repos = gitHubService.fetchRepos(gitHubId);
             ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());

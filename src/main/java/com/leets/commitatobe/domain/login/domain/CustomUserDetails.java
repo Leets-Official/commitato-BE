@@ -68,4 +68,3 @@ public class CustomUserDetails implements UserDetails {
         return new GitHubDto(this.githubId);
     }
 }
-

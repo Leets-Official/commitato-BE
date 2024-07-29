@@ -158,5 +158,3 @@ public class LoginCommandServiceImpl implements LoginCommandService {
         return new String(decrypted, StandardCharsets.UTF_8);
     }
 }
-
-
