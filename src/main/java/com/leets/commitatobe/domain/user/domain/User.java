@@ -81,7 +81,7 @@ public class User extends BaseTimeEntity {
         this.todayCommitCount = todayCommitCount;
     }
 
-    public void updateRank(Integer ranking) {
+    public void updateRanking(Integer ranking) {
         this.ranking = ranking;
     }
 }
