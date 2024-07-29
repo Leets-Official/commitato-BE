@@ -1,13 +1,10 @@
 package com.leets.commitatobe.domain.user.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.leets.commitatobe.domain.commit.domain.Commit;
 import com.leets.commitatobe.domain.tier.domain.Tier;
 import com.leets.commitatobe.global.shared.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "users")
@@ -51,14 +48,7 @@ public class User extends BaseTimeEntity {
     private Integer todayCommitCount = 0;
 
     @Column
-    private Integer rank;// 랭킹 추가
-
-    @Column
     private Integer ranking;// 랭킹 추가
-
-    @OneToMany(mappedBy = "user")
-    @JsonManagedReference
-    private List<Commit> commitList;
 
     @ManyToOne
     @JoinColumn(name = "tier_id")
@@ -84,5 +74,7 @@ public class User extends BaseTimeEntity {
         this.todayCommitCount = todayCommitCount;
     }
 
-    public void updateRank(Integer ranking) { this.ranking = ranking; }
+    public void updateRank(Integer ranking) {
+        this.ranking = ranking;
+    }
 }
