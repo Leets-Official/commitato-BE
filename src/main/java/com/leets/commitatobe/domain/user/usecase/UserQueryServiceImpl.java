@@ -39,8 +39,8 @@ public class UserQueryServiceImpl implements UserQueryService {
                 user.getRanking(),
                 user.getGithubId(),
                 tier.getTierName(),
-                user.getConsecutiveCommitDays(),
-                user.getExp()
+                user.getExp(),
+                user.getConsecutiveCommitDays()
         );
     }
 
@@ -57,7 +57,7 @@ public class UserQueryServiceImpl implements UserQueryService {
             Tier tier = user.getTier();
 
             return new UserRankResponse(
-                    user.getUsername(),
+                    user.getGithubId(),
                     user.getExp(),
                     user.getConsecutiveCommitDays(),
                     tier != null ? tier.getTierName() : "Unranked",

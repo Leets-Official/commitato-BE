@@ -1,7 +1,7 @@
 package com.leets.commitatobe.domain.user.presentation.dto.response;
 
 public record UserRankResponse(
-        String username,
+        String githubId,
         Integer exp,
         Integer consecutiveCommitDays,
         String tierName,
