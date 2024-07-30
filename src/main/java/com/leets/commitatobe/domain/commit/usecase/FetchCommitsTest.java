@@ -3,14 +3,12 @@ package com.leets.commitatobe.domain.commit.usecase;
 import com.leets.commitatobe.domain.commit.domain.Commit;
 import com.leets.commitatobe.domain.commit.domain.repository.CommitRepository;
 import com.leets.commitatobe.domain.commit.presentation.dto.response.CommitResponse;
-import com.leets.commitatobe.domain.login.usecase.LoginCommandServiceImpl;
 import com.leets.commitatobe.domain.login.usecase.LoginQueryService;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
 import com.leets.commitatobe.domain.user.usecase.UserQueryService;
 import com.leets.commitatobe.global.exception.ApiException;
 import com.leets.commitatobe.global.response.code.status.ErrorStatus;
-import com.leets.commitatobe.global.response.code.status.SuccessStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,7 +27,6 @@ public class FetchCommitsTest {
     private final CommitRepository commitRepository;
     private final UserRepository userRepository;
     private final GitHubService gitHubService; // GitHub API 통신
-    private final LoginCommandServiceImpl loginCommandService;
     private final LoginQueryService loginQueryService;
     private final ExpService expService;
     private final UserQueryService userQueryService;
@@ -82,7 +79,7 @@ public class FetchCommitsTest {
             throw new RuntimeException(e);
         }
 
-        return new CommitResponse(SuccessStatus._OK.getMessage());
+        return CommitResponse.of(true, user);
     }
 
     private void saveCommits(User user) {
