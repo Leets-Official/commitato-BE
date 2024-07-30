@@ -17,7 +17,6 @@ public record UserInfoResponse(
         Integer consecutiveCommitDays,
         Integer todayCommitCount,
         Integer totalCommitCount,
-        List<Commit> commitList,
         LocalDateTime updatedAt
 ) {
     public static UserInfoResponse of(boolean isMyAccount, User user){
@@ -29,7 +28,6 @@ public record UserInfoResponse(
                 .consecutiveCommitDays(user.getConsecutiveCommitDays())
                 .todayCommitCount(user.getTodayCommitCount())
                 .totalCommitCount(user.getTotalCommitCount())
-                .commitList(user.getCommitList())
                 .updatedAt(user.getUpdatedAt())
                 .build();
     }

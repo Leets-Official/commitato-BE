@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ public class Commit extends BaseTimeEntity {
     private LocalDateTime commitDate;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
 
@@ -52,7 +53,23 @@ public class Commit extends BaseTimeEntity {
 
     public void updateCnt(Integer cnt) {
         this.cnt = this.cnt + cnt;
-        this.isCalculated=false;
+        markAsUncalculated();
     }
-    public void updateStatusToCalculated(boolean calculated){isCalculated=calculated;}//isCalculated 필드 설정
+
+    public void markAsCalculated() {
+        isCalculated = true;
+    }
+
+    public void markAsUncalculated() {
+        isCalculated = false;
+    }
+
+    public int calculateExp(int dailyBonusExp, int consecutiveDays, int bonusExpIncrease) {
+        int bonusExp = dailyBonusExp + consecutiveDays * bonusExpIncrease;
+        return this.cnt * 5 + bonusExp;
+    }
+
+    public boolean commitDateIsToday() {
+        return this.commitDate.toLocalDate().isEqual(LocalDate.now());
+    }
 }
