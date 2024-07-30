@@ -39,8 +39,8 @@ public class UserQueryServiceImpl implements UserQueryService {
                 user.getRanking(),
                 user.getGithubId(),
                 tier.getTierName(),
-                user.getConsecutiveCommitDays(),
-                user.getExp()
+                user.getExp(),
+                user.getConsecutiveCommitDays()
         );
     }
 
