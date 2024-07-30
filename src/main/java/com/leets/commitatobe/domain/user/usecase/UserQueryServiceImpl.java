@@ -36,14 +36,11 @@ public class UserQueryServiceImpl implements UserQueryService {
         Tier tier = user.getTier();
 
         return new UserSearchResponse(
-                user.getUsername(),
-                user.getExp(),
+                user.getRanking(),
+                user.getGithubId(),
                 tier.getTierName(),
-                tier.getCharacterUrl(),
                 user.getConsecutiveCommitDays(),
-                user.getTotalCommitCount(),
-                user.getTodayCommitCount(),
-                user.getRanking()
+                user.getExp()
         );
     }
 
