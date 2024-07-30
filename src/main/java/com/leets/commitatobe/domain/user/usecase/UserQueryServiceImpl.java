@@ -57,7 +57,7 @@ public class UserQueryServiceImpl implements UserQueryService {
             Tier tier = user.getTier();
 
             return new UserRankResponse(
-                    user.getUsername(),
+                    user.getGithubId(),
                     user.getExp(),
                     user.getConsecutiveCommitDays(),
                     tier != null ? tier.getTierName() : "Unranked",
