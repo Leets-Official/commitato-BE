@@ -42,15 +42,15 @@ public class SecurityConfig {
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin((formLogin) -> formLogin
-                    .loginPage("/login/github"))
+                        .loginPage("/login/github"))
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                            .requestMatchers("/", "/v3/api-docs/**", "/swagger-ui/**",
-                                    "/login/**", "/auth/**", "/h2-console/**", "/error/**").permitAll()
-                            .anyRequest().authenticated()
+                                .requestMatchers("/", "/v3/api-docs/**", "/swagger-ui/**",
+                                        "/login/**", "/auth/**", "/h2-console/**", "/error/**").permitAll()
+                                .anyRequest().authenticated()
                 )
                 .headers(headers -> headers
-                    .frameOptions(frameOptions -> frameOptions.disable()) // H2 콘솔 프레임 옵션 설정
+                        .frameOptions(frameOptions -> frameOptions.disable()) // H2 콘솔 프레임 옵션 설정
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -59,7 +59,13 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:3000", "http://localhost:5173", DOMAIN_URI));
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:8080",
+                "http://localhost:3000",
+                "http://localhost:5173",
+                "https://api.github.com",
+                "https://github.com",
+                DOMAIN_URI));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("*"));
