@@ -1,17 +1,16 @@
 package com.leets.commitatobe.domain.user.presentation.dto.response;
 
-import com.leets.commitatobe.domain.commit.domain.Commit;
 import com.leets.commitatobe.domain.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Builder(access = AccessLevel.PRIVATE)
 public record UserInfoResponse(
         Boolean isMyAccount,
         String githubId,
+        Integer exp,
         String tierName,
         String characterUrl,
         Integer consecutiveCommitDays,
@@ -23,6 +22,7 @@ public record UserInfoResponse(
         return UserInfoResponse.builder()
                 .isMyAccount(isMyAccount)
                 .githubId(user.getGithubId())
+                .exp(user.getExp())
                 .tierName(user.getTier().getTierName())
                 .characterUrl(user.getTier().getCharacterUrl())
                 .consecutiveCommitDays(user.getConsecutiveCommitDays())
