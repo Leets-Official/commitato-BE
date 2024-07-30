@@ -4,6 +4,7 @@ import com.leets.commitatobe.domain.login.usecase.LoginCommandService;
 import com.leets.commitatobe.domain.tier.domain.Tier;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
+import com.leets.commitatobe.domain.user.presentation.dto.response.UserInfoResponse;
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserRankResponse;
 import com.leets.commitatobe.domain.user.presentation.dto.response.UserSearchResponse;
 import com.leets.commitatobe.global.exception.ApiException;
@@ -62,7 +63,7 @@ public class UserQueryServiceImpl implements UserQueryService {
                     user.getUsername(),
                     user.getExp(),
                     user.getConsecutiveCommitDays(),
-                    tier!=null?tier.getTierName():"Unranked",
+                    tier != null ? tier.getTierName() : "Unranked",
                     user.getRanking());//랭킹 추가
         });
 
@@ -77,4 +78,12 @@ public class UserQueryServiceImpl implements UserQueryService {
 
         return loginCommandService.decrypt(gitHubAccessToken);
     }
+
+    @Override
+    public UserInfoResponse findUserInfo(String githubId, String myGitHubId) {
+        User user = userRepository.findByGithubId(githubId).orElseThrow(() -> new ApiException(_USER_NOT_FOUND));
+        return UserInfoResponse.of(githubId.equals(myGitHubId), user);
+    }
+
+
 }
