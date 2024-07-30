@@ -19,17 +19,17 @@ public class CommitController {
     private final FetchCommitsTest fetchCommitsTest;
 
     @Operation(
-            summary = "커밋 기록 불러오기",
-            description = "GitHub에서 커밋 기록을 가져와 DB에 저장합니다.")
-    @PostMapping("/fetch")
+            summary = "커밋 기록 업데이트",
+            description = "GitHub에서 커밋 기록을 가져와 DB에 저장하고 사용자의 정보를 최신화 합니다.")
+    @PostMapping("/update")
     public ApiResponse<CommitResponse> fetchCommits(HttpServletRequest request) {
         return ApiResponse.onSuccess(fetchCommits.execute(request));
     }
 
     @Operation(
-            summary = "커밋 기록 불러오기 (테스트)",
-            description = "테스트를 위해, 7월 1일부터 커밋 기록을 가져와 DB에 저장합니다.")
-    @PostMapping("test/fetch")
+            summary = "커밋 기록 업데이트 (테스트)",
+            description = "테스트를 위해, 7월 1일부터 커밋 기록을 가져와 DB에 저장하고 사용자의 정보를 최신화 합니다.")
+    @PostMapping("update/test")
     public ApiResponse<CommitResponse> fetchCommitsTest(HttpServletRequest request) {
         return ApiResponse.onSuccess(fetchCommitsTest.execute(request));
     }
