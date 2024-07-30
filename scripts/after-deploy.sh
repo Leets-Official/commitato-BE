@@ -18,7 +18,5 @@ else
   sleep 5
 fi
 
-source ~/.bashrc
-
 echo "> Deploy - $JAR_PATH "
 nohup java -jar $JAR_PATH > commitato.log 2>&1 &
