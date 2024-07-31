@@ -3,7 +3,6 @@ package com.leets.commitatobe.global.config;
 import com.leets.commitatobe.global.filter.JwtAuthenticationFilter;
 import com.leets.commitatobe.global.utils.JwtProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,8 +23,6 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    @Value("${domain.uri}")
-    private String DOMAIN_URI;
     private final JwtProvider jwtProvider;
 
     @Bean
@@ -63,9 +60,10 @@ public class SecurityConfig {
                 "http://localhost:8080",
                 "http://localhost:3000",
                 "http://localhost:5173",
+                "https://commitato.com",
+                "https://api.commitato.com",
                 "https://api.github.com",
-                "https://github.com",
-                DOMAIN_URI));
+                "https://github.com"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("*"));
