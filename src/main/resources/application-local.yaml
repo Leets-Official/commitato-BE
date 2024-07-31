@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/commitato
     username: root
-    password: 1220
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
@@ -32,4 +32,4 @@ jwt:
   aes-secret: ${AES_SECRET}
   iv-secret: ${IV_SECRET}
 
-domain-uri: ${DOMAIN_URI}
+domain-uri: "http://localhost:8080"

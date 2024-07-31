@@ -28,6 +28,12 @@ public class SwaggerConfig {
                 .bearerFormat("JWT")
         );
 
+        Server apiServer = new Server();
+        apiServer.setUrl("https://api.commitato.site");
+
+        Server server = new Server();
+        server.setUrl("/");
+
         return new OpenAPI()
                 .addServersItem(new Server().url("/"))
                 .addSecurityItem(securityRequirement)

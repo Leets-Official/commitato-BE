@@ -35,4 +35,4 @@ jwt:
   aes-secret: ${AES_SECRET}
   iv-secret: ${IV_SECRET}
 
-domain-uri: ${DOMAIN_URI}
+domain-uri: "https://api.commitato.com"
