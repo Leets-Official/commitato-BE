@@ -29,7 +29,7 @@ public class SwaggerConfig {
         );
 
         Server apiServer = new Server();
-        apiServer.setUrl("https://api.commitati.site");
+        apiServer.setUrl("https://api.commitato.site");
 
         Server server = new Server();
         server.setUrl("/");
