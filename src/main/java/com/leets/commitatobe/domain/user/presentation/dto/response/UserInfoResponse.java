@@ -11,6 +11,7 @@ public record UserInfoResponse(
         Boolean isMyAccount,
         String githubId,
         Integer exp,
+        Integer ranking,
         String tierName,
         String characterUrl,
         Integer consecutiveCommitDays,
@@ -23,6 +24,7 @@ public record UserInfoResponse(
                 .isMyAccount(isMyAccount)
                 .githubId(user.getGithubId())
                 .exp(user.getExp())
+                .ranking(user.getRanking())
                 .tierName(user.getTier().getTierName())
                 .characterUrl(user.getTier().getCharacterUrl())
                 .consecutiveCommitDays(user.getConsecutiveCommitDays())
