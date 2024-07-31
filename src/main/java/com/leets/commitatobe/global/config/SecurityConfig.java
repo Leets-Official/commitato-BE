@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .loginPage("/login/github"))
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/", "/v3/api-docs/**", "/swagger-ui/**",
+                                .requestMatchers("/", "/v3/api-docs/**", "/swagger-ui/**", "/commit/**",
                                         "/login/**", "/auth/**", "/h2-console/**", "/error/**").permitAll()
                                 .anyRequest().authenticated()
                 )
@@ -69,6 +69,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization, Authorization-refresh"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
