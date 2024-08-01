@@ -61,9 +61,9 @@ public class SecurityConfig {
                 "http://localhost:3000",
                 "http://localhost:5173",
                 "http://localhost:5174",
-                "https://api.commitato.com",
-                "https://commitato.com",
-                "https://www.commitato.com",
+                "https://api.commitato.site",
+                "https://commitato.site",
+                "https://www.commitato.site",
                 "https://api.github.com",
                 "https://github.com"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
