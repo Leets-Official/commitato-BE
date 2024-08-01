@@ -5,6 +5,8 @@ import com.leets.commitatobe.global.shared.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "users")
@@ -54,6 +56,9 @@ public class User extends BaseTimeEntity {
     @JoinColumn(name = "tier_id")
     private Tier tier;
 
+    @Column
+    private LocalDateTime lastCommitUpdateTime;
+
     public void updateExp(Integer exp) {
         this.exp = exp;
     }
@@ -76,5 +81,9 @@ public class User extends BaseTimeEntity {
 
     public void updateRank(Integer ranking) {
         this.ranking = ranking;
+    }
+
+    public void updateLastCommitUpdateTime (LocalDateTime lastCommitUpdateTime) {
+        this.lastCommitUpdateTime = lastCommitUpdateTime;
     }
 }

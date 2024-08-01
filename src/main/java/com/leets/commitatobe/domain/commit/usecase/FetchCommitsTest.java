@@ -36,13 +36,9 @@ public class FetchCommitsTest {
         User user = userRepository.findByGithubId(gitHubId)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 깃허브 닉네임과 일치하는 유저를 찾을 수 없음: " + gitHubId));
 
-        LocalDateTime dateTime;
-        try {
-            dateTime = commitRepository.findAllByUser(user).stream()
-                    .max(Comparator.comparing(Commit::getUpdatedAt))
-                    .orElseThrow(() -> new ApiException(ErrorStatus._COMMIT_NOT_FOUND))
-                    .getUpdatedAt();
-        } catch (ApiException e) {
+        LocalDateTime dateTime = user.getLastCommitUpdateTime();
+
+        if(dateTime == null) {
             dateTime = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
         }
 
@@ -70,6 +66,9 @@ public class FetchCommitsTest {
             allFutures.join();
 
             executor.shutdown();
+
+            user.updateLastCommitUpdateTime(LocalDateTime.now());
+            userRepository.save(user);
 
             saveCommits(user);
 

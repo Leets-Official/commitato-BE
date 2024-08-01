@@ -17,7 +17,7 @@ public record CommitResponse(
         Integer consecutiveCommitDays,
         Integer todayCommitCount,
         Integer totalCommitCount,
-        LocalDateTime updatedAt
+        LocalDateTime lastCommitUpdateTime
 ) {
     public static CommitResponse of(boolean isMyAccount, User user){
         return CommitResponse.builder()
@@ -30,7 +30,7 @@ public record CommitResponse(
                 .consecutiveCommitDays(user.getConsecutiveCommitDays())
                 .todayCommitCount(user.getTodayCommitCount())
                 .totalCommitCount(user.getTotalCommitCount())
-                .updatedAt(user.getUpdatedAt())
+                .lastCommitUpdateTime(user.getLastCommitUpdateTime())
                 .build();
     }
 }
