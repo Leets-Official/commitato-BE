@@ -52,8 +52,10 @@ public class Commit extends BaseTimeEntity {
     }
 
     public void updateCnt(Integer cnt) {
-        this.cnt = this.cnt + cnt;
-        markAsUncalculated();
+        if (!this.cnt.equals(cnt)) {
+            this.cnt = cnt;
+            markAsUncalculated();
+        }
     }
 
     public void markAsCalculated() {
