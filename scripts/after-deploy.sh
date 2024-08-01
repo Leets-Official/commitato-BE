@@ -19,4 +19,4 @@ else
 fi
 
 echo "> Deploy - $JAR_PATH "
-nohup java -jar $JAR_PATH > commitato.log 2>&1 &
+nohup java -jar $JAR_PATH > ~/log/commitato.log 2>&1 < /dev/null &
