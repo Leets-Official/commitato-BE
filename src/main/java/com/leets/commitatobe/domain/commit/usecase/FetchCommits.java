@@ -71,7 +71,6 @@ public class FetchCommits {
             executor.shutdown();
 
             user.updateLastCommitUpdateTime(LocalDateTime.now());
-            userRepository.save(user);
 
             saveCommits(user);
 

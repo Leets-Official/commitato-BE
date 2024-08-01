@@ -68,7 +68,6 @@ public class FetchCommitsTest {
             executor.shutdown();
 
             user.updateLastCommitUpdateTime(LocalDateTime.now());
-            userRepository.save(user);
 
             saveCommits(user);
 
