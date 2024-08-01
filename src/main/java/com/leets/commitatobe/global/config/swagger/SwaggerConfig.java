@@ -10,6 +10,8 @@ import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @OpenAPIDefinition(info = @Info(
         title = "Commitato API",
         description = "커밋테이토 API 문서",
@@ -35,7 +37,7 @@ public class SwaggerConfig {
         server.setUrl("/");
 
         return new OpenAPI()
-                .addServersItem(new Server().url("/"))
+                .servers(List.of(apiServer, server))
                 .addSecurityItem(securityRequirement)
                 .components(components);
     }
