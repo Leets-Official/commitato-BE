@@ -77,7 +77,12 @@
 ## 🖥 화면 구성 
 
 ### 메인 
+![image](https://github.com/user-attachments/assets/972d0ded-262b-4960-a07e-31c01aaad36f)
 
 ### 마이페이지 
+![image](https://github.com/user-attachments/assets/6fe98789-652e-4f56-8970-7da6012726cd)
+
 
 ### 랭킹
+![image](https://github.com/user-attachments/assets/5a0d59ae-7363-4191-b7cc-58e3290b8758)
+
