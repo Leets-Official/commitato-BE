@@ -3,6 +3,7 @@ package com.leets.commitatobe.global.config;
 import com.leets.commitatobe.global.filter.JwtAuthenticationFilter;
 import com.leets.commitatobe.global.utils.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,6 +27,9 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtProvider jwtProvider;
 
+    @Value("${management.endpoints.web.base-path}")
+    private String actuatorEndPoint;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -43,8 +47,8 @@ public class SecurityConfig {
                         .loginPage("/login/github"))
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/", "/v3/api-docs/**", "/swagger-ui/**", "/commit/**",
-                                        "/login/**", "/auth/**", "/h2-console/**", "/error/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/commit/**",
+                                        "/login/**", "/auth/**", "/h2-console/**", "/error/**", actuatorEndPoint + "/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .headers(headers -> headers

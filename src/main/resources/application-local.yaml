@@ -37,4 +37,21 @@ jwt:
   aes-secret: ENC(jOy8CXIurVIJVLn424ZFDPFktqSmQR/Qp73ZWGB0OKFk9GA9jKVJLynAXKpQdEyqdutQOkdyihdaBJLQLt/Gd4sygGbTsghWDzkZp+RU8yE=)
   iv-secret: ENC(5CDh2XgAz5nbHQZn+eotxE8rsP42g649LdfLnBVwu1qNWCmpt4VsL51DJkbwk1bv)
 
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: health
+      base-path: ENC(h6Ym+FGDLXE5MmluTbjZpoC7hn6tz2e8ISzOmScqTt5daGo1bH7yrBLc00pVPDbTBbA9P3dWBzc=)
+    jmx:
+      exposure:
+        exclude: "*"
+  endpoint:
+    health:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
 domain-uri: http://localhost:8080

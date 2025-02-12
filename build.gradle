@@ -38,6 +38,9 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
 
+    // Actuator
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+
     // MySQL
     runtimeOnly 'com.mysql:mysql-connector-j'
 
