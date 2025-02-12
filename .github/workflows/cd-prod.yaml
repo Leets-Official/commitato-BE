@@ -1,0 +1,25 @@
+name: Commitato prod CD 파이프라인
+
+on:
+  workflow_run:
+    workflows: ["Commitato CI 파이프라인"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    environment: production
+    permissions:
+      contents: read
+
+    steps:
+      - name: Docker 이미지 Prod 서버 배포
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.PROD_HOST}}
+          username: ${{secrets.PROD_USERNAME}}
+          key: ${{secrets.PROD_KEY}}
+          script: |
+            sudo docker pull ${{secrets.DOCKER_USERNAME}}/commitato:latest
+            sudo ~/deploy.sh
