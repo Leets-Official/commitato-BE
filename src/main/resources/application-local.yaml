@@ -54,4 +54,4 @@ management:
     tags:
       application: ${spring.application.name}
 
-domain-uri: http://localhost:8080
+server-uri: http://localhost:8080

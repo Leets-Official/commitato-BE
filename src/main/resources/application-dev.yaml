@@ -54,4 +54,4 @@ management:
     tags:
       application: ${spring.application.name}
 
-domain-uri: ENC(9uSGkzaRV41gMgfy74TVxkbrDYtD0CuIDFSRJuQba14hudMDsWXVhw==)
+server-uri: ENC(9uSGkzaRV41gMgfy74TVxkbrDYtD0CuIDFSRJuQba14hudMDsWXVhw==)
