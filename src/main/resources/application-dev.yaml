@@ -1,38 +1,40 @@
 spring:
-  config:
-    activate:
-      on-profile: dev
+  application:
+    name: commitato-BE
+
   datasource:
-    url: ${DB_PATH}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: ENC(q4GCqqTliqo4Un1A6VONhQ9CFjXNY4ZnUB0mE8fGmPxT1sZASY04s152X21FQjLMWkfGwq5pYu4=)
+    username: ENC(Fn1t4gboNA0O29tkAa37+w==)
+    password: ENC(mko+rm/gt2cPebsvDyHGRQqRjyhQPHLs)
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQLDialect
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
+        use_sql_comments: true
     defer-datasource-initialization: true
+
   sql:
     init:
       mode: always
+
   security:
     oauth2:
       client:
         registration:
           github:
-            client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT_SECRET}
+            client-id: ENC(ASdVann1K5quYxJ8tgdXIN7gbbrwVoJg6/7n/CArrUw=)
+            client-secret: ENC(AG0Gj+dMJe9wW1oodMlWt/8ij8194wmBA6JBC5aU5x0Mlv5RKxAxcrPdgAkErkNLXJxWgEbWErw=)
             scope: read:user
-            redirect-uri: ${REDIRECT_URL}
+            redirect-uri: http://localhost:3000/login
 
 jwt:
-  secret: ${JWT_SECRET}
-  aes-secret: ${AES_SECRET}
-  iv-secret: ${IV_SECRET}
+  secret: ENC(C/OEDfd1jglCSGrQD+m08AgCUvny+kw0NCefjIXFfojJVnOZykF2k3+kNQi4vcU11ApypfQgD4nxMavffmZcBVZjjBNunC7DEneykZzSXgIxzedO+rxEh6ksJB7XvFge7yEusLE7XN4=)
+  aes-secret: ENC(jOy8CXIurVIJVLn424ZFDPFktqSmQR/Qp73ZWGB0OKFk9GA9jKVJLynAXKpQdEyqdutQOkdyihdaBJLQLt/Gd4sygGbTsghWDzkZp+RU8yE=)
+  iv-secret: ENC(5CDh2XgAz5nbHQZn+eotxE8rsP42g649LdfLnBVwu1qNWCmpt4VsL51DJkbwk1bv)
 
-domain-uri: "https://api.commitato.com"
+domain-uri: ENC(9uSGkzaRV41gMgfy74TVxkbrDYtD0CuIDFSRJuQba14hudMDsWXVhw==)
