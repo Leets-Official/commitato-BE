@@ -7,6 +7,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,6 +20,9 @@ import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
+    @Value("${server-uri}")
+    String serverUri;
+
     @Bean
     public OpenAPI openApi() {
         String jwt = "JWT";
@@ -30,14 +34,11 @@ public class SwaggerConfig {
                 .bearerFormat("JWT")
         );
 
-        Server apiServer = new Server();
-        apiServer.setUrl("https://api.commitato.site");
-
         Server server = new Server();
-        server.setUrl("/");
+        server.setUrl(serverUri);
 
         return new OpenAPI()
-                .servers(List.of(apiServer, server))
+                .servers(List.of(server))
                 .addSecurityItem(securityRequirement)
                 .components(components);
     }

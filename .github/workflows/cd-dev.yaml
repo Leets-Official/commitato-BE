@@ -1,0 +1,39 @@
+name: Commitato dev CD 파이프라인
+
+on:
+  workflow_run:
+    workflows: ["Commitato CI 파이프라인"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    environment: production
+    permissions:
+      contents: read
+
+    steps:
+      - name: Docker 이미지 dev 서버 배포
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.DEV_HOST}}
+          username: ${{secrets.DEV_USERNAME}}
+          key: ${{secrets.DEV_KEY}}
+          script: |
+            sudo docker pull ${{secrets.DOCKER_USERNAME}}/commitato:latest
+            
+            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=running")
+            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
+              sudo docker stop $EXISTING_CONTAINER_ID
+              sudo docker rm $EXISTING_CONTAINER_ID
+            fi
+            
+            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=exited")
+            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
+              sudo docker rm $EXISTING_CONTAINER_ID
+            fi
+            
+            sudo docker rm $(sudo docker ps --filter 'status=exited' -a -q) 
+            sudo docker run -d --name commitato_dev -p 8080:8080 --env-file ~/.env ${{secrets.DOCKER_USERNAME}}/commitato:latest
+            sudo docker image prune -a -f

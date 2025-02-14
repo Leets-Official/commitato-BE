@@ -3,9 +3,9 @@ spring:
     name: commitato-BE
 
   datasource:
-    url: jdbc:mysql://localhost:3306/commitato
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: ENC(A/lizhVMezk3eMPefpKuZ7LAGXZWWL3STDhVXOzQBpozRwgVpxXdEDLLcRUU4g8qLIFUCSGAyu9qz64YQgcTxcCxVoi++PDL6d2ZltZUN4o7SMCpMn7NaCZikJMUDaxC)
+    username: ENC(qOjaz4Cs3H3/892X6Hr43Q==)
+    password: ENC(fdarCjpEmqBrOjjXRYxAMkQcxTOESzZPUPcNL5nB9yE=)
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -30,7 +30,7 @@ spring:
             client-id: ENC(ASdVann1K5quYxJ8tgdXIN7gbbrwVoJg6/7n/CArrUw=)
             client-secret: ENC(AG0Gj+dMJe9wW1oodMlWt/8ij8194wmBA6JBC5aU5x0Mlv5RKxAxcrPdgAkErkNLXJxWgEbWErw=)
             scope: read:user
-            redirect-uri: http://localhost:8080/login
+            redirect-uri: https://www.commitato.site/login
 
 jwt:
   secret: ENC(C/OEDfd1jglCSGrQD+m08AgCUvny+kw0NCefjIXFfojJVnOZykF2k3+kNQi4vcU11ApypfQgD4nxMavffmZcBVZjjBNunC7DEneykZzSXgIxzedO+rxEh6ksJB7XvFge7yEusLE7XN4=)
@@ -54,4 +54,4 @@ management:
     tags:
       application: ${spring.application.name}
 
-server-uri: http://localhost:8080
+server-uri: ENC(ugcPjCCqPIKcaBDy9haOfZilhoZ/l2WM1vpO5WjxC2CSIgYPy6s/KQ==)

@@ -3,11 +3,13 @@ package com.leets.commitatobe.global.config;
 import com.leets.commitatobe.global.filter.JwtAuthenticationFilter;
 import com.leets.commitatobe.global.utils.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,6 +26,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtProvider jwtProvider;
+
+    @Value("${management.endpoints.web.base-path}")
+    private String actuatorEndPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -42,12 +47,12 @@ public class SecurityConfig {
                         .loginPage("/login/github"))
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/", "/v3/api-docs/**", "/swagger-ui/**", "/commit/**",
-                                        "/login/**", "/auth/**", "/h2-console/**", "/error/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/commit/**",
+                                        "/login/**", "/auth/**", "/h2-console/**", "/error/**", actuatorEndPoint + "/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .headers(headers -> headers
-                        .frameOptions(frameOptions -> frameOptions.disable()) // H2 콘솔 프레임 옵션 설정
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable) // H2 콘솔 프레임 옵션 설정
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -57,15 +62,9 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:8080",
                 "http://localhost:3000",
-                "http://localhost:5173",
-                "http://localhost:5174",
-                "https://api.commitato.site",
                 "https://commitato.site",
-                "https://www.commitato.site",
-                "https://api.github.com",
-                "https://github.com"));
+                "https://www.commitato.site"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("*"));

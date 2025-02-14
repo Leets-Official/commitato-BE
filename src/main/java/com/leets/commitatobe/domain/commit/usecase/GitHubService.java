@@ -29,8 +29,8 @@ public class GitHubService {
     private final String GITHUB_API_URL = "https://api.github.com";
     private String AUTH_TOKEN;
     private final Map<LocalDateTime, Integer> commitsByDate = new HashMap<>();
-    @Value("${domain-uri}")
-    private String DOMAIN_URI;
+    @Value("${server-uri}")
+    private String SERVER_URI;
 
     // GitHub repository 이름 저장
     public List<String> fetchRepos(String gitHubUsername) throws IOException {
@@ -133,7 +133,7 @@ public class GitHubService {
         int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
             // AUTH_TOKEN이 유효하지 않으면 리다이렉트
-            URL loginUrl = new URL(DOMAIN_URI + "/login/github");
+            URL loginUrl = new URL(SERVER_URI + "/login/github");
             connection = (HttpURLConnection) loginUrl.openConnection();
             connection.setInstanceFollowRedirects(true);
             connection.connect();
