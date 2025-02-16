@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.leets.commitatobe.domain.login.service.LoginCommandService;
 import com.leets.commitatobe.domain.user.domain.User;
-import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
+import com.leets.commitatobe.domain.user.repository.UserRepository;
 import com.leets.commitatobe.global.jwt.dto.JwtResponse;
 import com.leets.commitatobe.global.jwt.provider.JwtProvider;
 

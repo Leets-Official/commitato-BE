@@ -17,12 +17,11 @@ import com.leets.commitatobe.domain.commit.domain.repository.CommitRepository;
 import com.leets.commitatobe.domain.commit.presentation.dto.response.CommitResponse;
 import com.leets.commitatobe.domain.login.service.LoginQueryService;
 import com.leets.commitatobe.domain.user.domain.User;
-import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
-import com.leets.commitatobe.domain.user.usecase.UserQueryService;
+import com.leets.commitatobe.domain.user.repository.UserRepository;
+import com.leets.commitatobe.domain.user.service.UserQueryService;
 import com.leets.commitatobe.global.exception.ApiException;
 import com.leets.commitatobe.global.response.code.status.ErrorStatus;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -35,8 +34,8 @@ public class FetchCommits {
 	private final ExpService expService;
 	private final UserQueryService userQueryService;
 
-	public CommitResponse execute(HttpServletRequest request) {
-		String gitHubId = loginQueryService.getGitHubId(request);
+	public CommitResponse execute() {
+		String gitHubId = loginQueryService.getGitHubId();
 		User user = userRepository.findByGithubId(gitHubId)
 			.orElseThrow(() -> new UsernameNotFoundException("해당하는 깃허브 닉네임과 일치하는 유저를 찾을 수 없음: " + gitHubId));
 

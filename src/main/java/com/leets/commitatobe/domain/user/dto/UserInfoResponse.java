@@ -1,4 +1,4 @@
-package com.leets.commitatobe.domain.commit.presentation.dto.response;
+package com.leets.commitatobe.domain.user.dto;
 
 import java.time.LocalDateTime;
 
@@ -8,7 +8,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 
 @Builder(access = AccessLevel.PRIVATE)
-public record CommitResponse(
+public record UserInfoResponse(
 	Boolean isMyAccount,
 	String githubId,
 	Integer exp,
@@ -20,8 +20,8 @@ public record CommitResponse(
 	Integer totalCommitCount,
 	LocalDateTime lastCommitUpdateTime
 ) {
-	public static CommitResponse of(boolean isMyAccount, User user) {
-		return CommitResponse.builder()
+	public static UserInfoResponse of(boolean isMyAccount, User user) {
+		return UserInfoResponse.builder()
 			.isMyAccount(isMyAccount)
 			.githubId(user.getGithubId())
 			.exp(user.getExp())

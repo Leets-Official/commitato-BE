@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.leets.commitatobe.domain.login.domain.CustomUserDetails;
 import com.leets.commitatobe.domain.user.domain.User;
-import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
+import com.leets.commitatobe.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 

@@ -20,21 +20,18 @@ public class LoginQueryService {
 
 	public GitHubDto getGitHubUser(HttpServletRequest request) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+		if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
 			throw new ApiException(ErrorStatus._JWT_NOT_FOUND);
 		}
 
-		CustomUserDetails userDetails = (CustomUserDetails)authentication.getPrincipal();
 		return userDetails.getGitHubDto();
 	}
 
-	public String getGitHubId(HttpServletRequest request) {
+	public String getGitHubId() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+		if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
 			throw new ApiException(ErrorStatus._JWT_NOT_FOUND);
 		}
-
-		CustomUserDetails userDetails = (CustomUserDetails)authentication.getPrincipal();
 
 		return userDetails.getGithubId();
 	}

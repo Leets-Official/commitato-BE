@@ -1,4 +1,4 @@
-package com.leets.commitatobe.domain.user.usecase;
+package com.leets.commitatobe.domain.user.service;
 
 import static com.leets.commitatobe.global.response.code.status.ErrorStatus.*;
 
@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.leets.commitatobe.domain.login.service.LoginCommandService;
 import com.leets.commitatobe.domain.tier.domain.Tier;
 import com.leets.commitatobe.domain.user.domain.User;
-import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
-import com.leets.commitatobe.domain.user.presentation.dto.response.UserInfoResponse;
-import com.leets.commitatobe.domain.user.presentation.dto.response.UserRankResponse;
-import com.leets.commitatobe.domain.user.presentation.dto.response.UserSearchResponse;
+import com.leets.commitatobe.domain.user.dto.UserInfoResponse;
+import com.leets.commitatobe.domain.user.dto.UserRankResponse;
+import com.leets.commitatobe.domain.user.dto.UserSearchResponse;
+import com.leets.commitatobe.domain.user.repository.UserRepository;
 import com.leets.commitatobe.global.exception.ApiException;
 import com.leets.commitatobe.global.response.CustomPageResponse;
 import com.leets.commitatobe.global.response.code.status.ErrorStatus;
@@ -24,11 +24,10 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserQueryServiceImpl implements UserQueryService {
+public class UserQueryService {
 	private final UserRepository userRepository;
 	private final LoginCommandService loginCommandService;
 
-	@Override
 	@Transactional
 	public UserSearchResponse searchUsersByGithubId(String githubId) {// 유저 이름으로 유저 정보 검색
 		User user = userRepository.findByGithubId(githubId)
@@ -45,7 +44,6 @@ public class UserQueryServiceImpl implements UserQueryService {
 		);
 	}
 
-	@Override
 	public CustomPageResponse<UserRankResponse> getUsersOrderByExp(int page, int size) {//경험치 순으로 페이징된 유저 정보 조회
 		Pageable pageable = PageRequest.of(page, size);
 		Page<User> userRankingPage = userRepository.findAllByOrderByExpDesc(pageable);
@@ -68,7 +66,6 @@ public class UserQueryServiceImpl implements UserQueryService {
 		return CustomPageResponse.from(userRankResponses);
 	}
 
-	@Override
 	public String getUserGitHubAccessToken(String githubId) {
 		User user = userRepository.findByGithubId(githubId).orElseThrow(() -> new ApiException(_USER_NOT_FOUND));
 
@@ -77,7 +74,6 @@ public class UserQueryServiceImpl implements UserQueryService {
 		return loginCommandService.decrypt(gitHubAccessToken);
 	}
 
-	@Override
 	public UserInfoResponse findUserInfo(String githubId, String myGitHubId) {
 		User user = userRepository.findByGithubId(githubId).orElseThrow(() -> new ApiException(_USER_NOT_FOUND));
 		return UserInfoResponse.of(githubId.equals(myGitHubId), user);

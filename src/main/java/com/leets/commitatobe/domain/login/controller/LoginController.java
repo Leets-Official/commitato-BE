@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.leets.commitatobe.domain.login.dto.GitHubDto;
 import com.leets.commitatobe.domain.login.service.LoginCommandService;
 import com.leets.commitatobe.domain.login.service.LoginQueryService;
-import com.leets.commitatobe.domain.user.usecase.UserQueryService;
+import com.leets.commitatobe.domain.user.service.UserQueryService;
 import com.leets.commitatobe.global.jwt.dto.JwtResponse;
 import com.leets.commitatobe.global.jwt.service.CustomOAuth2UserService;
 import com.leets.commitatobe.global.response.ApiResponse;

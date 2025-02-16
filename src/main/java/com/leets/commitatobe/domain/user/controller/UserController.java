@@ -1,4 +1,4 @@
-package com.leets.commitatobe.domain.user.presentation;
+package com.leets.commitatobe.domain.user.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,15 +7,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.leets.commitatobe.domain.login.service.LoginQueryService;
-import com.leets.commitatobe.domain.user.presentation.dto.response.UserInfoResponse;
-import com.leets.commitatobe.domain.user.presentation.dto.response.UserRankResponse;
-import com.leets.commitatobe.domain.user.presentation.dto.response.UserSearchResponse;
-import com.leets.commitatobe.domain.user.usecase.UserQueryService;
+import com.leets.commitatobe.domain.user.dto.UserInfoResponse;
+import com.leets.commitatobe.domain.user.dto.UserRankResponse;
+import com.leets.commitatobe.domain.user.dto.UserSearchResponse;
+import com.leets.commitatobe.domain.user.service.UserQueryService;
 import com.leets.commitatobe.global.response.ApiResponse;
 import com.leets.commitatobe.global.response.CustomPageResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -45,8 +44,8 @@ public class UserController {
 	}
 
 	@GetMapping("/{githubId}")
-	public ApiResponse<UserInfoResponse> getUserInfo(@PathVariable String githubId, HttpServletRequest request) {
-		String myGitHubId = loginQueryService.getGitHubId(request);
+	public ApiResponse<UserInfoResponse> getUserInfo(@PathVariable("githubId") String githubId) {
+		String myGitHubId = loginQueryService.getGitHubId();
 		return ApiResponse.onSuccess(userQueryService.findUserInfo(githubId, myGitHubId));
 	}
 
