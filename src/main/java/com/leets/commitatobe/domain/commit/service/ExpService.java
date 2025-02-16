@@ -1,4 +1,4 @@
-package com.leets.commitatobe.domain.commit.usecase;
+package com.leets.commitatobe.domain.commit.service;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -9,9 +9,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.leets.commitatobe.domain.commit.domain.Commit;
-import com.leets.commitatobe.domain.commit.domain.repository.CommitRepository;
+import com.leets.commitatobe.domain.commit.repository.CommitRepository;
 import com.leets.commitatobe.domain.tier.domain.Tier;
-import com.leets.commitatobe.domain.tier.domain.repository.TierRepository;
+import com.leets.commitatobe.domain.tier.repository.TierRepository;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.repository.UserRepository;
 import com.leets.commitatobe.global.exception.ApiException;

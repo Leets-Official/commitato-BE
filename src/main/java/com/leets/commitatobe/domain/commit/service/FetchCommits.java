@@ -1,4 +1,4 @@
-package com.leets.commitatobe.domain.commit.usecase;
+package com.leets.commitatobe.domain.commit.service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -13,8 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.leets.commitatobe.domain.commit.domain.Commit;
-import com.leets.commitatobe.domain.commit.domain.repository.CommitRepository;
-import com.leets.commitatobe.domain.commit.presentation.dto.response.CommitResponse;
+import com.leets.commitatobe.domain.commit.dto.CommitResponse;
+import com.leets.commitatobe.domain.commit.repository.CommitRepository;
 import com.leets.commitatobe.domain.login.service.LoginQueryService;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.repository.UserRepository;
@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class FetchCommitsTest {
+public class FetchCommits {
 	private final CommitRepository commitRepository;
 	private final UserRepository userRepository;
 	private final GitHubService gitHubService; // GitHub API 통신
@@ -42,11 +42,14 @@ public class FetchCommitsTest {
 		LocalDateTime dateTime = user.getLastCommitUpdateTime();
 
 		if (dateTime == null) {
-			dateTime = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
+			dateTime = user.getCreatedAt().toLocalDate().atStartOfDay();
 		}
 
 		try {
-			// Github API Access Token 저장
+			// 기존: Github API Access Token 저장
+			//            gitHubService.updateToken(loginCommandService.gitHubLogin(gitHubId));
+
+			//변경: DB에서 엑세스 토큰 불러오도록 방식 변경
 			gitHubService.updateToken(userQueryService.getUserGitHubAccessToken(gitHubId));
 
 			List<String> repos = gitHubService.fetchRepos(gitHubId);

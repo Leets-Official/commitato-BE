@@ -1,12 +1,12 @@
-package com.leets.commitatobe.domain.commit.presentation;
+package com.leets.commitatobe.domain.commit.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.leets.commitatobe.domain.commit.presentation.dto.response.CommitResponse;
-import com.leets.commitatobe.domain.commit.usecase.FetchCommits;
-import com.leets.commitatobe.domain.commit.usecase.FetchCommitsTest;
+import com.leets.commitatobe.domain.commit.dto.CommitResponse;
+import com.leets.commitatobe.domain.commit.service.FetchCommits;
+import com.leets.commitatobe.domain.commit.service.FetchCommitsTest;
 import com.leets.commitatobe.global.response.ApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;

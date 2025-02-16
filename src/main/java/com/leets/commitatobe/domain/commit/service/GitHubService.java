@@ -1,4 +1,4 @@
-package com.leets.commitatobe.domain.commit.usecase;
+package com.leets.commitatobe.domain.commit.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;

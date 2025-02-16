@@ -1,4 +1,4 @@
-package com.leets.commitatobe.domain.tier.domain.repository;
+package com.leets.commitatobe.domain.tier.repository;
 
 import java.util.Optional;
 import java.util.UUID;
