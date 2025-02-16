@@ -2,7 +2,7 @@ package com.leets.commitatobe.global.response.code;
 
 public interface BaseErrorCode {
 
-    public ErrorReasonDto getReason();
+	public ErrorReasonDto getReason();
 
-    public ErrorReasonDto getReasonHttpStatus();
+	public ErrorReasonDto getReasonHttpStatus();
 }

@@ -7,6 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.leets.commitatobe.domain.login.dto.GitHubDto;
 
+import lombok.Getter;
+
+@Getter
 public class CustomUserDetails implements UserDetails {
 
 	private final String username;
@@ -40,10 +43,6 @@ public class CustomUserDetails implements UserDetails {
 	@Override
 	public String getUsername() {
 		return username;
-	}
-
-	public String getGithubId() {
-		return githubId;
 	}
 
 	@Override

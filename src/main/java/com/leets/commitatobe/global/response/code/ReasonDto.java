@@ -1,19 +1,20 @@
 package com.leets.commitatobe.global.response.code;
 
+import org.springframework.http.HttpStatus;
+
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @Builder
 public class ReasonDto {
 
-    private HttpStatus httpStatus;
-    private final boolean isSuccess;
-    private final String code;
-    private final String message;
+	private HttpStatus httpStatus;
+	private final boolean isSuccess;
+	private final String code;
+	private final String message;
 
-    public boolean getIsSuccess() {
-        return isSuccess;
-    }
+	public boolean getIsSuccess() {
+		return isSuccess;
+	}
 }
