@@ -42,7 +42,7 @@ public class LoginCommandService {
 	@Value("${spring.security.oauth2.client.registration.github.redirect-uri}")
 	private String redirectUri;
 
-	// 깃허브 엑세스 토큰 및 리프레쉬 토큰 암호화를 위한 변수
+	// 깃허브 엑세스 토큰 암호화를 위한 변수
 	@Value("${jwt.aes-secret}")
 	private String aesSecret;
 
@@ -111,7 +111,7 @@ public class LoginCommandService {
 	}
 
 	public String encrypt(String token) {
-		byte[] encrypted = null;
+		byte[] encrypted;
 		try {
 			Cipher cipher = Cipher.getInstance(alg);
 			SecretKeySpec keySpec = new SecretKeySpec(hexStringToByteArray(aesSecret), "AES");
@@ -126,7 +126,7 @@ public class LoginCommandService {
 	}
 
 	public String decrypt(String token) {
-		byte[] decrypted = null;
+		byte[] decrypted;
 
 		try {
 			Cipher cipher = Cipher.getInstance(alg);

@@ -78,5 +78,4 @@ public class UserQueryService {
 		User user = userRepository.findByGithubId(githubId).orElseThrow(() -> new ApiException(_USER_NOT_FOUND));
 		return UserInfoResponse.of(githubId.equals(myGitHubId), user);
 	}
-
 }

@@ -66,7 +66,7 @@ public class LoginController {
 		return ApiResponse.onSuccess(jwt);
 	}
 
-	// 테스트용 API
+	// 사용자 로그인 및 github 엑세스 토큰이 잘 받아와지는지 확인하는 테스트 api
 	@GetMapping("/test")
 	public ApiResponse<GitHubDto> test(HttpServletRequest request) {
 		GitHubDto user = loginQueryService.getGitHubUser(request);

@@ -122,5 +122,4 @@ public class JwtProvider {
 		String githubId = claims.getSubject();
 		return githubId;
 	}
-
 }

@@ -48,5 +48,4 @@ public class UserController {
 		String myGitHubId = loginQueryService.getGitHubId();
 		return ApiResponse.onSuccess(userQueryService.findUserInfo(githubId, myGitHubId));
 	}
-
 }
