@@ -65,7 +65,6 @@ public class SecurityConfig {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(Arrays.asList(
 			"http://localhost:3000",
-			"http://localhost:8000",
 			"https://commitato.site",
 			"https://www.commitato.site"));
 		configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));

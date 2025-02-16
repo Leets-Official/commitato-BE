@@ -17,7 +17,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.leets.commitatobe.domain.login.usecase.LoginCommandService;
+import com.leets.commitatobe.domain.login.service.LoginCommandService;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.domain.repository.UserRepository;
 import com.leets.commitatobe.global.jwt.dto.JwtResponse;
@@ -63,9 +63,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 				Instant.now().plusSeconds(3600))
 		);
 
-		JwtResponse jwt = loadUserAndJwt(userRequest, gitHubAccessToken);
-
-		return jwt;
+		return loadUserAndJwt(userRequest, gitHubAccessToken);
 	}
 
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {

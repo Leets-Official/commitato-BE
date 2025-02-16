@@ -1,4 +1,4 @@
-package com.leets.commitatobe.domain.login.usecase;
+package com.leets.commitatobe.domain.login.service;
 
 import static ch.qos.logback.core.encoder.ByteArrayUtil.*;
 import static com.leets.commitatobe.global.response.code.status.ErrorStatus.*;
@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class LoginCommandServiceImpl implements LoginCommandService {
+public class LoginCommandService {
 
 	@Value("${spring.security.oauth2.client.registration.github.client-id}")
 	private String clientId;
@@ -110,7 +110,6 @@ public class LoginCommandServiceImpl implements LoginCommandService {
 		}
 	}
 
-	@Override
 	public String encrypt(String token) {
 		byte[] encrypted = null;
 		try {
@@ -123,11 +122,9 @@ public class LoginCommandServiceImpl implements LoginCommandService {
 		} catch (Exception e) {
 			throw new ApiException(_ENCRYPT_ERROR);
 		}
-
 		return Base64.getEncoder().encodeToString(encrypted);
 	}
 
-	@Override
 	public String decrypt(String token) {
 		byte[] decrypted = null;
 
@@ -142,7 +139,6 @@ public class LoginCommandServiceImpl implements LoginCommandService {
 		} catch (Exception e) {
 			throw new ApiException(_DECRYPT_ERROR);
 		}
-
 		return new String(decrypted, StandardCharsets.UTF_8);
 	}
 }

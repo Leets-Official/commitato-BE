@@ -1,13 +1,13 @@
-package com.leets.commitatobe.domain.login.presentation;
+package com.leets.commitatobe.domain.login.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.leets.commitatobe.domain.login.presentation.dto.GitHubDto;
-import com.leets.commitatobe.domain.login.usecase.LoginCommandService;
-import com.leets.commitatobe.domain.login.usecase.LoginQueryService;
+import com.leets.commitatobe.domain.login.dto.GitHubDto;
+import com.leets.commitatobe.domain.login.service.LoginCommandService;
+import com.leets.commitatobe.domain.login.service.LoginQueryService;
 import com.leets.commitatobe.domain.user.usecase.UserQueryService;
 import com.leets.commitatobe.global.jwt.dto.JwtResponse;
 import com.leets.commitatobe.global.jwt.service.CustomOAuth2UserService;
@@ -31,6 +31,7 @@ public class LoginController {
 	private final LoginCommandService loginCommandService;
 	private final LoginQueryService loginQueryService;
 	private final UserQueryService userQueryService;
+
 	private final CustomOAuth2UserService customOAuth2UserService;
 
 	@Operation(
