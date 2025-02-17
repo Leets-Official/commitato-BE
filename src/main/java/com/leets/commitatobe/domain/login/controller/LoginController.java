@@ -16,7 +16,6 @@ import com.leets.commitatobe.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,8 +67,8 @@ public class LoginController {
 
 	// 사용자 로그인 및 github 엑세스 토큰이 잘 받아와지는지 확인하는 테스트 api
 	@GetMapping("/test")
-	public ApiResponse<GitHubDto> test(HttpServletRequest request) {
-		GitHubDto user = loginQueryService.getGitHubUser(request);
+	public ApiResponse<GitHubDto> test() {
+		GitHubDto user = loginQueryService.getGitHubUser();
 		String gitHubAccessToken = userQueryService.getUserGitHubAccessToken(user.userId());
 		log.info("깃허브 엑세스 토큰: {}", gitHubAccessToken);
 		return ApiResponse.onSuccess(user);

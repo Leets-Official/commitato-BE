@@ -9,7 +9,6 @@ import com.leets.commitatobe.domain.login.dto.GitHubDto;
 import com.leets.commitatobe.global.exception.ApiException;
 import com.leets.commitatobe.global.response.code.status.ErrorStatus;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LoginQueryService {
 
-	public GitHubDto getGitHubUser(HttpServletRequest request) {
+	public GitHubDto getGitHubUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
 			throw new ApiException(ErrorStatus._JWT_NOT_FOUND);
