@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class JwtProvider {
 	private final Key key;
-	private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //access 30분
+	private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 360; //access 6시간
 
 	public JwtProvider(@Value("${jwt.secret}") String secretKey) {
 		byte[] keyBytes = Decoders.BASE64.decode(secretKey);
