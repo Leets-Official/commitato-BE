@@ -5,7 +5,6 @@ import static com.leets.commitatobe.global.response.code.status.ErrorStatus.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.Map;
 
 import javax.crypto.Cipher;
@@ -13,13 +12,10 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leets.commitatobe.global.exception.ApiException;
@@ -27,6 +23,7 @@ import com.leets.commitatobe.global.exception.ApiException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -53,33 +50,25 @@ public class LoginCommandService {
 	private String alg = "AES/CBC/PKCS5Padding";
 
 	public String gitHubLogin(String authCode) {
-		RestTemplate restTemplate = new RestTemplate();
+		WebClient webClient = WebClient.builder()
+			.baseUrl("https://github.com")
+			.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+			.defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+			.build();
 
 		// GitHub 액세스 토큰 요청
-		String tokenRequestUrl = "https://github.com/login/oauth/access_token" +
+		String tokenRequestUrl = "/login/oauth/access_token" +
 			"?client_id=" + clientId +
 			"&client_secret=" + clientSecret +
 			"&code=" + authCode +
 			"&redirect_uri=" + redirectUri;
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		Mono<String> responseMono = webClient.post()
+			.uri(tokenRequestUrl)
+			.retrieve()
+			.bodyToMono(String.class);
 
-		HttpEntity<String> entity = new HttpEntity<>("", headers);
-
-		ResponseEntity<String> response;
-		try {
-			response = restTemplate.exchange(
-				tokenRequestUrl,
-				HttpMethod.POST,
-				entity,
-				String.class);
-		} catch (Exception e) {
-			throw new ApiException(_GITHUB_TOKEN_GENERATION_ERROR);
-		}
-
-		String responseBody = response.getBody();
+		String responseBody = responseMono.block();
 
 		// JSON 형식의 응답 파싱
 		String accessToken;
