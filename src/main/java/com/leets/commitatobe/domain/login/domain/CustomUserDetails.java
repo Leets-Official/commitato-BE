@@ -20,7 +20,7 @@ public class CustomUserDetails implements UserDetails {
 	private final boolean isEnabled;
 	private final Collection<? extends GrantedAuthority> authorities;
 
-	public CustomUserDetails(String username, String githubId, Collection<? extends GrantedAuthority> authorities) {
+	private CustomUserDetails(String username, String githubId, Collection<? extends GrantedAuthority> authorities) {
 		this.username = username;
 		this.githubId = githubId;
 		this.isAccountNonExpired = true;
