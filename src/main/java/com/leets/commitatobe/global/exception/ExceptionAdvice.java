@@ -19,7 +19,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.leets.commitatobe.global.response.ApiResponse;
-import com.leets.commitatobe.global.response.code.ErrorReasonDto;
+import com.leets.commitatobe.global.response.code.dto.ErrorReasonDto;
 import com.leets.commitatobe.global.response.code.status.ErrorStatus;
 
 import jakarta.servlet.http.HttpServletRequest;

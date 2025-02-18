@@ -3,7 +3,7 @@ package com.leets.commitatobe.global.response.code.status;
 import org.springframework.http.HttpStatus;
 
 import com.leets.commitatobe.global.response.code.BaseErrorCode;
-import com.leets.commitatobe.global.response.code.ErrorReasonDto;
+import com.leets.commitatobe.global.response.code.dto.ErrorReasonDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

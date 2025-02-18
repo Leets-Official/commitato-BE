@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.leets.commitatobe.domain.commit.dto.CommitResponse;
+import com.leets.commitatobe.domain.commit.dto.response.CommitResponse;
 import com.leets.commitatobe.domain.commit.service.FetchCommits;
 import com.leets.commitatobe.domain.commit.service.FetchCommitsTest;
 import com.leets.commitatobe.global.response.ApiResponse;

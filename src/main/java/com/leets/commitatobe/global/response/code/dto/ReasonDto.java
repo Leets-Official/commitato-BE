@@ -1,4 +1,4 @@
-package com.leets.commitatobe.global.response.code;
+package com.leets.commitatobe.global.response.code.dto;
 
 import org.springframework.http.HttpStatus;
 

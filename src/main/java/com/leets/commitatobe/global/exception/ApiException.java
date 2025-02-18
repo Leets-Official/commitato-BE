@@ -1,6 +1,6 @@
 package com.leets.commitatobe.global.exception;
 
-import com.leets.commitatobe.global.response.code.ErrorReasonDto;
+import com.leets.commitatobe.global.response.code.dto.ErrorReasonDto;
 import com.leets.commitatobe.global.response.code.status.ErrorStatus;
 
 public class ApiException extends RuntimeException {

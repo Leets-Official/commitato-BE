@@ -1,4 +1,4 @@
-package com.leets.commitatobe.domain.user.dto;
+package com.leets.commitatobe.domain.user.dto.response;
 
 import java.time.LocalDateTime;
 

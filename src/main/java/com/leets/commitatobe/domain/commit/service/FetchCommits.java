@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.leets.commitatobe.domain.commit.domain.Commit;
-import com.leets.commitatobe.domain.commit.dto.CommitResponse;
+import com.leets.commitatobe.domain.commit.dto.response.CommitResponse;
 import com.leets.commitatobe.domain.commit.repository.CommitRepository;
 import com.leets.commitatobe.domain.login.service.LoginQueryService;
 import com.leets.commitatobe.domain.user.domain.User;

@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.leets.commitatobe.domain.login.service.LoginQueryService;
-import com.leets.commitatobe.domain.user.dto.UserInfoResponse;
-import com.leets.commitatobe.domain.user.dto.UserRankResponse;
-import com.leets.commitatobe.domain.user.dto.UserSearchResponse;
+import com.leets.commitatobe.domain.user.dto.response.UserInfoResponse;
+import com.leets.commitatobe.domain.user.dto.response.UserRankResponse;
+import com.leets.commitatobe.domain.user.dto.response.UserSearchResponse;
 import com.leets.commitatobe.domain.user.service.UserQueryService;
 import com.leets.commitatobe.global.response.ApiResponse;
 import com.leets.commitatobe.global.response.CustomPageResponse;
