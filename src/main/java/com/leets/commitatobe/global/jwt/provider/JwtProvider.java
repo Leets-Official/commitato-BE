@@ -37,7 +37,7 @@ public class JwtProvider {
 		this.key = Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	// AccessToken, RefreshToken을 생성하는 메서드
+	// AccessToken을 생성하는 메서드
 	public JwtResponse generateTokenDto(String githubId) {
 		String accessToken = generateAccessToken(githubId);
 		return new JwtResponse("bearer", accessToken);
