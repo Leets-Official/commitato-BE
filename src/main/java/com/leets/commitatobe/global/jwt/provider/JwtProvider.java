@@ -72,7 +72,7 @@ public class JwtProvider {
 				.collect(Collectors.toList());
 
 		// CustomUserDetails 객체를 만들어서 Authentication return
-		CustomUserDetails principal = new CustomUserDetails(
+		CustomUserDetails principal = CustomUserDetails.of(
 			claims.getSubject(), claims.getSubject(), authorities
 		);
 

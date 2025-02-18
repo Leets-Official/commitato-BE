@@ -30,6 +30,11 @@ public class CustomUserDetails implements UserDetails {
 		this.authorities = authorities;
 	}
 
+	public static CustomUserDetails of(String username, String githubId,
+		Collection<? extends GrantedAuthority> authorities) {
+		return new CustomUserDetails(username, githubId, authorities);
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return authorities;

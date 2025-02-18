@@ -25,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		User user = userRepository.findByGithubId(username)
 			.orElseThrow(() -> new UsernameNotFoundException("해당하는 깃허브 닉네임과 일치하는 유저를 찾을 수 없음: " + username));
 
-		return new CustomUserDetails(
+		return CustomUserDetails.of(
 			user.getUsername(),
 			user.getGithubId(),
 			Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
