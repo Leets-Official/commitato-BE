@@ -101,7 +101,7 @@ public class GitHubService {
 		while (true) {
 			JsonArray commits;
 
-			try{
+			try {
 				commits = getConnection("/repos/" + fullName + "/commits?page=" + page + "&per_page=100");
 			} catch (Exception e) {
 				return;
