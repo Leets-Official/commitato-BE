@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -19,6 +18,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -50,14 +50,7 @@ public class GitHubService {
 
 	// GitHub repository 이름 저장
 	public List<String> fetchRepos(String gitHubUsername) throws IOException {
-		Mono<JsonArray> reposMono = webClient.get()
-			.uri("/user/repos?type=all&sort=pushed&per_page=100")
-			.header(HttpHeaders.AUTHORIZATION, "token " + AUTH_TOKEN)
-			.retrieve()
-			.bodyToMono(String.class)
-			.map(response -> JsonParser.parseString(response).getAsJsonArray());
-
-		JsonArray repos = reposMono.block();
+		JsonArray repos = getConnection("/user/repos?type=all&sort=pushed&per_page=100");
 
 		if (repos == null) {
 			return new ArrayList<>();
@@ -114,14 +107,7 @@ public class GitHubService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		while (true) {
-			Mono<JsonArray> commitsMono = webClient.get()
-				.uri("/repos/" + fullName + "/commits?page=" + page + "&per_page=100")
-				.header(HttpHeaders.AUTHORIZATION, "token " + AUTH_TOKEN)
-				.retrieve()
-				.bodyToMono(String.class)
-				.map(response -> JsonParser.parseString(response).getAsJsonArray());
-
-			JsonArray commits = commitsMono.block();
+			JsonArray commits = getConnection("/repos/" + fullName + "/commits?page=" + page + "&per_page=100");
 
 			if (commits == null || commits.isEmpty()) {
 				return;
@@ -154,23 +140,23 @@ public class GitHubService {
 	}
 
 	// http 연결
-	private HttpURLConnection getConnection(URL url) throws IOException {
-		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-		connection.setRequestMethod("GET");
-		connection.setRequestProperty("Authorization", "token " + AUTH_TOKEN);
-		connection.setRequestProperty("Accept", "application/vnd.github.v3+json");
+	private JsonArray getConnection(String url) {
+		Mono<JsonArray> response = webClient.get()
+			.uri(url)
+			.header(HttpHeaders.AUTHORIZATION, "token " + AUTH_TOKEN)
+			.retrieve()
+			.onStatus(status -> status == HttpStatus.UNAUTHORIZED, clientResponse ->
+				// AUTH_TOKEN이 유효하지 않으면 리다이렉트
+				webClient.get()
+					.uri(SERVER_URI + "/login/github")
+					.retrieve()
+					.bodyToMono(Void.class)
+					.then(Mono.error(new RuntimeException("Unauthorized")))
+			)
+			.bodyToMono(String.class)
+			.map(res -> JsonParser.parseString(res).getAsJsonArray());
 
-		// AUTH_TOKEN 유효한지 확인
-		int responseCode = connection.getResponseCode();
-		if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-			// AUTH_TOKEN이 유효하지 않으면 리다이렉트
-			URL loginUrl = new URL(SERVER_URI + "/login/github");
-			connection = (HttpURLConnection)loginUrl.openConnection();
-			connection.setInstanceFollowRedirects(true);
-			connection.connect();
-		}
-
-		return connection;
+		return response.block();
 	}
 
 	// 응답을 jsonObject로 반환
