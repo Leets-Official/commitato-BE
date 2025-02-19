@@ -1,6 +1,5 @@
 package com.leets.commitatobe.domain.commit.service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +18,6 @@ import com.leets.commitatobe.domain.login.service.LoginQueryService;
 import com.leets.commitatobe.domain.user.domain.User;
 import com.leets.commitatobe.domain.user.repository.UserRepository;
 import com.leets.commitatobe.domain.user.service.UserQueryService;
-import com.leets.commitatobe.global.exception.ApiException;
-import com.leets.commitatobe.global.response.code.status.ErrorStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -56,11 +53,7 @@ public class FetchCommitsTest {
 
 			for (String fullName : repos) {
 				CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(() -> {
-					try {
-						gitHubService.countCommits(fullName, gitHubId, finalDateTime);
-					} catch (IOException e) {
-						throw new ApiException(ErrorStatus._GIT_URL_INCORRECT);
-					}
+					gitHubService.countCommits(fullName, gitHubId, finalDateTime);
 				}, executor);
 				futures.add(voidCompletableFuture);
 			}

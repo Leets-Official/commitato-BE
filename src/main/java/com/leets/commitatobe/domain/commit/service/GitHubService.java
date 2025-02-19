@@ -1,9 +1,5 @@
 package com.leets.commitatobe.domain.commit.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -14,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -49,7 +44,7 @@ public class GitHubService {
 	private String SERVER_URI;
 
 	// GitHub repository 이름 저장
-	public List<String> fetchRepos(String gitHubUsername) throws IOException {
+	public List<String> fetchRepos(String gitHubUsername) {
 		JsonArray repos = getConnection("/user/repos?type=all&sort=pushed&per_page=100");
 
 		if (repos == null) {
@@ -66,7 +61,7 @@ public class GitHubService {
 		return forkJoinPool.submit(() ->
 			repoFullNames.parallelStream()
 				.filter(fullName -> isContributor(fullName, gitHubUsername))
-				.collect(Collectors.toList())
+				.toList()
 		).join();
 	}
 
@@ -157,32 +152,6 @@ public class GitHubService {
 			.map(res -> JsonParser.parseString(res).getAsJsonArray());
 
 		return response.block();
-	}
-
-	// 응답을 jsonObject로 반환
-	private JsonObject fetchJsonObject(HttpURLConnection connection) throws IOException {
-		int responseCode = connection.getResponseCode();
-		if (responseCode == HttpURLConnection.HTTP_OK) {
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-				return JsonParser.parseReader(in).getAsJsonObject();
-			}
-		} else {
-			System.err.println(responseCode);
-			return null;
-		}
-	}
-
-	// 응답을 JsonArray로 반환
-	private JsonArray fetchJsonArray(HttpURLConnection connection) throws IOException {
-		int responseCode = connection.getResponseCode();
-		if (responseCode == HttpURLConnection.HTTP_OK) {
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-				return JsonParser.parseReader(in).getAsJsonArray();
-			}
-		} else {
-			System.err.println(responseCode);
-			return null;
-		}
 	}
 
 	// commit 시간 추출
