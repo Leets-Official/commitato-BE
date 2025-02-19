@@ -18,11 +18,16 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import reactor.core.publisher.Mono;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,14 +39,25 @@ public class GitHubService {
 	private final String GITHUB_API_URL = "https://api.github.com";
 	private String AUTH_TOKEN;
 	private final Map<LocalDateTime, Integer> commitsByDate = new HashMap<>();
+	private final WebClient webClient = WebClient.builder()
+		.baseUrl(GITHUB_API_URL)
+		.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+		.defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+		.build();
+
 	@Value("${server-uri}")
 	private String SERVER_URI;
 
 	// GitHub repository 이름 저장
 	public List<String> fetchRepos(String gitHubUsername) throws IOException {
-		URL url = new URL(GITHUB_API_URL + "/user/repos?type=all&sort=pushed&per_page=100");
-		HttpURLConnection connection = getConnection(url);
-		JsonArray repos = fetchJsonArray(connection);
+		Mono<JsonArray> reposMono = webClient.get()
+			.uri("/user/repos?type=all&sort=pushed&per_page=100")
+			.header(HttpHeaders.AUTHORIZATION, "token " + AUTH_TOKEN)
+			.retrieve()
+			.bodyToMono(String.class)
+			.map(response -> JsonParser.parseString(response).getAsJsonArray());
+
+		JsonArray repos = reposMono.block();
 
 		if (repos == null) {
 			return new ArrayList<>();
@@ -56,26 +72,25 @@ public class GitHubService {
 		ForkJoinPool forkJoinPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
 		return forkJoinPool.submit(() ->
 			repoFullNames.parallelStream()
-				.filter(fullName -> {
-					try {
-						return isContributor(fullName, gitHubUsername);
-					} catch (IOException e) {
-						return false;
-					}
-				})
+				.filter(fullName -> isContributor(fullName, gitHubUsername))
 				.collect(Collectors.toList())
 		).join();
 	}
 
 	// 자신이 해당 repository의 기여자 인지 확인
-	private boolean isContributor(String fullName, String gitHubUsername) throws IOException {
+	private boolean isContributor(String fullName, String gitHubUsername) {
 		if (fullName.contains(gitHubUsername)) {
 			return true;
 		}
 
-		URL url = new URL(GITHUB_API_URL + "/repos/" + fullName + "/contributors");
-		HttpURLConnection connection = getConnection(url);
-		JsonArray contributors = fetchJsonArray(connection);
+		Mono<JsonArray> contributorsMono = webClient.get()
+			.uri("/repos/" + fullName + "/contributors")
+			.header(HttpHeaders.AUTHORIZATION, "token " + AUTH_TOKEN)
+			.retrieve()
+			.bodyToMono(String.class)
+			.map(response -> JsonParser.parseString(response).getAsJsonArray());
+
+		JsonArray contributors = contributorsMono.block();
 
 		if (contributors == null) {
 			return false;
@@ -94,14 +109,19 @@ public class GitHubService {
 	}
 
 	// commit을 일별로 정리
-	public void countCommits(String fullName, String gitHubUsername, LocalDateTime date) throws IOException {
+	public void countCommits(String fullName, String gitHubUsername, LocalDateTime date) {
 		int page = 1;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		while (true) {
-			URL url = new URL(GITHUB_API_URL + "/repos/" + fullName + "/commits?page=" + page + "&per_page=100");
-			HttpURLConnection connection = getConnection(url);
-			JsonArray commits = fetchJsonArray(connection);
+			Mono<JsonArray> commitsMono = webClient.get()
+				.uri("/repos/" + fullName + "/commits?page=" + page + "&per_page=100")
+				.header(HttpHeaders.AUTHORIZATION, "token " + AUTH_TOKEN)
+				.retrieve()
+				.bodyToMono(String.class)
+				.map(response -> JsonParser.parseString(response).getAsJsonArray());
+
+			JsonArray commits = commitsMono.block();
 
 			if (commits == null || commits.isEmpty()) {
 				return;
