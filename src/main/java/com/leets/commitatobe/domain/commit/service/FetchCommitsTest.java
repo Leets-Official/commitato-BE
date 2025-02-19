@@ -39,7 +39,7 @@ public class FetchCommitsTest {
 		LocalDateTime dateTime = user.getLastCommitUpdateTime();
 
 		if (dateTime == null) {
-			dateTime = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
+			dateTime = LocalDateTime.now().minusMonths(3);
 		}
 
 		try {

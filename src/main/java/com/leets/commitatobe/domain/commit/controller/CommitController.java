@@ -31,7 +31,7 @@ public class CommitController {
 
 	@Operation(
 		summary = "커밋 기록 업데이트 (테스트)",
-		description = "테스트를 위해, 7월 1일부터 커밋 기록을 가져와 DB에 저장하고 사용자의 정보를 최신화 합니다.")
+		description = "테스트를 위해, 최근 3개월의 커밋 기록을 가져와 DB에 저장하고 사용자의 정보를 최신화 합니다.")
 	@PostMapping("update/test")
 	public ApiResponse<CommitResponse> fetchCommitsTest() {
 		return ApiResponse.onSuccess(fetchCommitsTest.execute());
