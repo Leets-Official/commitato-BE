@@ -75,14 +75,7 @@ public class GitHubService {
 			return true;
 		}
 
-		Mono<JsonArray> contributorsMono = webClient.get()
-			.uri("/repos/" + fullName + "/contributors")
-			.header(HttpHeaders.AUTHORIZATION, "token " + AUTH_TOKEN)
-			.retrieve()
-			.bodyToMono(String.class)
-			.map(response -> JsonParser.parseString(response).getAsJsonArray());
-
-		JsonArray contributors = contributorsMono.block();
+		JsonArray contributors = getConnection("/repos/" + fullName + "/contributors");
 
 		if (contributors == null) {
 			return false;
