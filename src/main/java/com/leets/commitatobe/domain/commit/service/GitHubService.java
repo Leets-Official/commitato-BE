@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.google.gson.JsonArray;
@@ -37,7 +38,10 @@ public class GitHubService {
 	private final WebClient webClient = WebClient.builder()
 		.baseUrl(GITHUB_API_URL)
 		.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-		.defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+		.defaultHeader(HttpHeaders.ACCEPT, "application/vnd.github+json")
+		.exchangeStrategies(ExchangeStrategies.builder()
+			.codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024)) // 1MB
+			.build())
 		.build();
 
 	@Value("${server-uri}")
@@ -102,7 +106,13 @@ public class GitHubService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		while (true) {
-			JsonArray commits = getConnection("/repos/" + fullName + "/commits?page=" + page + "&per_page=100");
+			JsonArray commits;
+
+			try{
+				commits = getConnection("/repos/" + fullName + "/commits?page=" + page + "&per_page=100");
+			} catch (Exception e) {
+				return;
+			}
 
 			if (commits == null || commits.isEmpty()) {
 				return;
@@ -138,7 +148,7 @@ public class GitHubService {
 	private JsonArray getConnection(String url) {
 		Mono<JsonArray> response = webClient.get()
 			.uri(url)
-			.header(HttpHeaders.AUTHORIZATION, "token " + AUTH_TOKEN)
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + AUTH_TOKEN)
 			.retrieve()
 			.onStatus(status -> status == HttpStatus.UNAUTHORIZED, clientResponse ->
 				// AUTH_TOKEN이 유효하지 않으면 리다이렉트
