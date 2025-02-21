@@ -1,10 +1,5 @@
 package com.leets.commitatobe.domain.commit.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -15,14 +10,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import reactor.core.publisher.Mono;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,14 +35,21 @@ public class GitHubService {
 	private final String GITHUB_API_URL = "https://api.github.com";
 	private String AUTH_TOKEN;
 	private final Map<LocalDateTime, Integer> commitsByDate = new HashMap<>();
+	private final WebClient webClient = WebClient.builder()
+		.baseUrl(GITHUB_API_URL)
+		.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+		.defaultHeader(HttpHeaders.ACCEPT, "application/vnd.github+json")
+		.exchangeStrategies(ExchangeStrategies.builder()
+			.codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024)) // 1MB
+			.build())
+		.build();
+
 	@Value("${server-uri}")
 	private String SERVER_URI;
 
 	// GitHub repository 이름 저장
-	public List<String> fetchRepos(String gitHubUsername) throws IOException {
-		URL url = new URL(GITHUB_API_URL + "/user/repos?type=all&sort=pushed&per_page=100");
-		HttpURLConnection connection = getConnection(url);
-		JsonArray repos = fetchJsonArray(connection);
+	public List<String> fetchRepos(String gitHubUsername) {
+		JsonArray repos = getConnection("/user/repos?type=all&sort=pushed&per_page=100");
 
 		if (repos == null) {
 			return new ArrayList<>();
@@ -56,26 +64,18 @@ public class GitHubService {
 		ForkJoinPool forkJoinPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
 		return forkJoinPool.submit(() ->
 			repoFullNames.parallelStream()
-				.filter(fullName -> {
-					try {
-						return isContributor(fullName, gitHubUsername);
-					} catch (IOException e) {
-						return false;
-					}
-				})
-				.collect(Collectors.toList())
+				.filter(fullName -> isContributor(fullName, gitHubUsername))
+				.toList()
 		).join();
 	}
 
 	// 자신이 해당 repository의 기여자 인지 확인
-	private boolean isContributor(String fullName, String gitHubUsername) throws IOException {
+	private boolean isContributor(String fullName, String gitHubUsername) {
 		if (fullName.contains(gitHubUsername)) {
 			return true;
 		}
 
-		URL url = new URL(GITHUB_API_URL + "/repos/" + fullName + "/contributors");
-		HttpURLConnection connection = getConnection(url);
-		JsonArray contributors = fetchJsonArray(connection);
+		JsonArray contributors = getConnection("/repos/" + fullName + "/contributors");
 
 		if (contributors == null) {
 			return false;
@@ -94,14 +94,18 @@ public class GitHubService {
 	}
 
 	// commit을 일별로 정리
-	public void countCommits(String fullName, String gitHubUsername, LocalDateTime date) throws IOException {
+	public void countCommits(String fullName, String gitHubUsername, LocalDateTime date) {
 		int page = 1;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		while (true) {
-			URL url = new URL(GITHUB_API_URL + "/repos/" + fullName + "/commits?page=" + page + "&per_page=100");
-			HttpURLConnection connection = getConnection(url);
-			JsonArray commits = fetchJsonArray(connection);
+			JsonArray commits;
+
+			try {
+				commits = getConnection("/repos/" + fullName + "/commits?page=" + page + "&per_page=100");
+			} catch (Exception e) {
+				return;
+			}
 
 			if (commits == null || commits.isEmpty()) {
 				return;
@@ -134,49 +138,23 @@ public class GitHubService {
 	}
 
 	// http 연결
-	private HttpURLConnection getConnection(URL url) throws IOException {
-		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-		connection.setRequestMethod("GET");
-		connection.setRequestProperty("Authorization", "token " + AUTH_TOKEN);
-		connection.setRequestProperty("Accept", "application/vnd.github.v3+json");
+	private JsonArray getConnection(String url) {
+		Mono<JsonArray> response = webClient.get()
+			.uri(url)
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + AUTH_TOKEN)
+			.retrieve()
+			.onStatus(status -> status == HttpStatus.UNAUTHORIZED, clientResponse ->
+				// AUTH_TOKEN이 유효하지 않으면 리다이렉트
+				webClient.get()
+					.uri(SERVER_URI + "/login/github")
+					.retrieve()
+					.bodyToMono(Void.class)
+					.then(Mono.error(new RuntimeException("Unauthorized")))
+			)
+			.bodyToMono(String.class)
+			.map(res -> JsonParser.parseString(res).getAsJsonArray());
 
-		// AUTH_TOKEN 유효한지 확인
-		int responseCode = connection.getResponseCode();
-		if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-			// AUTH_TOKEN이 유효하지 않으면 리다이렉트
-			URL loginUrl = new URL(SERVER_URI + "/login/github");
-			connection = (HttpURLConnection)loginUrl.openConnection();
-			connection.setInstanceFollowRedirects(true);
-			connection.connect();
-		}
-
-		return connection;
-	}
-
-	// 응답을 jsonObject로 반환
-	private JsonObject fetchJsonObject(HttpURLConnection connection) throws IOException {
-		int responseCode = connection.getResponseCode();
-		if (responseCode == HttpURLConnection.HTTP_OK) {
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-				return JsonParser.parseReader(in).getAsJsonObject();
-			}
-		} else {
-			System.err.println(responseCode);
-			return null;
-		}
-	}
-
-	// 응답을 JsonArray로 반환
-	private JsonArray fetchJsonArray(HttpURLConnection connection) throws IOException {
-		int responseCode = connection.getResponseCode();
-		if (responseCode == HttpURLConnection.HTTP_OK) {
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-				return JsonParser.parseReader(in).getAsJsonArray();
-			}
-		} else {
-			System.err.println(responseCode);
-			return null;
-		}
+		return response.block();
 	}
 
 	// commit 시간 추출
