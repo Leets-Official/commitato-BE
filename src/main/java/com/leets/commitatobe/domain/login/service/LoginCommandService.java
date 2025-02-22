@@ -30,6 +30,9 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class LoginCommandService {
 
+	// 암호화 알고리즘
+	private final String ENCODING_ALGORITHM = "AES/CBC/PKCS5Padding";
+
 	@Value("${spring.security.oauth2.client.registration.github.client-id}")
 	private String clientId;
 
@@ -45,9 +48,6 @@ public class LoginCommandService {
 
 	@Value("${jwt.iv-secret}")
 	private String ivSecret;
-
-	// 암호화 알고리즘
-	private String alg = "AES/CBC/PKCS5Padding";
 
 	public String gitHubLogin(String authCode) {
 		WebClient webClient = WebClient.builder()
@@ -102,7 +102,7 @@ public class LoginCommandService {
 	public String encrypt(String token) {
 		byte[] encrypted;
 		try {
-			Cipher cipher = Cipher.getInstance(alg);
+			Cipher cipher = Cipher.getInstance(ENCODING_ALGORITHM);
 			SecretKeySpec keySpec = new SecretKeySpec(hexStringToByteArray(aesSecret), "AES");
 			IvParameterSpec ivParameterSpec = new IvParameterSpec(hexStringToByteArray(ivSecret));
 			cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivParameterSpec);
@@ -118,7 +118,7 @@ public class LoginCommandService {
 		byte[] decrypted;
 
 		try {
-			Cipher cipher = Cipher.getInstance(alg);
+			Cipher cipher = Cipher.getInstance(ENCODING_ALGORITHM);
 			SecretKeySpec keySpec = new SecretKeySpec(hexStringToByteArray(aesSecret), "AES");
 			IvParameterSpec ivParameterSpec = new IvParameterSpec(hexStringToByteArray(ivSecret));
 			cipher.init(Cipher.DECRYPT_MODE, keySpec, ivParameterSpec);
