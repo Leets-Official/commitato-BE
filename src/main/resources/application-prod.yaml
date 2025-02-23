@@ -28,9 +28,9 @@ spring:
       client:
         registration:
           github:
-            client-id: ENC(ASdVann1K5quYxJ8tgdXIN7gbbrwVoJg6/7n/CArrUw=)
-            client-secret: ENC(AG0Gj+dMJe9wW1oodMlWt/8ij8194wmBA6JBC5aU5x0Mlv5RKxAxcrPdgAkErkNLXJxWgEbWErw=)
-            scope: read:user
+            client-id: ENC(JfwUdvvySll/OigEnyqIFbw8HuxXDn9gk2hFFwNbRZw=)
+            client-secret: ENC(JXWEI5OPVoc5u0JRdmNG6AfgzjsvRPqYPn23RuOjA7l3IjGGUO8Tg4n5yb1wZN6ybuJKBfPtGQg=)
+            scope: read:user, public_repo, repo, read:org
             redirect-uri: https://www.commitato.site/login
 
 jwt:

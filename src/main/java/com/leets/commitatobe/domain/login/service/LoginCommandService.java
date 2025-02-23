@@ -30,6 +30,9 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class LoginCommandService {
 
+	// 암호화 알고리즘
+	private final String ENCODING_ALGORITHM = "AES/CBC/PKCS5Padding";
+
 	@Value("${spring.security.oauth2.client.registration.github.client-id}")
 	private String clientId;
 
@@ -45,9 +48,6 @@ public class LoginCommandService {
 
 	@Value("${jwt.iv-secret}")
 	private String ivSecret;
-
-	// 암호화 알고리즘
-	private String alg = "AES/CBC/PKCS5Padding";
 
 	public String gitHubLogin(String authCode) {
 		WebClient webClient = WebClient.builder()
@@ -91,7 +91,7 @@ public class LoginCommandService {
 	public void redirect(HttpServletResponse response) {
 		// TODO: user로 scope를 설정하면 읽고 쓰는 권한 모두를 가져오게 됨, 이후 개발하며 개발 범위에 맞춰 수정이 필요함
 		String url = "https://github.com/login/oauth/authorize?client_id=" + clientId + "&redirect_uri=" + redirectUri
-			+ "&scope=user";
+			+ "&scope=read:user, public_repo, repo, read:org";
 		try {
 			response.sendRedirect(url);
 		} catch (Exception e) {
@@ -102,7 +102,7 @@ public class LoginCommandService {
 	public String encrypt(String token) {
 		byte[] encrypted;
 		try {
-			Cipher cipher = Cipher.getInstance(alg);
+			Cipher cipher = Cipher.getInstance(ENCODING_ALGORITHM);
 			SecretKeySpec keySpec = new SecretKeySpec(hexStringToByteArray(aesSecret), "AES");
 			IvParameterSpec ivParameterSpec = new IvParameterSpec(hexStringToByteArray(ivSecret));
 			cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivParameterSpec);
@@ -118,7 +118,7 @@ public class LoginCommandService {
 		byte[] decrypted;
 
 		try {
-			Cipher cipher = Cipher.getInstance(alg);
+			Cipher cipher = Cipher.getInstance(ENCODING_ALGORITHM);
 			SecretKeySpec keySpec = new SecretKeySpec(hexStringToByteArray(aesSecret), "AES");
 			IvParameterSpec ivParameterSpec = new IvParameterSpec(hexStringToByteArray(ivSecret));
 			cipher.init(Cipher.DECRYPT_MODE, keySpec, ivParameterSpec);
