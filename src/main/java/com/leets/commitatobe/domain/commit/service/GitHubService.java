@@ -25,10 +25,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import reactor.core.publisher.Mono;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +50,8 @@ public class GitHubService {
 
 	// GitHub repository 이름 저장
 	public List<String> fetchRepos(String gitHubUsername) {
+		commitsByDate.clear();
+
 		Set<String> repoFullNames = new HashSet<>();
 
 		JsonArray repos = getConnection("/user/repos?type=all&sort=pushed&per_page=100");
