@@ -40,7 +40,7 @@ public class JwtProvider {
 	// AccessToken을 생성하는 메서드
 	public JwtResponse generateTokenDto(String githubId) {
 		String accessToken = generateAccessToken(githubId);
-		return new JwtResponse("bearer", accessToken);
+		return new JwtResponse(githubId, "bearer", accessToken);
 	}
 
 	// Access Token 생성
