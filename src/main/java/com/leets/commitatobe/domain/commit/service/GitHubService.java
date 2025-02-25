@@ -5,13 +5,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
-import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -54,21 +54,13 @@ public class GitHubService {
 		Set<String> repoFullNames = new HashSet<>();
 
 		JsonArray repos = getConnection("/user/repos?type=all&sort=pushed&per_page=100");
-		if (repos != null) {
-			repos.forEach(repo -> {
-				String fullName = repo.getAsJsonObject().get("full_name").getAsString();
-				repoFullNames.add(fullName);
-			});
+		if (repos == null) {
+			return new ArrayList<>();
 		}
 
-		fetchOrgs(gitHubUsername).forEach(org -> {
-			JsonArray orgRepos = getConnection("/orgs/" + org + "/repos?type=all&sort=pushed&per_page=100");
-			if (orgRepos != null) {
-				orgRepos.forEach(repo -> {
-					String fullName = repo.getAsJsonObject().get("full_name").getAsString();
-					repoFullNames.add(fullName);
-				});
-			}
+		repos.forEach(repo -> {
+			String fullName = repo.getAsJsonObject().get("full_name").getAsString();
+			repoFullNames.add(fullName);
 		});
 
 		return new ForkJoinPool(Runtime.getRuntime().availableProcessors()).submit(() ->
@@ -76,12 +68,6 @@ public class GitHubService {
 				.filter(fullName -> isContributor(fullName, gitHubUsername))
 				.toList()
 		).join();
-	}
-
-	private List<String> fetchOrgs(String gitHubUsername) {
-		return StreamSupport.stream(getConnection("/users/" + gitHubUsername + "/orgs").spliterator(), true)
-			.map(org -> org.getAsJsonObject().get("login").getAsString())
-			.toList();
 	}
 
 	// 자신이 해당 repository의 기여자 인지 확인
