@@ -28,8 +28,8 @@ public class ExpService {
 	private final UserRepository userRepository;
 	private final TierRepository tierRepository;
 
-	int DAILY_BONUS_EXP = 100;
-	int BONUS_EXP_INCREASE = 10;
+	private static final int DAILY_BONUS_EXP = 100;
+	private static final int BONUS_EXP_INCREASE = 10;
 
 	public void calculateAndSaveExp(String githubId) {
 		User user = userRepository.findByGithubId(githubId)
