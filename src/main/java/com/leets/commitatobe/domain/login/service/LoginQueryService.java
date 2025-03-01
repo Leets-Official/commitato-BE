@@ -18,20 +18,18 @@ import lombok.extern.slf4j.Slf4j;
 public class LoginQueryService {
 
 	public GitHubDto getGitHubUser() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
-			throw new ApiException(ErrorStatus._JWT_NOT_FOUND);
-		}
-
-		return userDetails.getGitHubDto();
+		return getUserDetails().getGitHubDto();
 	}
 
 	public String getGitHubId() {
+		return getUserDetails().getGithubId();
+	}
+
+	private CustomUserDetails getUserDetails() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
 			throw new ApiException(ErrorStatus._JWT_NOT_FOUND);
 		}
-
-		return userDetails.getGithubId();
+		return userDetails;
 	}
 }
