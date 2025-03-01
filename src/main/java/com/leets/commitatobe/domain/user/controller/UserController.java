@@ -28,8 +28,8 @@ public class UserController {
 		summary = "유저 정보 검색",
 		description = "깃허브 아이디로 검색합니다."
 	)
-	@GetMapping("/search")
-	public ApiResponse<UserSearchResponse> searchUsers(@RequestParam("githubId") String githubId) {
+	@GetMapping("/search/{githubId}")
+	public ApiResponse<UserSearchResponse> searchUsers(@PathVariable("githubId") String githubId) {
 		return ApiResponse.onSuccess(userQueryService.searchUsersByGithubId(githubId));
 	}
 

@@ -28,8 +28,8 @@ public class ExpService {
 	private final UserRepository userRepository;
 	private final TierRepository tierRepository;
 
-	int DAILY_BONUS_EXP = 100;
-	int BONUS_EXP_INCREASE = 10;
+	private static final int DAILY_BONUS_EXP = 100;
+	private static final int BONUS_EXP_INCREASE = 10;
 
 	public void calculateAndSaveExp(String githubId) {
 		User user = userRepository.findByGithubId(githubId)
@@ -47,14 +47,7 @@ public class ExpService {
 				continue;//이미 계산된 커밋
 			LocalDateTime commitDate = commit.getCommitDate();//커밋날짜를 가져와 시간 설정
 
-			if (lastCommitDate != null && commitDate.isEqual(lastCommitDate.plusDays(1))) {
-				// 마지막 커밋 날짜가 존재하고, 현재 커밋 날짜가 마지막 커밋 날짜의 다음 날과 같으면 연속 커밋으로 간주합니다.
-				consecutiveDays++;//연속 커밋 일수 1 증가
-			} else {
-				if (lastCommitDate == null) { // 연속 커밋 일수는 전날 커밋이 없을 경우에 초기화
-					consecutiveDays = 0;//연속 커밋 일수 초기화
-				}
-			}
+			consecutiveDays = updateConsecutiveDays(lastCommitDate, commitDate, consecutiveDays);
 
 			totalExp += commit.calculateExp(DAILY_BONUS_EXP, consecutiveDays, BONUS_EXP_INCREASE);//총 경험치 업데이트
 			totalCommitCount += commit.getCnt();//총 커밋 횟수
@@ -78,20 +71,34 @@ public class ExpService {
 		user.updateTotalCommitCount(totalCommitCount);
 		user.updateTodayCommitCount(todayCommitCount);
 
+		updateUserRankings();
+		commitRepository.saveAll(commits);//변경된 커밋 정보 데이터베이스에 저장
+		userRepository.save(user);//변경된 사용자 정보 데이터베이스에 저장
+	}
+
+	private int updateConsecutiveDays(LocalDateTime lastCommitDate, LocalDateTime commitDate,
+		int currentConsecutiveDays) {
+		if (lastCommitDate == null) {
+			return 0;
+		}
+		if (commitDate.isEqual(lastCommitDate.plusDays(1))) {
+			return currentConsecutiveDays + 1;
+		}
+		return currentConsecutiveDays;
+	}
+
+	private void updateUserRankings() {
 		List<User> allUsers = userRepository.findAllByOrderByExpDesc(Pageable.unpaged()).getContent();
 		int ranking = 0;
 		int previousExp = -1;
 		for (User userToUpdate : allUsers) {
 			if (userToUpdate.getExp() != previousExp) {
-				ranking += 1;
-				previousExp = userToUpdate.getExp();//만약 경험치 같으면 동일한 랭킹부여.
+				ranking++;
+				previousExp = userToUpdate.getExp();
 			}
-			userToUpdate.updateRank(ranking);//랭킹 업데이트
-			userRepository.save(userToUpdate);//데이터베이스에 저장
+			userToUpdate.updateRank(ranking);
+			userRepository.save(userToUpdate);
 		}
-
-		commitRepository.saveAll(commits);//변경된 커밋 정보 데이터베이스에 저장
-		userRepository.save(user);//변경된 사용자 정보 데이터베이스에 저장
 	}
 
 	private Tier determineTier(Integer exp) {
