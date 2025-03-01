@@ -17,7 +17,6 @@ import com.leets.commitatobe.domain.user.dto.response.UserSearchResponse;
 import com.leets.commitatobe.domain.user.repository.UserRepository;
 import com.leets.commitatobe.global.exception.ApiException;
 import com.leets.commitatobe.global.response.CustomPageResponse;
-import com.leets.commitatobe.global.response.code.status.ErrorStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,11 +27,14 @@ public class UserQueryService {
 	private final UserRepository userRepository;
 	private final LoginCommandService loginCommandService;
 
+	private User getUser(String githubId) {
+		return userRepository.findByGithubId(githubId)
+			.orElseThrow(() -> new ApiException(_USER_NOT_FOUND));
+	}
+
 	@Transactional
 	public UserSearchResponse searchUsersByGithubId(String githubId) {// 유저 이름으로 유저 정보 검색
-		User user = userRepository.findByGithubId(githubId)
-			.orElseThrow(() -> new ApiException(ErrorStatus._USER_NOT_FOUND));
-
+		User user = getUser(githubId);
 		Tier tier = user.getTier();
 
 		return new UserSearchResponse(
@@ -67,15 +69,15 @@ public class UserQueryService {
 	}
 
 	public String getUserGitHubAccessToken(String githubId) {
-		User user = userRepository.findByGithubId(githubId).orElseThrow(() -> new ApiException(_USER_NOT_FOUND));
-
+		User user = getUser(githubId);
 		String gitHubAccessToken = user.getGitHubAccessToken();
 
 		return loginCommandService.decrypt(gitHubAccessToken);
 	}
 
 	public UserInfoResponse findUserInfo(String githubId, String myGitHubId) {
-		User user = userRepository.findByGithubId(githubId).orElseThrow(() -> new ApiException(_USER_NOT_FOUND));
+		User user = getUser(githubId);
+
 		return UserInfoResponse.of(githubId.equals(myGitHubId), user);
 	}
 }
