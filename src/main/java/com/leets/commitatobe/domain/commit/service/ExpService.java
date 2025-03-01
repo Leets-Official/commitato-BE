@@ -80,7 +80,8 @@ public class ExpService {
 		int currentConsecutiveDays) {
 		if (lastCommitDate != null && commitDate.isEqual(lastCommitDate.plusDays(1))) {
 			return currentConsecutiveDays + 1;
-		} else if (lastCommitDate == null) {
+		}
+		if (lastCommitDate == null) {
 			return 0;
 		}
 		return currentConsecutiveDays;
