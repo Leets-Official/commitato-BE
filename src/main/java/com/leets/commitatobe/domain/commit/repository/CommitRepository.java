@@ -22,7 +22,7 @@ public interface CommitRepository extends JpaRepository<Commit, UUID> {
 	@Query("SELECT c FROM commit c " +
 		"WHERE c.user = :user " +
 		"AND c.commitDate BETWEEN :startDate AND :endDate " +
-		"ORDER BY c.commitDate ASC")
+		"ORDER BY c.commitDate")
 	List<Commit> findCommitsByUser(
 		@Param("user") User user,
 		@Param("startDate") LocalDateTime startDate,
