@@ -1,5 +1,7 @@
 package com.leets.commitatobe.domain.user.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.leets.commitatobe.domain.login.service.LoginQueryService;
+import com.leets.commitatobe.domain.user.dto.response.UserCommitResponse;
 import com.leets.commitatobe.domain.user.dto.response.UserInfoResponse;
 import com.leets.commitatobe.domain.user.dto.response.UserRankResponse;
 import com.leets.commitatobe.domain.user.dto.response.UserSearchResponse;
@@ -47,5 +50,15 @@ public class UserController {
 	public ApiResponse<UserInfoResponse> getUserInfo(@PathVariable("githubId") String githubId) {
 		String myGitHubId = loginQueryService.getGitHubId();
 		return ApiResponse.onSuccess(userQueryService.findUserInfo(githubId, myGitHubId));
+	}
+
+	@Operation(
+		summary = "사용자 커밋 기록 가져오기",
+		description = "3달 간 사용자의 일일 커밋 횟수를 조회합니다."
+	)
+	@GetMapping("/commit/{githubId}")
+	public ApiResponse<List<UserCommitResponse>> getCommitsByUser(@PathVariable("githubId") String githubId) {
+		List<UserCommitResponse> commits = userQueryService.getUserCommits(githubId);
+		return ApiResponse.onSuccess(commits);
 	}
 }
