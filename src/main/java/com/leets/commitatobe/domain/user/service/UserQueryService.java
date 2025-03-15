@@ -2,9 +2,7 @@ package com.leets.commitatobe.domain.user.service;
 
 import static com.leets.commitatobe.global.response.code.status.ErrorStatus.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
