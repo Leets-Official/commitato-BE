@@ -54,7 +54,7 @@ public class UserController {
 
 	@Operation(
 		summary = "사용자 커밋 기록 가져오기",
-		description = "3달 간 사용자의 일일 커밋 횟수를 조회합니다."
+		description = "사용자의 일일 커밋 횟수를 조회합니다."
 	)
 	@GetMapping("/commit/{githubId}")
 	public ApiResponse<List<UserCommitResponse>> getCommitsByUser(@PathVariable("githubId") String githubId) {
