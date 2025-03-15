@@ -85,8 +85,8 @@ public class UserQueryService {
 		List<Commit> commits = commitRepository.findCommitsByUser(user, startDate, endDate);
 
 		return commits.stream()
-			.map(commit -> new UserCommitResponse(commit.getCommitDate(), commit.getCnt()))
-			.collect(Collectors.toList());
+			.map(UserCommitResponse::of)
+			.toList();
 	}
 
 	public String getUserGitHubAccessToken(String githubId) {
