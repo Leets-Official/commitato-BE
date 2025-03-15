@@ -8,7 +8,7 @@ public record UserCommitResponse(
 	LocalDateTime commitDate,
 	Integer cnt
 ) {
-	public static UserCommitResponse of(Commit commit) {
+	public static UserCommitResponse from(Commit commit) {
 		return new UserCommitResponse(commit.getCommitDate(), commit.getCnt());
 	}
 }

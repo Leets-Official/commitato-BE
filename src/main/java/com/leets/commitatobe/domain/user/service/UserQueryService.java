@@ -80,7 +80,7 @@ public class UserQueryService {
 		List<Commit> commits = commitRepository.findCommitsByUser(user);
 
 		return commits.stream()
-			.map(UserCommitResponse::of)
+			.map(UserCommitResponse::from)
 			.toList();
 	}
 
