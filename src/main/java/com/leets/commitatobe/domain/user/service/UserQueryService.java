@@ -79,10 +79,7 @@ public class UserQueryService {
 	public List<UserCommitResponse> getUserCommits(String githubId) {
 		User user = getUser(githubId);
 
-		LocalDateTime endDate = LocalDateTime.now();
-		LocalDateTime startDate = endDate.minusMonths(3);
-
-		List<Commit> commits = commitRepository.findCommitsByUser(user, startDate, endDate);
+		List<Commit> commits = commitRepository.findCommitsByUser(user);
 
 		return commits.stream()
 			.map(UserCommitResponse::of)
