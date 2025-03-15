@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.leets.commitatobe.domain.commit.domain.Commit;
 import com.leets.commitatobe.domain.user.domain.User;
@@ -16,4 +18,9 @@ public interface CommitRepository extends JpaRepository<Commit, UUID> {
 	Optional<Commit> findByCommitDateAndUser(LocalDateTime commitDate, User user);
 
 	List<Commit> findAllByUserOrderByCommitDateAsc(User user);
+
+	@Query("SELECT c FROM commit c " +
+		"WHERE c.user = :user " +
+		"ORDER BY c.commitDate DESC")
+	List<Commit> findCommitsByUser(@Param("user") User user);
 }

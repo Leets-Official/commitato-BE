@@ -2,15 +2,20 @@ package com.leets.commitatobe.domain.user.service;
 
 import static com.leets.commitatobe.global.response.code.status.ErrorStatus.*;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.leets.commitatobe.domain.commit.domain.Commit;
+import com.leets.commitatobe.domain.commit.repository.CommitRepository;
 import com.leets.commitatobe.domain.login.service.LoginCommandService;
 import com.leets.commitatobe.domain.tier.domain.Tier;
 import com.leets.commitatobe.domain.user.domain.User;
+import com.leets.commitatobe.domain.user.dto.response.UserCommitResponse;
 import com.leets.commitatobe.domain.user.dto.response.UserInfoResponse;
 import com.leets.commitatobe.domain.user.dto.response.UserRankResponse;
 import com.leets.commitatobe.domain.user.dto.response.UserSearchResponse;
@@ -25,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class UserQueryService {
 	private final UserRepository userRepository;
+	private final CommitRepository commitRepository;
 	private final LoginCommandService loginCommandService;
 
 	private User getUser(String githubId) {
@@ -66,6 +72,16 @@ public class UserQueryService {
 		});
 
 		return CustomPageResponse.from(userRankResponses);
+	}
+
+	public List<UserCommitResponse> getUserCommits(String githubId) {
+		User user = getUser(githubId);
+
+		List<Commit> commits = commitRepository.findCommitsByUser(user);
+
+		return commits.stream()
+			.map(UserCommitResponse::from)
+			.toList();
 	}
 
 	public String getUserGitHubAccessToken(String githubId) {
