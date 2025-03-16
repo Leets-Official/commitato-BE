@@ -116,14 +116,14 @@ public class GitHubService {
 			}
 
 			for (int i = 0; i < commits.size(); i++) {
-				JsonObject commitJson = commits.get(i).getAsJsonObject();
+				JsonObject commit = commits.get(i).getAsJsonObject();
 
 				// isCommitAuthorExist 메서드가 false, 즉 author가 null일 경우 스킵
-				if (!isCommitAuthorExist(commitJson, gitHubUsername)) {
+				if (!isCommitAuthorExist(commit, gitHubUsername)) {
 					continue;
 				}
 
-				String commitDateTime = getCommitDateTime(commitJson);
+				String commitDateTime = getCommitDateTime(commit);
 				if (commitDateTime.length() < 10) {
 					continue;
 				}
