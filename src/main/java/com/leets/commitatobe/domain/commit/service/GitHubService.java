@@ -85,13 +85,15 @@ public class GitHubService {
 
 		for (int i = 0; i < contributors.size(); i++) {
 			JsonObject contributor = contributors.get(i).getAsJsonObject();
-			String contributorLogin = contributor.get("login").getAsString();
 
-			if (contributorLogin.equals(gitHubUsername)) {
-				return true;
+			if (contributor.has("login") && !contributor.get("login").isJsonNull()) {
+				String contributorLogin = contributor.get("login").getAsString();
+
+				if (contributorLogin.equals(gitHubUsername)) {
+					return true;
+				}
 			}
 		}
-
 		return false;
 	}
 
@@ -114,17 +116,19 @@ public class GitHubService {
 			}
 
 			for (int i = 0; i < commits.size(); i++) {
-				String commitDateTime = getCommitDateTime(commits.get(i).getAsJsonObject());
+				JsonObject commitJson = commits.get(i).getAsJsonObject();
+
+				if (!isCommitAuthorNull(commitJson, gitHubUsername)) {
+					continue;
+				}
+
+				String commitDateTime = getCommitDateTime(commitJson);
+				if (commitDateTime.length() < 10) {
+					continue;
+				}
 
 				int comparisonResult = commitDateTime.compareTo(formatToISO8601(date));
-
-				if (comparisonResult < 0 || !commits.get(i)
-					.getAsJsonObject()
-					.get("author")
-					.getAsJsonObject()
-					.get("login")
-					.getAsString()
-					.equals(gitHubUsername)) {
+				if (comparisonResult < 0) {
 					continue;
 				}
 
@@ -157,6 +161,18 @@ public class GitHubService {
 			.map(res -> JsonParser.parseString(res).getAsJsonArray());
 
 		return response.block();
+	}
+
+	private boolean isCommitAuthorNull(JsonObject commitJson, String gitHubUsername) {
+		if (commitJson.has("author") && !commitJson.get("author").isJsonNull()) {
+			JsonObject topAuthor = commitJson.getAsJsonObject("author");
+			if (topAuthor.has("login") && !topAuthor.get("login").isJsonNull()) {
+				String login = topAuthor.get("login").getAsString();
+				return login.equals(gitHubUsername);
+			}
+		}
+		// author가 null이면 해당 커밋을 스킵
+		return false;
 	}
 
 	// commit 시간 추출
