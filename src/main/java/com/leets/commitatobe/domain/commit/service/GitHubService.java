@@ -118,7 +118,7 @@ public class GitHubService {
 			for (int i = 0; i < commits.size(); i++) {
 				JsonObject commitJson = commits.get(i).getAsJsonObject();
 
-				// isCommitAuthorNull 메서드가 false, 즉 author가 null일 경우 스킵
+				// isCommitAuthorExist 메서드가 false, 즉 author가 null일 경우 스킵
 				if (!isCommitAuthorExist(commitJson, gitHubUsername)) {
 					continue;
 				}
