@@ -119,7 +119,7 @@ public class GitHubService {
 				JsonObject commitJson = commits.get(i).getAsJsonObject();
 
 				// isCommitAuthorNull 메서드가 false, 즉 author가 null일 경우 스킵
-				if (!isCommitAuthorNull(commitJson, gitHubUsername)) {
+				if (!isCommitAuthorExist(commitJson, gitHubUsername)) {
 					continue;
 				}
 
@@ -164,7 +164,7 @@ public class GitHubService {
 		return response.block();
 	}
 
-	private boolean isCommitAuthorNull(JsonObject commitJson, String gitHubUsername) {
+	private boolean isCommitAuthorExist(JsonObject commitJson, String gitHubUsername) {
 		if (commitJson.has("author") && !commitJson.get("author").isJsonNull()) {
 			JsonObject topAuthor = commitJson.getAsJsonObject("author");
 			if (topAuthor.has("login") && !topAuthor.get("login").isJsonNull()) {
