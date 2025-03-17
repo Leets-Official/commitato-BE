@@ -22,6 +22,7 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -85,13 +86,15 @@ public class GitHubService {
 
 		for (int i = 0; i < contributors.size(); i++) {
 			JsonObject contributor = contributors.get(i).getAsJsonObject();
-			String contributorLogin = contributor.get("login").getAsString();
 
-			if (contributorLogin.equals(gitHubUsername)) {
-				return true;
+			if (contributor.has("login") && !contributor.get("login").isJsonNull()) {
+				String contributorLogin = contributor.get("login").getAsString();
+
+				if (contributorLogin.equals(gitHubUsername)) {
+					return true;
+				}
 			}
 		}
-
 		return false;
 	}
 
@@ -114,17 +117,20 @@ public class GitHubService {
 			}
 
 			for (int i = 0; i < commits.size(); i++) {
-				String commitDateTime = getCommitDateTime(commits.get(i).getAsJsonObject());
+				JsonObject commit = commits.get(i).getAsJsonObject();
+
+				// validateAuthor 메서드가 false, 즉 author가 null일 경우 스킵
+				if (!validateAuthor(commit, gitHubUsername)) {
+					continue;
+				}
+
+				String commitDateTime = getCommitDateTime(commit);
+				if (commitDateTime.length() < 10) {
+					continue;
+				}
 
 				int comparisonResult = commitDateTime.compareTo(formatToISO8601(date));
-
-				if (comparisonResult < 0 || !commits.get(i)
-					.getAsJsonObject()
-					.get("author")
-					.getAsJsonObject()
-					.get("login")
-					.getAsString()
-					.equals(gitHubUsername)) {
+				if (comparisonResult < 0) {
 					continue;
 				}
 
@@ -157,6 +163,17 @@ public class GitHubService {
 			.map(res -> JsonParser.parseString(res).getAsJsonArray());
 
 		return response.block();
+	}
+
+	private boolean validateAuthor(JsonObject commitJson, String gitHubUsername) {
+		if (commitJson.has("author") && !commitJson.get("author").isJsonNull()) {
+			JsonElement topAuthor = commitJson.getAsJsonObject("author").get("login");
+			if (topAuthor!=null && !topAuthor.isJsonNull()) {
+				return topAuthor.getAsString().equals(gitHubUsername);
+			}
+		}
+		// author가 null이면 해당 커밋을 스킵
+		return false;
 	}
 
 	// commit 시간 추출
