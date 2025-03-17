@@ -22,6 +22,7 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -166,10 +167,9 @@ public class GitHubService {
 
 	private boolean validateAuthor(JsonObject commitJson, String gitHubUsername) {
 		if (commitJson.has("author") && !commitJson.get("author").isJsonNull()) {
-			JsonObject topAuthor = commitJson.getAsJsonObject("author");
-			if (topAuthor.has("login") && !topAuthor.get("login").isJsonNull()) {
-				String login = topAuthor.get("login").getAsString();
-				return login.equals(gitHubUsername);
+			JsonElement topAuthor = commitJson.getAsJsonObject("author").get("login");
+			if (topAuthor!=null && !topAuthor.isJsonNull()) {
+				return topAuthor.getAsString().equals(gitHubUsername);
 			}
 		}
 		// author가 null이면 해당 커밋을 스킵
