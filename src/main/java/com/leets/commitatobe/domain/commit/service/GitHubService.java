@@ -118,8 +118,8 @@ public class GitHubService {
 			for (int i = 0; i < commits.size(); i++) {
 				JsonObject commit = commits.get(i).getAsJsonObject();
 
-				// isCommitAuthorExist 메서드가 false, 즉 author가 null일 경우 스킵
-				if (!isCommitAuthorExist(commit, gitHubUsername)) {
+				// validateAuthor 메서드가 false, 즉 author가 null일 경우 스킵
+				if (!validateAuthor(commit, gitHubUsername)) {
 					continue;
 				}
 
@@ -164,7 +164,7 @@ public class GitHubService {
 		return response.block();
 	}
 
-	private boolean isCommitAuthorExist(JsonObject commitJson, String gitHubUsername) {
+	private boolean validateAuthor(JsonObject commitJson, String gitHubUsername) {
 		if (commitJson.has("author") && !commitJson.get("author").isJsonNull()) {
 			JsonObject topAuthor = commitJson.getAsJsonObject("author");
 			if (topAuthor.has("login") && !topAuthor.get("login").isJsonNull()) {
