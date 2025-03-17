@@ -1,5 +1,6 @@
 package com.leets.commitatobe.domain.commit.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -78,13 +79,24 @@ public class ExpService {
 
 	private int updateConsecutiveDays(LocalDateTime lastCommitDate, LocalDateTime commitDate,
 		int currentConsecutiveDays) {
+		// 첫 커밋일 경우
 		if (lastCommitDate == null) {
-			return 0;
+			return 1;
 		}
-		if (commitDate.isEqual(lastCommitDate.plusDays(1))) {
+		LocalDate lastDate = lastCommitDate.toLocalDate();
+		LocalDate currentDate = commitDate.toLocalDate();
+
+		// 이전 커밋 날 + 하루 = 현재 커밋 날짜일 경우 연속 커밋 일수 + 1
+		if (currentDate.equals(lastDate.plusDays(1))) {
 			return currentConsecutiveDays + 1;
 		}
-		return currentConsecutiveDays;
+
+		if (currentDate.equals(lastDate)) {
+			return currentConsecutiveDays;
+		} else {
+			//하루 이상 건너뛰면 초기화
+			return 1;
+		}
 	}
 
 	private void updateUserRankings() {
