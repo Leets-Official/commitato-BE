@@ -74,7 +74,7 @@ public class Commit extends BaseTimeEntity {
 	}
 
 	public int calculateExp(int dailyBonusExp, int consecutiveDays, int bonusExpIncrease) {
-		int bonusExp = dailyBonusExp + consecutiveDays * bonusExpIncrease;
+		int bonusExp = dailyBonusExp + (consecutiveDays - 1) * bonusExpIncrease;
 		return this.cnt * 5 + bonusExp;
 	}
 
