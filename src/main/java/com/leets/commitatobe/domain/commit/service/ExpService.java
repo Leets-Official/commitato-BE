@@ -93,10 +93,9 @@ public class ExpService {
 
 		if (currentDate.equals(lastDate)) {
 			return currentConsecutiveDays;
-		} else {
-			//하루 이상 건너뛰면 초기화
-			return 1;
 		}
+
+		return 1;
 	}
 
 	private void updateUserRankings() {
