@@ -100,4 +100,3 @@ public class User extends BaseTimeEntity {
 		this.gitHubAccessToken = gitHubAccessToken;
 	}
 }
-
