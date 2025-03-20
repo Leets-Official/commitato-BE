@@ -95,5 +95,9 @@ public class User extends BaseTimeEntity {
 	public void updateLastCommitUpdateTime(LocalDateTime lastCommitUpdateTime) {
 		this.lastCommitUpdateTime = lastCommitUpdateTime;
 	}
+
+	public void updateGitHubAccessToken(String gitHubAccessToken) {
+		this.gitHubAccessToken = gitHubAccessToken;
+	}
 }
 
