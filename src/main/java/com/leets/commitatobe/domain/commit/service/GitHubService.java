@@ -107,7 +107,9 @@ public class GitHubService {
 			JsonArray commits;
 
 			try {
-				commits = getConnection("/repos/" + fullName + "/commits?page=" + page + "&per_page=100");
+				commits = getConnection(
+					"/repos/" + fullName + "/commits?page=" + page + "&per_page=100" + "&since=" + formatToISO8601(
+						date));
 			} catch (Exception e) {
 				return;
 			}
@@ -168,7 +170,7 @@ public class GitHubService {
 	private boolean validateAuthor(JsonObject commitJson, String gitHubUsername) {
 		if (commitJson.has("author") && !commitJson.get("author").isJsonNull()) {
 			JsonElement topAuthor = commitJson.getAsJsonObject("author").get("login");
-			if (topAuthor!=null && !topAuthor.isJsonNull()) {
+			if (topAuthor != null && !topAuthor.isJsonNull()) {
 				return topAuthor.getAsString().equals(gitHubUsername);
 			}
 		}
