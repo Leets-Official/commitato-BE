@@ -49,7 +49,7 @@ public class FetchCommitsTest {
 			List<String> repos = gitHubService.fetchRepos(gitHubId);
 			ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 			List<CompletableFuture<Void>> futures = new ArrayList<>();
-			LocalDateTime finalDateTime = dateTime; // 오류 방지
+			LocalDateTime finalDateTime = dateTime.toLocalDate().atStartOfDay();
 
 			for (String fullName : repos) {
 				CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(() -> {

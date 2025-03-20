@@ -43,16 +43,12 @@ public class FetchCommits {
 		}
 
 		try {
-			// 기존: Github API Access Token 저장
-			//            gitHubService.updateToken(loginCommandService.gitHubLogin(gitHubId));
-
-			//변경: DB에서 엑세스 토큰 불러오도록 방식 변경
 			gitHubService.updateToken(userQueryService.getUserGitHubAccessToken(gitHubId));
 
 			List<String> repos = gitHubService.fetchRepos(gitHubId);
 			ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 			List<CompletableFuture<Void>> futures = new ArrayList<>();
-			LocalDateTime finalDateTime = dateTime; // 오류 방지
+			LocalDateTime finalDateTime = dateTime.toLocalDate().atStartOfDay();
 
 			for (String fullName : repos) {
 				CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(() -> {
